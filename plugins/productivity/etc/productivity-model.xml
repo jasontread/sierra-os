@@ -989,8 +989,6 @@
         $this->_db->execute('UPDATE my_project_task SET change_restriction=' . $this->_db->convertInt(NULL) . ' WHERE change_restriction=' . $deleteRecordId . ' AND change_restriction_email=' . $this->_db->convertBoolean(TRUE));
       }
       ]]></aspect>
-      <aspect key="sendIntroEmailInsert" advice="sendIntroEmail" pointcut="dao.insert" />
-      <aspect key="sendIntroEmailUpdate" advice="sendIntroEmail" pointcut="dao.update" />
       <aspect key="verifyDeletePermissions" pointcut="dao.delete"><![CDATA[
       global $user;
       if (!MyProjectVO::verifyPermissions(MY_PROJECT_PERMISSIONS_ADMIN, $record->getProjectId())) {
@@ -1691,8 +1689,6 @@
         $this->_db->execute('UPDATE my_project_whiteboard SET change_restriction=' . $this->_db->convertInt(NULL) . ' WHERE change_restriction=' . $deleteRecordId);
       }
       ]]></aspect>
-      <aspect key="sendIntroEmailInsert" advice="sendIntroEmail" pointcut="dao.insert" />
-      <aspect key="sendIntroEmailUpdate" advice="sendIntroEmail" pointcut="dao.update" />
       <aspect key="verifyDeletePermissions" pointcut="dao.delete"><![CDATA[
       global $user;
       if (!MyProjectVO::verifyPermissions(MY_PROJECT_PERMISSIONS_ADMIN, $record->getProjectId())) {
