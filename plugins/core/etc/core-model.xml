@@ -421,8 +421,6 @@
       ]]></advice>
       
       <aspect key="addGlobalUser" pointcut="vo.CoreVfsNodeVO"><![CDATA[ global $user; ]]></aspect>
-      <aspect key="checkForDuplicateName1" advice="checkForDuplicateName" pointcut="vo.setParent" when="after" />
-      <aspect key="checkForDuplicateName2" advice="checkForDuplicateName" pointcut="vo.setName" when="after" />
       <aspect key="checkEntityCopyPermissions" pointcut="vo.copy"><![CDATA[
       // check if entity allows copying
       $entity =& $this->getEntity();
