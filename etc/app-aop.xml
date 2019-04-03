@@ -259,7 +259,6 @@
         $this->validateErrors['workspaces'] = $rb->getString('error.minWorkspace');
       }
       ]]></aspect>
-      <aspect key="updateSystemGroupsInsert" advice="updateSystemGroups" pointcut="dao.insert" />
       <aspect key="setOwnership" pointcut="dao.insert" when="after"><![CDATA[
       if ($record->getPrimaryKey()) {
         if (count($groups =& $record->getGroups()) == 1) {
