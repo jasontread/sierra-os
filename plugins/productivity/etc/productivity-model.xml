@@ -211,7 +211,6 @@
       // get workflow for later deletion
       $projectWorkflow =& $record->getWf();
       ]]></aspect>
-      <aspect key="verifyReadPermissionsMessages" advice="verifyReadPermissions" pointcut="vo.getMessages" />
       <aspect key="verifyReadPermissionsName" advice="verifyReadPermissions" pointcut="vo.getName" />
       <aspect key="verifyReadPermissionsSummary" advice="verifyReadPermissions" pointcut="vo.getSummary" />
       <aspect key="verifyReadPermissionsTasks" advice="verifyReadPermissions" pointcut="vo.getTasks" />
