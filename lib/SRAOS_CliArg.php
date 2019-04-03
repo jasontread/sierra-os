@@ -30,13 +30,13 @@
  * the regular expression to use to validate argument ids
  * @type String
  */
-define('SRAOS_CLI_ARG_ABBR_REGEX', '^[a-zA-Z0-9]$');
+define('SRAOS_CLI_ARG_ABBR_REGEX', '/^[a-zA-Z0-9]$/');
 
 /**
  * the regular expression to use to validate argument ids
  * @type String
  */
-define('SRAOS_CLI_ARG_ID_REGEX', '^[a-zA-Z0-9\-]*$');
+define('SRAOS_CLI_ARG_ID_REGEX', '/^[a-zA-Z0-9\-]*$/');
 // }}}
 
 // {{{ SRAOS_CliArg
@@ -185,12 +185,12 @@ class SRAOS_CliArg {
 			$this->err =& SRA_Error::logError($msg, __FILE__, __LINE__, SRA_ERROR_PROBLEM, SRAOS_PLUGIN_DEBUG);
       return;
     }
-    else if (!ereg(SRAOS_CLI_ARG_ID_REGEX, $id)) {
+    else if (!preg_match(SRAOS_CLI_ARG_ID_REGEX, $id)) {
 			$msg = "SRAOS_CliArg::SRAOS_CliArg: Failed - id is not valid for cli argument ${id}";
 			$this->err =& SRA_Error::logError($msg, __FILE__, __LINE__, SRA_ERROR_PROBLEM, SRAOS_PLUGIN_DEBUG);
       return;
     }
-    else if (isset($config['attributes']['abbr']) && !ereg(SRAOS_CLI_ARG_ABBR_REGEX, $config['attributes']['abbr'])) {
+    else if (isset($config['attributes']['abbr']) && !preg_match(SRAOS_CLI_ARG_ABBR_REGEX, $config['attributes']['abbr'])) {
 			$msg = "SRAOS_CliArg::SRAOS_CliArg: Failed - abbr is not valid for cli argument ${id}";
 			$this->err =& SRA_Error::logError($msg, __FILE__, __LINE__, SRA_ERROR_PROBLEM, SRAOS_PLUGIN_DEBUG);
       return;
