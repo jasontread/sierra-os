@@ -1,0 +1,65 @@
+8
+
+dir
+0
+https://sierra-os.googlecode.com/svn/trunk/plugins/productivity
+https://sierra-os.googlecode.com/svn
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+tpl
+dir
+
+
+
+add
+
+www
+dir
+
+
+
+add
+
+lib
+dir
+
+
+
+add
+
+INSTALL
+file
+
+
+
+add
+
+etc
+dir
+
+
+
+add
+
+plugin.xml
+file
+
+
+
+add
+
+Makefile
+file
+
+
+
+add
+

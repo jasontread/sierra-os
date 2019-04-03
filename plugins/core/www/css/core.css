@@ -1,0 +1,662 @@
+.core_browserContent {
+  background: #fff;
+  overflow: auto;
+  padding: 0;
+  position: absolute;
+  top: 0;
+}
+
+.core_browserContent div {
+  cursor: pointer;
+  height: 80px;
+  overflow: hidden;
+  padding-top: 2px;
+  position: absolute;
+  text-align: center;
+  width: 80px;
+}
+
+.core_browserContent div img {
+  margin-bottom: 5px;
+}
+
+.coreBrowserHighlighted {
+  background: #ddd;
+}
+
+.coreBrowserList {
+  border: 0;
+  border-collapse: collapse;
+  font-size: 11px;
+	margin: 0;
+  overflow: auto;
+	padding: 0;
+  width: 100%;
+}
+.coreBrowserList th {
+  background: #e3e3e3;
+  cursor: pointer;
+  vertical-align: middle;
+}
+.coreBrowserList th img {
+  float: right;
+  padding: 5px 3px 0 0;
+}
+.coreBrowserList th, .coreBrowserList td {
+  border: 1px solid #8c8c8c;
+  border-left: 0;
+  border-top: 0;
+  font-weight: normal;
+  line-height: 14px;
+  margin: 0;
+  padding: 1px 0 1px 3px;
+  text-align: left;
+  vertical-align: middle;
+}
+.coreBrowserList td {
+  cursor: pointer;
+}
+.coreBrowserList .nodeName img {
+  float: left;
+  padding-right: 3px;
+}
+
+.core_DateChooser {
+  padding: 5px;
+}
+.core_DateChooser .core_DateChooserButtons {
+  margin-top: 10px;
+  text-align: center;
+}
+.core_DateChooser .core_DateChooserField {
+  margin-top: 5px;
+  text-align: center;
+}
+.core_DateChooser .core_DateChooserLabel {
+  background: #eee;
+}
+
+.coreFileUploadButtons {
+  position: absolute;
+  text-align: center;
+  top: 40px;
+  width: 99%;
+}
+
+.coreFileUploadDiv, .coreFileUploadDivAlt {
+  padding: 6px 0 6px 3px;
+  position: absolute;
+  visibility: hidden;
+  width: 99%;
+}
+
+.coreFileUploadDiv img, .coreFileUploadDivAlt img {
+  cursor: pointer;
+  margin: 2px 0 2px 2px;
+}
+
+.coreFileUploadDivAlt {
+  background: #eee;
+}
+
+
+.core_browserSidebar {
+  left: 0;
+  margin: 0;
+  overflow: auto;
+  padding: 0;
+  position: absolute;
+  top: 0;
+}
+
+.core_browserSidebar div {
+  cursor: pointer;
+  line-height: 22px;
+  padding: 3px;
+  vertical-align: middle;
+}
+
+.core_browserSidebar div img {
+  float: left;
+  margin-right: 3px;
+}
+
+.core_browserSidebar .sidebarActive {
+  background: #ddd;
+}
+
+.core_browserTree {
+  left: 0;
+  overflow: auto;
+  padding: 2px;
+  position: absolute;
+  top: 153px;
+}
+
+.core_cmdList .core_cmdListCmd {
+  font-style: italic;
+  font-weight: bold;
+}
+
+.core_cmdList .core_cmdListFullCmd {
+  font-style: italic;
+}
+
+.core_helpContent {
+  background: #fff;
+  overflow: auto;
+  padding: 5px;
+  position: absolute;
+  top: 0;
+}
+
+.core_helpContent h1 {
+  border-bottom: 1px solid #8c8c8c;
+  margin: 0;
+  margin-bottom: 5px;
+}
+
+.core_helpContent h2 {
+  margin: 0;
+  margin-bottom: 2px;
+}
+
+.core_helpContent img {
+  margin: 3px;
+  margin-left: 0;
+}
+
+.core_helpContent div {
+  margin: 0;
+  margin-bottom: 3px;
+}
+
+.core_helpContent p {
+  margin-bottom: 10px;
+}
+
+.core_helpTopics {
+  overflow: auto;
+  padding: 2px;
+  position: absolute;
+  top: 0;
+}
+
+.core_manHeader, .core_manArgValRequired {
+  font-weight: bold;
+}
+
+.core_manContent {
+  margin-bottom: 10px;
+  padding-left: 10px;
+}
+
+.core_manArgLabel {
+  text-decoration: underline;
+}
+
+.core_msgbox {
+  padding: 5px;
+}
+
+.core_msgbox .core_msgbox_buttons {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.core_msgbox h1 {
+  border-bottom: 1px solid #8c8c8c;
+  font-size: 26px;
+  margin-bottom: 10px;
+  margin-top: 5px;
+  padding: 0;
+  padding-left: 40px;
+}
+
+.core_msgbox img {
+  float: left;
+  padding-top: 2px;
+}
+
+
+.core_sc_buttons {
+  position: absolute;
+  right: 5px;
+  top: 45px;
+}
+
+.core_sc_buttons input {
+  display: block;
+  width: 85px;
+}
+
+.core_sc_buttons .change {
+  margin-top: 30px;
+}
+
+.core_sc_close {
+  margin-left: 5px;
+  position: absolute;
+  text-align: center;
+  top: 255px;
+  width: 95%;
+}
+
+.core_sc_dictionary {
+  background: #eee;
+  border: 1px solid #8c8c8c;
+  margin-left: 5px;
+  padding: 5px;
+  position: absolute;
+  top: 202px;
+  width: 93%;
+}
+
+.core_sc_dictionary select {
+  width: 185px;
+}
+
+.core_sc_phrase {
+  background: #eee;
+  border: 1px solid #8c8c8c;
+  padding: 2px;
+  margin: 5px;
+  text-align: center;
+  width: 95%;
+}
+
+.core_sc_phrase .core_sc_complete {
+  font-weight: bold;
+}
+
+.core_sc_phrase .core_sc_error {
+  color: red;
+}
+
+.core_sc_suggestions {
+  left: 5px;
+  position: absolute;
+  top: 30px;
+}
+
+.core_sc_suggestions input {
+  display: block;
+  margin-top: 10px;
+  width: 185px;
+}
+
+.core_sc_suggestions select {
+  display: block;
+  margin-top: 3px;
+  overflow: hidden;
+  width: 185px;
+}
+
+.coreProfile {
+  border: 0;
+  font-size: 11px;
+  margin: 2px;;
+}
+
+.coreProfile .coreProfileLabel {
+  color: #777;
+  text-align: right;
+}
+
+.coreProfile .coreProfileName {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.coreProfile .coreProfilePicture {
+  text-align: right;
+}
+
+.coreProfile td {
+  margin: 0;
+  padding: 1px 0px 0px 3px;
+  vertical-align: top
+}
+
+.coreProfileActions {
+  margin-top: 2px;
+  padding: 2px;
+  padding-left: 0;
+}
+
+.coreProfileActions img {
+  cursor: pointer;
+  margin-right: 2px;
+}
+
+.coreSearchEntityHeader {
+  background: #427DB5;
+  color: #fff;
+  font-weight: bold;
+  padding: 2px;
+}
+
+.coreSearchEntityHeader .coreSearchEntityHeaderIcon {
+  float: left;
+  margin-right: 3px;
+}
+
+.coreSearchEntityHeader .coreSearchEntityHeaderToggle {
+  cursor: pointer;
+  float: right;
+  margin-right: 3px;
+  margin-top: 2px;
+}
+
+.coreSearchEntityResults {
+  height: 1px;
+  visibility: hidden;
+}
+
+.coreSearchEntityResultsVisible {
+  height: 85px;
+  overflow: auto;
+  padding: 0 0 2px 0;
+}
+
+.coreSearchHeader {
+  background: #e3e3e3;
+  border: 0;
+  border-bottom: 1px solid #8c8c8c;
+  padding: 5px;
+  text-align: right;
+}
+
+.coreSearchHeader img {
+  cursor: pointer;
+  float: right;
+}
+
+.coreSearchHeader input {
+  margin-right: 3px;
+  width: 100px;
+}
+
+.coreSearchHeader span {
+  margin-right: 5px;
+}
+
+.coreSearchResults {
+  border: 0;
+  border-collapse: collapse;
+  font-size: 11px;
+	margin: 0;
+  overflow: auto;
+	padding: 0;
+  width: 100%;
+}
+.coreSearchResults th {
+  background: #e3e3e3;
+}
+.coreSearchResults th .sortImg {
+  float: right;
+  padding: 5px 3px 0 0;
+}
+.coreSearchResults th, .coreSearchResults td {
+  border: 1px solid #8c8c8c;
+  border-left: 0;
+  border-top: 0;
+  font-weight: normal;
+  line-height: 14px;
+  margin: 0;
+  padding: 1px 0 1px 3px;
+  text-align: left;
+  vertical-align: middle;
+}
+.coreSearchResults td {
+  cursor: pointer;
+}
+
+.coreSearchToggleShow, .coreSearchToggleHide {
+  background-image: url(../../themes/standard/more-white.gif);
+  background-repeat: no-repeat;
+  height: 9px;
+  width: 9px;
+}
+
+.coreSearchToggleHide {
+  background-image: url(../../themes/standard/less-white.gif);
+}
+
+.coreTerminal {
+  font-family: courier;
+  font-size: 12px;
+  padding: 4px;
+  position: relative;
+}
+
+.coreTerminalInput {
+  border: 0;
+  font-family: courier;
+  font-size: 12px;
+  position: absolute;
+}
+
+.coreTerminalInputBorderHorz, .coreTerminalInputBorderVert {
+  background: white;
+  border: 0;
+  height: 5px;
+  position: absolute;
+  visibility: hidden;
+}
+
+.coreTerminalInputBorderVert {
+  height: 24px;
+  width: 5px;
+}
+
+
+.coreToggle {
+  background: #eee;
+  border: 1px solid #aaa;
+  margin: 8px 0 0 0;
+  padding: 0;
+}
+.coreToggle h3 {
+  background: #eee;
+  border: 0;
+  border-bottom: 1px solid #aaa;
+  font-size: 12px;
+  margin: 0;
+  padding: 2px 0 0 2px;
+}
+.coreToggle .coreToggler {
+  float: right;
+  margin-right: 3px;
+  margin-top: 5px;
+}
+.coreToggle .toggleDiv {
+  background: #fff;
+  border: 0;
+  padding: 3px;
+}
+
+
+.coreUserGroupSelector {
+  padding: 5px;
+}
+.coreUserGroupSelector h1 {
+  background: url(../../images/pixel.gif) 0 50% no-repeat;
+  border-bottom: 1px solid #333;
+  line-height: 32px;
+  margin: 0;
+  margin-bottom: 5px;
+  margin-top: 3px;
+  padding: 0;
+  padding-left: 36px;
+}
+
+.coreUserGroupSelector .coreUserGroupSelectorButtons {
+  margin: 0;
+  margin-top: 5px;
+  padding: 0;
+  text-align: right;
+}
+
+.coreUserGroupSelector div .groupUserList div {
+  background: url(../../images/pixel.gif) 0 50% no-repeat;
+  padding-left: 18px;
+}
+
+
+.coreWikiHelp ul, ol, pre, dl, p { 
+  margin-top:0px; margin-bottom:0px; 
+}
+
+.coreWikiHelp code.escaped { 
+  white-space: nowrap; 
+}
+
+.coreWikiHelp .vspace { 
+  margin-top:1.33em; 
+}
+
+.coreWikiHelp .indent { 
+  margin-left:40px; 
+}
+
+.coreWikiHelp .outdent { 
+  margin-left:40px; 
+  text-indent:-40px; 
+}
+
+.coreWikiHelp a.createlinktext { 
+  text-decoration:none; 
+  border-bottom:1px dotted gray; 
+}
+
+.coreWikiHelp a.createlink { 
+  text-decoration:none; 
+  position:relative; 
+  top:-0.5em;
+  font-weight:bold; 
+  font-size:smaller; 
+  border-bottom:none; 
+}
+
+.coreWikiHelp img { 
+  border:0px; 
+}
+
+.coreWikiHelp .apprlink { 
+  font-size:smaller; 
+}
+
+.coreWikiHelp .Pm { 
+  color:purple; 
+  font-style:italic; 
+}
+
+.coreWikiHelp .note { 
+  color:green; 
+  font-style:italic; 
+}
+
+.coreWikiHelp .editconflict { 
+  color:green; 
+  font-style:italic; 
+  margin-top:1.33em; 
+  margin-bottom:1.33em; 
+}
+
+.coreWikiHelp table.markup { 
+  border:2px dotted #ccf; 
+  width:90%; 
+}
+
+.coreWikiHelp td.markup1, td.markup2 { 
+  padding-left:10px; 
+  padding-right:10px; 
+}
+
+.coreWikiHelp table.vert td.markup1 { 
+  border-bottom:1px solid #ccf; 
+}
+
+.coreWikiHelp table.horiz td.markup1 { 
+  width:23em; 
+  border-right:1px 
+  solid #ccf; 
+}
+
+.coreWikiHelp table.markup caption { 
+  text-align:left; 
+}
+
+.coreWikiHelp div.faq p, div.faq pre { 
+  margin-left:2em; 
+}
+
+.coreWikiHelp div.faq p.question { 
+  margin:1em 0 0.75em 0; 
+  font-weight:bold; 
+}
+
+.coreWikiHelp .frame { 
+  border:1px solid #cccccc; 
+  padding:4px; 
+  background-color:#f9f9f9; 
+}
+
+.coreWikiHelp .lfloat { 
+  float:left; 
+  margin-right:0.5em; 
+}
+
+.coreWikiHelp .rfloat { 
+  float:right; 
+  margin-left:0.5em; 
+}
+
+.coreWikiHelp a.varlink { 
+  text-decoration:none; 
+}
+
+
+.coreWikiSandbox {
+  margin: 2px 0 2px 0;
+  padding: 3px;
+  padding-top: 0;
+}
+
+.coreWikiSandbox span {
+  position: absolute;
+  right: 5px;
+  top: 10px;
+}
+
+.coreWikiSandbox div {
+  margin-top: 5px;
+  text-align: right;
+}
+
+.coreWikiSandbox h1 {
+  background: url(../../plugins/core/icons/32/wiki.png) 0 50% no-repeat;
+  border-bottom: 1px solid #333;
+  line-height: 32px;
+  margin: 0;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  padding: 0;
+  padding-left: 35px;
+  vertical-align: bottom;
+}
+
+.coreWikiSandbox textarea {
+  border: 1px solid #8c8c8c;
+  display: block;
+  height: 160px;
+  margin-top: 5px;
+  padding: 2px;
+  width: 98%;
+}
+
+.coreWikiSandbox textarea:focus {
+  border: 1px solid #333;
+}
+

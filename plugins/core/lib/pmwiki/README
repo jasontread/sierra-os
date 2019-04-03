@@ -1,0 +1,4 @@
+This directory contains a stripped down version of PmWiki 
+(http://www.pmwiki.org) used to support wiki-based markup within SRAOS. For more 
+information see the Core_Services::wikiToHtml and Core_Services_markup methods 
+and API documentation

@@ -1,0 +1,1034 @@
+.myProjects {
+  padding: 5px;
+  padding-top: 0;
+}
+.myProjects .editFileVersionsTable {
+  border: 0;
+  border-collapse: collapse;
+  margin: 0;
+  padding: 2px;
+  padding-top: 0;
+  width: 98%;
+}
+.myProjects .editFileVersionsTable img {
+  cursor: pointer;
+  float: left;
+  margin: 2px 2px 0 0; 
+  padding: 0
+}
+.myProjects .editFileVersionsTable .versionNameLink {
+  background: url(../../images/pixel.gif) #eee 0 50% no-repeat; 
+  padding-left: 18px;
+}
+.myProjects h1 {
+  border-bottom: 1px solid #333;
+  line-height: 32px;
+  margin: 0;
+  margin-bottom: 5px;
+  margin-top: 3px;
+  padding: 0;
+  vertical-align: bottom;
+}
+.myProjects h3 {
+  font-size: 14px;
+  margin: 8px 0 2px 0;
+  padding: 0;
+}
+.myProjects .helpText {
+  color: #777;
+}
+.myProjects .hiddenContainer, .myProjects .hiddenContainerView {
+  margin-top: 3px;
+  padding: 0;
+  position: absolute;
+  top: 35px;
+  visibility: hidden;
+  width: 98%;
+}
+.myProjects .hiddenScrollingContainer, .myProjects .hiddenScrollingContainerView {
+  height: 334px;
+  margin-top: 6px;
+  padding: 0;
+  position: absolute;
+  top: 35px;
+  visibility: hidden;
+  width: 99%;
+}
+.myProjects .hiddenContainerView, .myProjects .hiddenScrollingContainerView {
+  top: 15px;
+}
+.myProjects .hiddenContainerView h1 {
+  margin-top: 10px;
+  padding-bottom: 5px;
+}
+.myProjects .myProjectButtons {
+  bottom: 10px;
+  position: absolute;
+  right: 5px;
+  white-space: nowrap;
+}
+.myProjects .myProjectsMessageFiles div div {
+  padding: 2px;
+}
+.myProjects .myProjectsMessageFiles div div img {
+  border: 0; 
+  float: left; 
+  margin: 2px 2px 2px 0;
+}
+.myProjects .myProjectPopupButtons {
+  margin: 0;
+  margin-top: 5px;
+  padding: 0;
+  text-align: right;
+}
+.myProjects .myProjectCancel, .myProjects .myProjectCancelView {
+  position: absolute;
+  right: 5px;
+  top: 10px;
+}
+.myProjects .myProjectCancelView {
+  top: 1px;
+}
+.myProjects .myProjectFields {
+  background: #eee;
+  margin: 2px 0 0 0;
+  padding: 3px;
+  vertical-align: middle;
+}
+.myProjects .myProjectFields h4 {
+  margin: 5px 0 2px 0;
+  padding: 0;
+}
+.myProjects .myProjectFields input, .myProjects .myProjectFields textarea {
+  border: 1px solid #8c8c8c;
+  padding: 2px;
+}
+.myProjects .myProjectFields input:focus, .myProjects .myProjectFields textarea:focus {
+  border: 1px solid #333;
+}
+.myProjects .myProjectFields table {
+  border-collapse: collapse;
+  margin: 0;
+  margin-bottom: 3px;
+  padding: 2px;
+  width: 98%;
+}
+.myProjects .myProjectFields .textArea {
+  height: 85px;
+  width: 98%;
+}
+.myProjects .myProjectFields .textBox {
+  width: 200px;
+}
+.myProjects .myProjectFields .textBoxSmall {
+  width: 50px;
+}
+.myProjects .projectHeader {
+  background: url(../../plugins/productivity/icons/32/my-projects.png) 0 50% no-repeat;
+  padding-left: 35px;
+}
+.myProjects .myProjectsProjectTaskSelectors div {
+  margin: 0;
+  margin-top: 3px;
+  padding: 0;
+}
+.myProjects .myProjectsProjectTaskSelectors label {
+  position: absolute;
+}
+.myProjects .myProjectsProjectTaskSelectors select {
+  margin-left: 150px;
+}
+.myProjects .myProjectsSendIntroEmailCell {
+  background: url(../../plugins/productivity/images/email-participant.png) 4px 50% #fff no-repeat;
+  border: 1px dotted #aaa;
+  padding: 3px;
+  padding-left: 22px;
+}
+
+
+.myProjectsAddComment .myProjectsCommentFiles {
+  background: #eee; 
+  margin-top: 5px; 
+  padding: 3px;
+}
+.myProjectsAddComment .myProjectsCommentFiles div {
+  padding: 2px;
+}
+.myProjectsAddComment .myProjectsCommentFiles div img {
+  border: 0; 
+  float: left; 
+  margin: 2px 2px 2px 0;
+}
+.myProjectsAddComment .projectHeader {
+  background: url(../../plugins/productivity/icons/32/comment.png) 0 50% no-repeat;
+}
+.myProjectsAddComment textarea {
+  border: 1px solid #8c8c8c;
+  height: 160px;
+  padding: 2px;
+  width: 98%;
+}
+.myProjectsAddComment textarea:focus {
+  border: 1px solid #333;
+}
+
+
+.myProjectsCalendarPopup {
+  background: #eee;
+  border: 1px solid #333;
+  margin: 0;
+  padding: 3px;
+  position: absolute;
+  visibility: hidden;
+  white-space: nowrap;
+}
+
+
+.myProjectsCanvas {
+  background: #eee;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  top: 0;
+}
+.myProjectsCanvas .active {
+  background-color: #fff;
+}
+.myProjectsCanvas .myProjectsAltBg {
+  background: #eee;
+}
+.myProjectsCanvas h1, .myProjectsCanvas h2, .myProjectsCanvas h3 {
+  border-bottom: 1px solid;
+  font-size: 17px;
+  font-weight: bold;
+  margin: 0;
+  margin-bottom: 5px;
+  padding: 0;
+}
+.myProjectsCanvas h2 {
+  font-size: 15px;
+}
+.myProjectsCanvas h3 {
+  font-size: 13px;
+}
+.myProjectsCanvas .myProjectsCalendar .myProjectsDueDate {
+  background: #99ff66;
+}
+.myProjectsCanvas .myProjectsCalendar .myProjectsDueDateLate {
+  background: #ff3333;
+}
+.myProjectsCanvas .myProjectsCalendar .myProjectsDueDateLate a {
+  color: #fff;
+}
+.myProjectsCanvas .myProjectsCalendar .myProjectsDueDateUpcoming {
+  background: #ffff66;
+}
+.myProjectsCanvas .myProjectsCalendar .myProjectsStartDate {
+  background: #eee;
+}
+.myProjectsCanvas .myProjectsContainer {
+  border: 1px solid #aaa;
+  margin: 0;
+  margin-bottom: 10px;
+  padding: 0;
+}
+.myProjectsCanvas .myProjectsContainer div {
+  padding: 3px;
+}
+.myProjectsCanvas .myProjectsContainer h3 {
+  background: #eee;
+  border: 0;
+  border-bottom: 1px solid #aaa;
+  margin-bottom: 2px;
+  padding: 3px;
+}
+.myProjectsCanvas .myProjectsContainer .myProjectsContainerIconHeader {
+  background: url(../../images/pixel.gif) #eee 0 50% no-repeat; 
+  padding-left: 18px;
+}
+.myProjectsCanvas .myProjectsContainerMessage {
+  margin: 10% 25% 0 25%;
+  text-align: center;
+  vertical-align: middle;
+}
+.myProjectsCanvas .myProjectsDiscussion h4 {
+  background: url(../../plugins/productivity/icons/16/message.png) 0 50% no-repeat; 
+  margin: 0; 
+  padding-left: 18px;
+}
+.myProjectsCanvas .myProjectsDiscussion h5 {
+  color: #aaa;
+  font-size: 10px;
+  margin: 0;
+  margin-bottom: 5px;
+  padding: 0;
+}
+.myProjectsCanvas .myProjectsDiscussion .myProjectsComments {
+  margin: 0; 
+  margin-top: 5px; 
+  padding: 0;
+}
+.myProjectsCanvas .myProjectsDiscussion .myProjectsComments h3 {
+  background: url(../../plugins/productivity/icons/16/comment.png) 2px 50% no-repeat; 
+  background-color: #eee;
+  font-size: 12px; 
+  padding-left: 20px;
+}
+.myProjectsCanvas .myProjectsDiscussion .myProjectsComments h5 {
+  color: #aaa;
+  font-size: 10px;
+  margin: 0;
+  margin-bottom: 5px;
+  padding: 0;
+}
+.myProjectsCanvas .myProjectsDiscussion .myProjectsComments .myProjectsCommentContainer {
+  margin-bottom: 5px;
+}
+.myProjectsCanvas .myProjectsDiscussion .myProjectsComments .myProjectsCommentContainer table {
+  border-collapse: collapse; 
+  margin: 0; 
+  padding: 0
+}
+.myProjectsCanvas .myProjectsDiscussion .myProjectsDiscussionContainer {
+  border-left: 7px solid #ccc;  
+  margin-left: 3px; 
+  margin-top: 3px;
+  padding-left: 8px;
+}
+.myProjectsCanvas .myProjectsDiscussion .myProjectsDiscussionLinks {
+  margin-top: 10px;
+}
+.myProjectsCanvas .myProjectsDiscussion .myProjectsDiscussionLinks div, .myProjectsDiscussionLink {
+  background: url(../../plugins/productivity/icons/16/task.png) 0 50% no-repeat; 
+  background-color: transparent;
+  margin: 0; 
+  margin-bottom: 2px;
+  padding: 0; 
+  padding-left: 18px;
+}
+.myProjectsCanvas .myProjectsDiscussion .myProjectsMessage, .myProjectsCanvas .myProjectsDiscussion .myProjectsWhiteboard {
+  margin-bottom: 20px;
+}
+.myProjectsCanvas .myProjectsDiscussion .myProjectsWhiteboard h4 {
+  background-image: url(../../plugins/productivity/icons/16/whiteboard.png);
+}
+.myProjectsCanvas .myProjectsDiscussion span {
+  float: right; 
+  font-size: 10px; 
+  font-weight: normal;
+}
+.myProjectsCanvas .myProjectsDueDateGroup {
+  margin: 0;
+  margin-bottom: 4px;
+  padding: 0;
+}
+.myProjectsCanvas .myProjectsDueDateGroup div {
+  margin: 2px 0 1px 18px;
+  padding: 0;
+}
+.myProjectsCanvas .myProjectsDueDateGroup h4 {
+  background: url(../../plugins/productivity/icons/16/my-projects.png) 0 50% no-repeat;
+  font-size: 12px;
+  margin: 0;
+  margin-bottom: 2px;
+  padding: 0;
+  padding-left: 18px;
+}
+.myProjectsCanvas .myProjectsLate {
+  background: #fadede;
+}
+.myProjectsCanvas .myProjectsLate div div {
+  padding: 0;
+}
+.myProjectsCanvas .myProjectsLate h3 {
+  background: #fadede;
+  color: #c01111;
+}
+.myProjectsLateFont {
+  color: #c01111;
+  font-weight: normal;
+}
+.myProjectsUpcomingFont {
+  color: #ffcc00;
+  font-weight: normal;
+}
+.myProjectsCanvas .myProjectsLate img {
+  float: left;
+  padding-right: 2px;
+}
+.myProjectsCanvas .myProjectsLate .myProjectsLateGroup {
+  margin-bottom: 5px;
+}
+.myProjectsCanvas .myProjectsLatestActivity .myProjectsLatestActivityToday {
+  font-weight: bold;
+}
+.myProjectsCanvas .myProjectsLatestActivity .myProjectsLatestActivityContainer {
+  margin: 0;
+  margin-bottom: 10px;
+  padding: 0;
+  padding-left: 16px;
+}
+.myProjectsCanvas .myProjectsLatestActivity table {
+  border: 0;
+  border-collapse: collapse;
+  margin: 0;
+  padding: 2px;
+  padding-top: 0;
+  width: 98%;
+}
+.myProjectsCanvas .myProjectsLatestActivity table .myProjectsLatestActivityIcon {
+  width: 2%;
+}
+.myProjectsCanvas .myProjectsLatestActivity table .myProjectsLatestActivityDays {
+  white-space: nowrap;
+  width: 8%;
+}
+.myProjectsCanvas .myProjectsLatestActivity table .myProjectsLatestActivityDate {
+  color: #aaa;
+  white-space: nowrap;
+  width: 8%;
+}
+.myProjectsCanvas .myProjectsLatestActivity table .myProjectsLatestActivityTitle {
+  width: 74%;
+}
+.myProjectsCanvas .myProjectsLatestActivity table .myProjectsLatestActivityName {
+  color: #aaa;
+  white-space: nowrap;
+  width: 8%;
+}
+.myProjectsCanvas .myProjectsLatestActivity table td, .myProjectsCanvas .myProjectsLatestActivity table th {
+  margin: 0;
+  padding: 2px;
+  padding-right: 10px;
+  text-align: left;
+  vertical-align: top;
+}
+.myProjectsCanvas .myProjectsLatestActivity table td div {
+  margin-bottom: 0;
+  margin-top: 0;
+  padding-bottom: 0;
+  padding-top: 0;
+}
+.myProjectsCanvas .myProjectsLatestActivity table td h4 {
+  margin: 0;
+}
+.myProjectsCanvas .myProjectsLatestActivity table th {
+  font-weight: normal;
+  white-space: nowrap;
+}
+.myProjectsCanvas .myProjectsNonBold {
+  font-weight: normal;
+}
+.myProjectsCanvas .myProjectsPanel {
+  background: #fff;
+  height: 95%;
+  position: absolute;
+  top: 24px;
+  width: 100%;
+}
+.myProjectsCanvas .myProjectsPanelContent, .myProjectsCanvas .myProjectsPanelContentLeft {
+  height: 98%;
+  margin: 7px 7px 0 7px;
+  padding: 0;
+  overflow: auto;
+}
+.myProjectsCanvas .myProjectsPanelContentLeft {
+  margin-right: 153px;
+  padding-right: 5px;
+}
+.myProjectsCanvas .myProjectsPanelContentRight {
+  background: #eee;
+  border-left: 1px solid #aaa;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  padding: 7px 7px 0 5px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 140px;
+}
+.myProjectsCanvas .myProjectsPanelContentRight div {
+  margin: 0;
+  margin-bottom: 5px;
+  padding: 0;
+}
+.myProjectsCanvas .myProjectsPanelContentRight h3 {
+  border-bottom: 0;
+  margin: 0;
+  margin-bottom: 2px;
+  padding: 0;
+}
+.myProjectsCanvas .myProjectsPanelContentRight .myProjectsTasksCalendars {
+  margin-bottom: 10px;
+}
+.myProjectsCanvas .myProjectsPanelContentRight .textBox {
+  border: 1px solid #8c8c8c;
+  margin: 0;
+  padding: 2px;
+  width: 135px;
+}
+.myProjectsCanvas .myProjectsPanelContentRight .textBox:focus {
+  border: 1px solid #333;
+}
+.myProjectsCanvas .myProjectsPanelContentRight select {
+  width: 135px;
+}
+
+.myProjectsCanvas .myProjectsTasks span {
+  margin: 0;
+  padding: 0;
+}
+.myProjectsCanvas .myProjectsTaskGroup div {
+  margin: 0 0 1px 21px;
+  padding: 0;
+}
+.myProjectsCanvas .myProjectsTaskGroup h4 {
+  background: url(../../plugins/productivity/icons/16/my-projects.png) 0 50% no-repeat;
+  font-size: 12px;
+  margin: 0;
+  margin-bottom: 2px;
+  padding: 0;
+  padding-left: 18px;
+}
+.myProjectsCanvas .myProjectsTaskTitleTable {
+  border: 0;
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+}
+
+.myProjectsCanvas .myProjectsTaskTitleTable .myProjectsTaskPercentComplete, .myProjectsCanvas .myProjectsTaskTitleTable .myProjectsTaskPercentCompleteLate, .myProjectsCanvas .myProjectsTaskTitleTable .myProjectsTaskPercentCompleteUpcoming {
+  margin: 0;
+  padding: 0;
+}
+.myProjectsCanvas .myProjectsTaskTitleTable .myProjectsTaskPercentComplete img, .myProjectsCanvas .myProjectsTaskTitleTable .myProjectsTaskPercentCompleteLate img, .myProjectsCanvas .myProjectsTaskTitleTable .myProjectsTaskPercentCompleteUpcoming img {
+  background-color: #99ff66; 
+  border: 1px solid #aaa;
+  cursor: auto; 
+  height: 5px; 
+  margin-top: 6px;
+}
+.myProjectsCanvas .myProjectsTaskTitleTable .myProjectsTaskPercentCompleteLate img {
+  background-color: #ff3333; 
+}
+.myProjectsCanvas .myProjectsTaskTitleTable .myProjectsTaskPercentCompleteUpcoming img {
+  background-color: #ffff66; 
+}
+
+.myProjectsCanvas .myProjectsTaskTitleTable .myProjectsTaskTitleCell {
+  margin: 0;
+  padding: 0;
+  padding-right: 4px;
+  vertical-align: middle; 
+  white-space: nowrap;
+}
+.myProjectsCanvas .myProjectsTaskTitleTable .myProjectsTaskTitleCell img {
+  border: 0;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+}
+
+.myProjectsCanvas .myProjectsUpcoming h3 {
+  background: #ffff99;
+}
+.myProjectsCanvas .myProjectsUpcoming .myProjectsUpcomingToday {
+  font-weight: bold;
+}
+.myProjectsCanvas .myProjectsUpcoming table {
+  border: 0;
+  border-collapse: collapse;
+  margin: 0;
+  padding: 2px;
+  padding-top: 0;
+  width: 100%;
+}
+.myProjectsCanvas .myProjectsUpcoming table td, .myProjectsCanvas .myProjectsUpcoming table th {
+  margin: 0;
+  padding: 2px;
+  text-align: left;
+  vertical-align: top;
+}
+.myProjectsCanvas .myProjectsUpcoming table td div {
+  margin-bottom: 0;
+  margin-top: 0;
+  padding-bottom: 0;
+  padding-top: 0;
+}
+.myProjectsCanvas .myProjectsUpcoming table td h4 {
+  margin: 0;
+}
+.myProjectsCanvas .myProjectsUpcoming table th {
+  font-weight: normal;
+  white-space: nowrap;
+}
+.myProjectsCanvas .noProjects {
+  margin-top: 20%;
+  text-align: center;
+}
+.myProjectsCanvas .showAllDiscussionLink {
+  margin-bottom: 5px;
+  text-align: right;
+}
+
+
+.myProjectsCheckbox {
+  margin: 0 3px 0 2px;
+  padding: 0;
+}
+.myProjectsCheckboxLate {
+  outline: #ff3333 solid 1px;
+}
+.myProjectsCheckboxUpcoming {
+  outline: #ffff33 solid 1px;
+}
+
+
+.myProjectsDateChooser {
+  border: 1px solid #8c8c8c;
+  padding: 2px;
+  width: 80px;
+}
+.myProjectsDateChooser:focus {
+  border: 1px solid #333;
+}
+
+
+.myProjectsFilesFooter {
+  font-size: smaller;
+  font-style: italic;
+  margin-top: 15px;
+  text-align: right;
+}
+.myProjectsFilesIcon {
+  border-collapse: collapse;
+  display: inline;
+  margin: 0;
+}
+.myProjectsFilesIcon tr td {
+  cursor: pointer;
+  margin: 0;
+  padding: 3px 5px 6px 4px;
+  text-align: center;
+}
+.myProjectsFilePreview div {
+  margin: 0;
+  margin-bottom:5px;
+  padding: 0;
+  text-align: center;
+}
+.myProjectsFilePreview div a, .myProjectsFilePreview div font {
+  margin: 0 10px 0 10px;
+}
+.myProjectsFilePreview div font {
+  color: #aaa;
+}
+.myProjectsFilePreview div img {
+  border: 1px solid #333;
+}
+.myProjectsFilesPopup {
+  background: #fff;
+  border: 1px solid #aaa;
+  display: none;
+  margin: 0;
+  padding: 3px 6px 3px 6px;
+  position: absolute;
+}
+.myProjectsFilesPopup a {
+  background: url(../../images/pixel.gif) 0 50% no-repeat;
+  display: block;
+  line-height: 18px;
+  padding-left: 20px;
+}
+.myProjectsFilesPopup div {
+  border-top: 1px dotted #aaa;
+  margin-top: 5px;
+  padding-top: 5px;
+}
+.myProjectsFilesTable {
+  border-collapse: collapse;
+  margin: 5px;
+  padding: 0;
+  width: 98%;
+}
+.myProjectsFilesTable th {
+  background: #eee;
+  border: 1px solid #aaa;
+  padding: 1px 2px 1px 2px;
+}
+.myProjectsFilesTable td {
+  padding: 3px 2px 0 1px;
+}
+.myProjectsFilesTable td img {
+  float: left;
+  margin-right: 3px;
+}
+.myProjectsFilesTable .myProjectsFilesTableName {
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.myProjectsLightFont {
+  color: #aaa;
+}
+
+
+.myProjectsList {
+  background: #eee;
+  border: 1px solid #333;
+  max-height: 90%;
+  padding: 3px;
+  position: absolute;
+  right: 5px;
+  text-decoration: none;
+  top: 17px;
+}
+.myProjectsList div {
+  margin: 0;
+  margin-bottom: 10px;
+  padding: 0;
+  padding-left: 3px;
+}
+.myProjectsList h3 {
+  background-position: 0 50%;
+  background-repeat: no-repeat;
+  border: 0;
+  font-size: 12px;
+  font-weight: bold;
+  margin: 0;
+  margin-bottom: 2px;
+  padding: 0;
+  padding-left: 16px;
+}
+.myProjectsList .noProjectsMsg {
+  width: 200px;
+}
+.myProjectsList h4 {
+  border: 0;
+  font-size: 12px;
+  font-weight: bold;
+  margin: 0;
+  margin-bottom: 10px;
+  padding: 0;
+}
+.myProjectsList .scoreIndicator {
+  background: #6699cc;
+  border: 1px solid #333;
+  height: 5px;
+  margin: 0 0 1px 3px;
+  padding: 0;
+}
+
+
+.myProjectsLookup {
+  background: #eee;
+  height: 100%;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  width: 220px;
+}
+
+.myProjectsLookup img {
+  cursor: pointer;
+}
+
+.myProjectsLookup input {
+  border: 1px solid #8c8c8c;
+  margin: 0;
+  padding: 2px;
+}
+
+.myProjectsLookup input:focus {
+  border: 1px solid #333;
+}
+
+.myProjectsLookup table {
+  width: 100%;
+}
+
+.myProjectsLookup .textBox {
+  width: 100px;
+}
+
+.myProjectsLookup .textBoxLarge {
+  width: 175px;
+}
+
+.myProjectsLookupAdv, .myProjectsLookupBasic {
+  height: 100%;
+  left: 4px;
+  position: absolute;
+  top: 33px;
+}
+
+.myProjectsLookupAdv .checkboxInput {
+  margin-right: 2px;
+  width: auto;
+}
+
+.myProjectsLookupAdv table {
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+}
+
+.myProjectsLookupAdv table td {
+  margin: 0;
+  padding: 0 2px 2px 0;
+  vertical-align: middle;
+}
+
+
+.myProjectsNameHeader {
+  background: url(../../plugins/productivity/icons/16/my-projects.png) 0 50% no-repeat;
+  font-size: 12px;
+  margin: 0;
+  margin-bottom: 2px;
+  padding: 0;
+  padding-left: 18px;
+}
+
+
+.myProjectsParticipantDropDown {
+  width: 225px;
+}
+
+
+.myProjectsPopupToggle {
+  background: #eee;
+  border: 1px solid #aaa;
+  margin: 8px 0 0 0;
+  padding: 0;
+}
+.myProjectsPopupToggle h3 {
+  background: #eee;
+  border: 0;
+  border-bottom: 1px solid #aaa;
+  margin: 0;
+  padding: 2px 0 0 2px;
+}
+.myProjectsPopupToggle .myProjectsToggle {
+  margin-right: 3px;
+  margin-top: 5px;
+}
+.myProjectsPopupToggleDiv {
+  background: #fff;
+  border: 0;
+  padding: 3px;
+}
+
+
+.myProjectsSelector {
+  background: url(../../plugins/productivity/images/project-selector.gif) 10px 50% no-repeat;
+  color: #236BBF;
+  cursor: pointer;
+  padding-left: 25px;
+  position: absolute;
+  right: 5px;
+  top: 1px;
+  white-space: nowrap;
+}
+.myProjectsSelector:hover {
+  background: url(../../plugins/productivity/images/project-selector-o.gif) 10px 50% no-repeat;
+  color: #C91E26;
+}
+
+
+.myProjectsTaskFormLink {
+  background: url(../../plugins/productivity/icons/16/task-form.png) 0 50% no-repeat;
+  display: none;
+  padding-left: 18px;
+}
+
+
+.myProjectsTasksPreview h1 {
+  background: url(../../plugins/productivity/icons/16/task.png) 0 50% no-repeat;
+  border-bottom: 1px solid #333;
+  font-size: 17px;
+  font-weight: bold;
+  line-height: 19px;
+  margin: 0;
+  margin-bottom: 10px;
+  padding: 5px 150px 5px 18px;
+}
+.myProjectsTasksPreview table {
+  border: 1px solid #333;
+  border-bottom: 0;
+  border-collapse: collapse;
+  border-right: 0;
+  margin: 0;
+  margin-bottom: 10px;
+  padding: 0;
+  width: 100%;
+}
+.myProjectsTasksPreview table td, .myProjectsTasksPreview table th {
+  border-bottom: 1px solid #333;
+  border-right: 1px solid #333;
+  padding: 3px;
+  vertical-align: top;
+}
+.myProjectsTasksPreview table th {
+  background-color: #eee;
+  white-space: nowrap;
+}
+.myProjectsTasksPreview table .myProjectsTasksPreviewPercentComplete {
+  font-weight: bold; 
+  white-space: nowrap; 
+  width: 110px;
+}
+.myProjectsTasksPreview table .myProjectsTasksPreviewPercentComplete img {
+  background-color: white; 
+  border: 1px #aaa solid; 
+  height: 14px; 
+  width: 50px;
+}
+.myProjectsTasksPreview table .myProjectsTasksPreviewPercentComplete .ontime {
+  background: #99ff66;
+}
+.myProjectsTasksPreview table .myProjectsTasksPreviewPercentComplete .late {
+  background: #ff3333;
+}
+.myProjectsTasksPreview table .myProjectsTasksPreviewPercentComplete .upcoming {
+  background: #ffff66;
+}
+.myProjectsTasksPreview table .myProjectsTasksPreviewPercentComplete span { 
+  margin-top: 1px;
+}
+.myProjectsTasksPreview table td .myProjectsTasksPreviewWait {
+  background: url(../../images/pixel.gif) 0 50% no-repeat;
+  font-size: 12px;
+  line-height: 16px;
+  margin: 5px;
+  padding: 0;
+  padding-left: 20px;
+  vertical-align: middle;
+}
+.myProjectsTasksPreview table td ul {
+  margin: 0;
+  margin-left: 15px;
+  padding: 0;
+}
+
+.myProjectsTasksPreviewPrint {
+	font-family: arial, helvetica, sans-serif;
+  font-size: 10pt;
+}
+.myProjectsTasksPreviewPrint .header {
+  border-bottom: 1px solid #333;
+  font-size: 26px;
+  font-weight: bold;
+  height: 34px;
+  line-height: 34px;
+  margin: 0;
+  margin-bottom: 10px;
+  padding: 0;
+  vertical-align: middle;
+}
+.myProjectsTasksPreviewPrint .header img {
+  float: left;
+  margin-right: 3px;
+}
+.myProjectsTasksPreviewPrint table {
+  border-color: #333;
+  margin: 0;
+  margin-bottom: 10px;
+  padding: 0;
+  width: 100%;
+}
+.myProjectsTasksPreviewPrint table td, .myProjectsTasksPreviewPrint table th {
+  padding: 3px;
+  vertical-align: top;
+}
+.myProjectsTasksPreviewPrint table th {
+  background-color: #eee;
+  white-space: nowrap;
+}
+
+.myProjectsMessagePrint {
+	font-family: arial, helvetica, sans-serif;
+  font-size: 10pt;
+}
+.myProjectsMessagePrint .commentsHeader {
+  font-size: 14px;
+  font-weight: bold;
+  height: 18px;
+  line-height: 18px;
+  margin: 0;
+  margin-bottom: 5px;
+  padding: 0;
+  vertical-align: middle;
+}
+.myProjectsMessagePrint .commentsHeader img {
+  float: left;
+  margin-right: 3px;
+}
+.myProjectsMessagePrint .header {
+  border-bottom: 1px solid #333;
+  font-size: 26px;
+  font-weight: bold;
+  height: 34px;
+  line-height: 34px;
+  margin: 0;
+  margin-bottom: 10px;
+  padding: 0;
+  vertical-align: middle;
+}
+.myProjectsMessagePrint .header img {
+  float: left;
+  margin-right: 3px;
+}
+.myProjectsMessagePrint h5 {
+  color: #aaa;
+  font-size: 10px;
+  margin: 0;
+  margin-bottom: 5px;
+  padding: 0;
+}
+
+
+.myProjectsToggle {
+  cursor: pointer;
+  float: right;
+  margin-right: 0;
+  margin-top: 3px;
+}
+
+
+.myProjectsWait {
+  background: url(../../images/pixel.gif) 0 50% no-repeat;
+  line-height: 16px;
+  padding: 0;
+  vertical-align: middle;
+}
+
+
+.myProjectParticipantField {
+  background: url(../../plugins/productivity/images/user-participant.png) 0 50% no-repeat;
+  padding-left: 18px;
+}
+.myProjectEmailParticipantField {
+  background: url(../../plugins/productivity/images/email-participant.png) 0 50% no-repeat;
+  padding-left: 18px;
+}
+.myProjectGroupParticipantField {
+  background: url(../../plugins/productivity/images/group-participant.png) 0 50% no-repeat;
+  padding-left: 18px;
+}
+
+
+.myProjectFilesLine, .myProjectMessagesLine, .myProjectTasksLine {
+  background: url(../../plugins/productivity/icons/16/file.png) 0 50% no-repeat;
+  line-height: 18px;
+  padding-left: 18px;
+  vertical-align: middle;
+}
+.myProjectMessagesLine {
+  background: url(../../plugins/productivity/icons/16/message.png) 0 50% no-repeat;
+}
+.myProjectTasksLine {
+  background: url(../../plugins/productivity/icons/16/task.png) 0 50% no-repeat;
+}

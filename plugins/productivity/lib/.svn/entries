@@ -1,0 +1,114 @@
+8
+
+dir
+0
+https://sierra-os.googlecode.com/svn/trunk/plugins/productivity/lib
+https://sierra-os.googlecode.com/svn
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+MyProjectsManager.php
+file
+
+
+
+add
+
+MyToolboxBuildTool.php
+file
+
+
+
+add
+
+MyToolboxArtifact.php
+file
+
+
+
+add
+
+MyProjectsTemplate.php
+file
+
+
+
+add
+
+MyToolboxProcess.php
+file
+
+
+
+add
+
+MyToolboxBuildToolAnt.php
+file
+
+
+
+add
+
+_my-toolbox-remote-process.php
+file
+
+
+
+add
+
+MyToolboxTrigger.php
+file
+
+
+
+add
+
+MyToolboxTriggerAlways.php
+file
+
+
+
+add
+
+MyToolboxTriggerImpl.php
+file
+
+
+
+add
+
+MyToolboxTriggerCron.php
+file
+
+
+
+add
+
+MyToolboxProject.php
+file
+
+
+
+add
+
+drawboard_1_52
+dir
+
+
+
+add
+
+MyToolboxManager.php
+file
+
+
+
+add
+

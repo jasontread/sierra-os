@@ -1,0 +1,101 @@
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/38/trunk/plugins/accessories/etc/l10n
+END
+relations-inverse-mappings.properties
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/!svn/ver/38/trunk/plugins/accessories/etc/l10n/relations-inverse-mappings.properties
+END
+my-contacts-contacts.html
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/!svn/ver/38/trunk/plugins/accessories/etc/l10n/my-contacts-contacts.html
+END
+my-contacts-groups.html
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/!svn/ver/38/trunk/plugins/accessories/etc/l10n/my-contacts-groups.html
+END
+im-protocols.properties
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/!svn/ver/38/trunk/plugins/accessories/etc/l10n/im-protocols.properties
+END
+contact-fields.properties
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/!svn/ver/38/trunk/plugins/accessories/etc/l10n/contact-fields.properties
+END
+relations.properties
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/!svn/ver/38/trunk/plugins/accessories/etc/l10n/relations.properties
+END
+accessories.properties
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/!svn/ver/38/trunk/plugins/accessories/etc/l10n/accessories.properties
+END
+url-types.properties
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/!svn/ver/38/trunk/plugins/accessories/etc/l10n/url-types.properties
+END
+contact-attr-types.properties
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/38/trunk/plugins/accessories/etc/l10n/contact-attr-types.properties
+END
+phone-types.properties
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/!svn/ver/38/trunk/plugins/accessories/etc/l10n/phone-types.properties
+END
+mycontacts-name-formats.properties
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/!svn/ver/38/trunk/plugins/accessories/etc/l10n/mycontacts-name-formats.properties
+END
+contact-phone-formats.properties
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/!svn/ver/38/trunk/plugins/accessories/etc/l10n/contact-phone-formats.properties
+END
+my-contacts-overview.html
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/!svn/ver/38/trunk/plugins/accessories/etc/l10n/my-contacts-overview.html
+END
+my-contacts-subscriptions.html
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/!svn/ver/38/trunk/plugins/accessories/etc/l10n/my-contacts-subscriptions.html
+END
+date-types.properties
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/!svn/ver/38/trunk/plugins/accessories/etc/l10n/date-types.properties
+END
+mycontacts-sort-by.properties
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/38/trunk/plugins/accessories/etc/l10n/mycontacts-sort-by.properties
+END

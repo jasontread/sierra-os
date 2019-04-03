@@ -1,0 +1,50 @@
+<div class="coreWikiHelp">
+<div class='vspace'></div><h2>Links to external sites (URLs)</h2>
+<p>Links to external sites simply begin with a prefix such as 'http:', 'ftp:', etc.  
+Thus <code class='escaped'>http://google.com/</code> and 
+<code class='escaped'>[[http://google.com/]]</code> both link to Google.  
+As with the above, an author can specify the link text by using the vertical 
+brace or arrow syntax, as in <code class='escaped'>[[http://google.com/ | Google]]</code> 
+and <code class='escaped'>[[Google -&gt; http://google.com]]</code>.
+</p>
+<div class='vspace'></div><h2>Links to intranet files</h2>
+<p>You can link to a file system by including the prefix 
+<code class='escaped'>'file:///'</code> (for Internet Explorer at least). So 
+<code class='escaped'>file:///S:\\ProjPlan.mpp</code> and 
+<code class='escaped'>[[Shared S drive-&gt;file:///S:\\]]</code> 
+are both valid links. On a Windows file system you may want to use network 
+locations (eg \\\\server1\\rootdirectory\\subdirectory) rather than drive letters 
+which may not be consistent across all users. 
+</p>
+<div class='vspace'></div><h2><a name='reference' id='reference'></a>Links as References</h2>
+<p>Links may also be specifed as <strong>References</strong>, so the target 
+appears as an anonymous <em>numeric</em> reference rather than a <em>textual</em> 
+reference. The following markup is provided to produce sequential reference 
+numbering within a <span class='wikiword'>PmWiki</span> page:
+</p>
+<p class='vspace'>Formatting the link as: <code class='escaped'>[[http://google.com |#]]</code> 
+produces: <a class='urllink' href='http://google.com' rel='nofollow'>[1]</a> as the link.
+</p>
+<p class='vspace'>Subsequent occurrence of the reference link format on the same 
+page will be incremented automatically as per the following example: Entering 
+<code class='escaped'>[[http://pmwiki.com |#]]</code> produces 
+<a class='urllink' href='http://pmwiki.com' rel='nofollow'>[2]</a>,
+and so on for further reference links.
+</p>
+<div class='vspace'></div><h2>Links that open a new browser window</h2>
+<p>To have a link open in another window, use <code class='escaped'>%newwin%</code>:
+</p>
+<div class='vspace'></div><ul><li><code class='escaped'>%newwin%  http://www.pmichaud.com</code> produces   <a target='_blank'  class='urllink' href='http://www.pmichaud.com' rel='nofollow'>http://www.pmichaud.com</a> 
+</li><li><code class='escaped'>%newwin% [[http://google.com/ | Google]]</code> produces  <a target='_blank'  class='urllink' href='http://google.com/' rel='nofollow'>Google</a>
+</li></ul><p class='vspace'>You can also specify that links should open in a new window via the <code>target</code> attribute:
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+%target=_blank% Any links on this line like http://www.pmichaud.com 
+will open in a new window.
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><p> Any links on this line like <a target='_blank'  class='urllink' href='http://www.pmichaud.com' rel='nofollow'>http://www.pmichaud.com</a> 
+will open in a new window.
+</p>
+</td></tr></table>
+</div>

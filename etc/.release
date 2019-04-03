@@ -1,0 +1,12 @@
+rm -f Makefile
+rm -f etc/sierra-os.spec
+rm -f etc/l10n/custom.properties
+rm -rf bin/quick-install.php
+rm -rf etc/plugins
+rm -rf lib/model
+rm -rf lib/plugins
+mv plugins/core ./
+rm -rf plugins/*
+mv core plugins/
+rm -rf www/html/plugins
+rm -rf www/tpl/plugins

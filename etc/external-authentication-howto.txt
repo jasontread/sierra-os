@@ -1,0 +1,36 @@
+SIERRA::OS may be used in conjunction with an external authentication system 
+such as an LDAP server. By enabling external authentication, the SIERRA::OS 
+user password field will not be used. To enable external authentication, you 
+will first need to add the external authenticator to app-config.xml as in:
+
+  <!-- byu ldap authenticator -->
+	<authenticator key="ldap" 
+								 cancel-tpl="messages.tpl?msg=text.cancel-login" 
+								 failure-log="ldap-failure.log" 
+								 logout-fwd-uri="http://www.lib.byu.edu" 
+								 logout-get-var="logout" 
+								 resource="text.login" 
+								 sys-err-tpl="messages.tpl?msg=error.sys" 
+								 type="SRA_LdapAuthenticator">
+		<param id="server" value="ldap.byu.edu" />
+		<param id="search" value="ou=people,o=byu.edu" />
+		<param id="secure" value="1" />
+		<param id="php::LDAP_OPT_PROTOCOL_VERSION::php" type="options" value="3" />
+		<param id="php::LDAP_OPT_REFERRALS::php" type="options" value="0" />
+	</authenticator>
+  
+Then, you will need to invoke that authenticator using a "restrict-access" 
+element also in app-config.xml as in:
+
+  <restrict-access authenticators="ldap" cond-var="user" cond-var-attr="externalAuth" match="*" />
+  
+Finally, you will need to use an app-config.xml parameter to tell the system to 
+display the external authenticator option o the user form:
+  
+  <!-- add ldap authentication option on the user form -->
+  <param id="useExternalAuth" type="sraos" value="1" />
+  
+and add a resource key to etc/l10n/custom.properties for that flag (this is 
+optional, if not specified a default label will be used):
+
+  OsUser.externalAuth=Authenticate using BYU LDAP?

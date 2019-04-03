@@ -1,0 +1,114 @@
+8
+
+dir
+0
+https://sierra-os.googlecode.com/svn/trunk/plugins/productivity/www/lib
+https://sierra-os.googlecode.com/svn
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+MyProjectsEditFile.js
+file
+
+
+
+add
+
+MyProjectsTaskForm.js
+file
+
+
+
+add
+
+MyProjectsEmailParticipant.js
+file
+
+
+
+add
+
+MyProjectsEditTask.js
+file
+
+
+
+add
+
+MyProjectsNew.js
+file
+
+
+
+add
+
+MyProjectsEditMessage.js
+file
+
+
+
+add
+
+MyProjectsView.js
+file
+
+
+
+add
+
+MyProjectsAddComment.js
+file
+
+
+
+add
+
+MyProjectsEditWhiteboard.js
+file
+
+
+
+add
+
+MyProjectsPermissionsForm.js
+file
+
+
+
+add
+
+MyProjects.js
+file
+
+
+
+add
+
+MyProjectsParticipantSelector.js
+file
+
+
+
+add
+
+MyProjectsFilePreview.js
+file
+
+
+
+add
+
+MyProjectsPreferences.js
+file
+
+
+
+add
+

@@ -1,0 +1,79 @@
+8
+
+dir
+0
+https://sierra-os.googlecode.com/svn/trunk/plugins/productivity/www
+https://sierra-os.googlecode.com/svn
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+ep
+dir
+
+
+
+add
+
+unsubscribe
+dir
+
+
+
+add
+
+images
+dir
+
+
+
+add
+
+drawboard
+dir
+
+
+
+add
+
+lib
+dir
+
+
+
+add
+
+rss
+dir
+
+
+
+add
+
+css
+dir
+
+
+
+add
+
+ical
+dir
+
+
+
+add
+
+icons
+dir
+
+
+
+add
+

@@ -1,0 +1,173 @@
+<div class="coreWikiHelp">
+<p><span class='wikiword'>PmWiki</span> has two types of table markup; the markup 
+described in this page is useful for creating tables with lots of small cells, 
+while <a class='wikilink' href='#' onclick="OS.getWindowInstance(this).getManager().displayArticle('tableDirectives')">table directive</a> 
+markups help with larger scale tables.
+</p>
+<p class='vspace'>Tables are created via use of the double pipe character: <code>||</code>. Lines beginning with this markup denote rows in a table; within such lines the double-pipe is used to delimit cells.  In the examples below a border is added for illustration (the default is no border).
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'><caption>Basic table</caption>
+      <tr><td class='markup1' valign='top'><pre>
+|| border=1
+|| cell 1 || cell 2 || cell 3 ||
+|| cell 1 || cell 2 || cell 3 ||</pre></td></tr><tr><td 
+        class='markup2' valign='top'><table border='1' ><tr ><td  align='center'>cell 1</td><td  align='center'>cell 2</td><td  align='center'>cell 3</td></tr>
+<tr ><td  align='center'>cell 1</td><td  align='center'>cell 2</td><td  align='center'>cell 3</td></tr>
+</table>
+</td></tr></table>
+<p class='vspace'>Header cells can be created by placing ! as the first character of a cell.  Note that these are <em>table headers</em>, not <em>headings</em>, so it doesn't extend to !!, !!!, etc.
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'><caption>Table headers</caption>
+      <tr><td class='markup1' valign='top'><pre>
+|| border=1
+||! cell 1 ||! cell 2 ||! cell 3 ||
+|| cell 1  ||  cell 2 ||  cell 3 ||</pre></td></tr><tr><td 
+        class='markup2' valign='top'><table border='1' ><tr ><th  align='center'>cell 1</th><th  align='center'>cell 2</th><th  align='center'>cell 3</th></tr>
+<tr ><td  align='center'>cell 1</td><td  align='center'>cell 2</td><td  align='center'>cell 3</td></tr>
+</table>
+</td></tr></table>
+<p class='vspace'>A table can have a caption, indicated by <code class='escaped'>||!caption!||</code>.  Any caption must appear prior to other rows of the table.
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'><caption>Table caption</caption>
+      <tr><td class='markup1' valign='top'><pre>
+|| border=1
+||! A special table !||
+||! cell 1 ||! cell 2 ||! cell 3 ||
+|| cell 1  ||  cell 2 ||  cell 3 ||</pre></td></tr><tr><td 
+        class='markup2' valign='top'><table border='1' ><caption  align='center'>A special table</caption>
+<tr ><th  align='center'>cell 1</th><th  align='center'>cell 2</th><th  align='center'>cell 3</th></tr>
+<tr ><td  align='center'>cell 1</td><td  align='center'>cell 2</td><td  align='center'>cell 3</td></tr>
+</table>
+</td></tr></table>
+<div class='vspace'></div><h2>Formatting cell contents</h2>
+<p>Cell contents may be aligned left, centered, or aligned right. 
+</p><ul><li>To left-align contents, place the cell contents next to the leading <code>||</code>.
+</li><li>To center contents, add a space before and after the cell contents.
+</li><li>To right-align contents, place a space before the cell contents and leave the cell contents next to the trailing <code>||</code>.
+</li></ul><div class='vspace'></div><table class='markup vert' align='center'><caption>Cell alignments</caption>
+      <tr><td class='markup1' valign='top'><pre>
+|| border=1 width=100%
+||!cell 1      ||! cell 2  ||!       cell 3||
+||left-aligned || centered || right-aligned||</pre></td></tr><tr><td 
+        class='markup2' valign='top'><table border='1' width='100%' ><tr ><th  align='left'>cell 1</th><th  align='center'>cell 2</th><th  align='right'>cell 3</th></tr>
+<tr ><td  align='left'>left-aligned</td><td  align='center'>centered</td><td  align='right'>right-aligned</td></tr>
+</table>
+</td></tr></table>
+<div class='vspace'></div><table class='markup vert' align='center'><caption>Default cell alignments</caption>
+      <tr><td class='markup1' valign='top'><pre>
+|| border=1 width=100%
+||!cell default||!cell left ||
+||default-aligned||left-aligned ||</pre></td></tr><tr><td 
+        class='markup2' valign='top'><table border='1' width='100%' ><tr ><th >cell default</th><th  align='left'>cell left</th></tr>
+<tr ><td >default-aligned</td><td  align='left'>left-aligned</td></tr>
+</table>
+</td></tr></table>
+<p class='vspace'>Note that header and detail cells have different default alignments.
+</p>
+<p class='vspace'>To get a cell to span multiple columns, follow the cell with empty cells.
+(At present there is no markup for spanning rows.)
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'><caption>Column spanning</caption>
+      <tr><td class='markup1' valign='top'><pre>
+|| border=1 width=100%
+|| |||| right column ||
+|| || middle column ||||
+|| left column ||||||
+|| left column || middle column || right column ||
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><table border='1' width='100%' ><tr ><td  colspan='2'>&nbsp;</td><td  align='center'>right column</td></tr>
+<tr ><td >&nbsp;</td><td  align='center' colspan='2'>middle column</td></tr>
+<tr ><td  align='center' colspan='3'>left column</td></tr>
+<tr ><td  align='center'>left column</td><td  align='center'>middle column</td><td  align='center'>right column</td></tr>
+</table>
+</td></tr></table>
+<div class='vspace'></div><h2>Table attributes</h2>
+<p>Any line that begins with <code class='escaped'>||</code> but doesn't have a closing <code class='escaped'>||</code> sets the <em>table attributes</em> for any tables that follow.  These attributes can control the size and position of the table, borders, background color, and cell spacing.  (In fact these are just standard HTML attributes that are placed in the &lt;table&gt; tag.)
+</p>
+<p class='vspace'>Use the <code class='escaped'>width=</code> attribute to set a table's width, using either a percentage value or an absolute size.
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'><caption>Table width</caption>
+      <tr><td class='markup1' valign='top'><pre>
+|| border=1 width=100% 
+|| cell 1 || cell 2 || cell 3 ||
+|| c1 || cellcellcellcell2 || cell 3 ||</pre></td></tr><tr><td 
+        class='markup2' valign='top'><table border='1' width='100%' ><tr ><td  align='center'>cell 1</td><td  align='center'>cell 2</td><td  align='center'>cell 3</td></tr>
+<tr ><td  align='center'>c1</td><td  align='center'>cellcellcellcell2</td><td  align='center'>cell 3</td></tr>
+</table>
+</td></tr></table>
+<p class='vspace'>The <code class='escaped'>border=</code> attribute sets the size of a table's borders.
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'><caption>Bordered and borderless tables</caption>
+      <tr><td class='markup1' valign='top'><pre>
+|| border=10 
+||!cell 1      ||! cell 2  ||!       cell 3||
+||left-aligned || centered || right-aligned||
+
+|| border=0
+||!cell 1      ||! cell 2  ||!       cell 3||
+||left-aligned || centered || right-aligned||</pre></td></tr><tr><td 
+        class='markup2' valign='top'><table border='10' ><tr ><th  align='left'>cell 1</th><th  align='center'>cell 2</th><th  align='right'>cell 3</th></tr>
+<tr ><td  align='left'>left-aligned</td><td  align='center'>centered</td><td  align='right'>right-aligned</td></tr>
+</table>
+<div class='vspace'></div>
+<table border='0' ><tr ><th  align='left'>cell 1</th><th  align='center'>cell 2</th><th  align='right'>cell 3</th></tr>
+<tr ><td  align='left'>left-aligned</td><td  align='center'>centered</td><td  align='right'>right-aligned</td></tr>
+</table>
+</td></tr></table>
+<p class='vspace'>Use <code class='escaped'>align=center</code>, <code class='escaped'>align=left</code>, and <code class='escaped'>align=right</code> to center, left, or right align a table.  Note that <code class='escaped'>align=left</code> and <code class='escaped'>align=right</code> create a <em>floating table</em>, such that text wraps around the table.
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'><caption>Table alignment</caption>
+      <tr><td class='markup1' valign='top'><pre>
+|| border=1 align=center
+||!cell 1      ||! cell 2  ||!       cell 3||
+||left-aligned || centered || right-aligned||
+
+|| border=1 align=left
+||!cell 1      ||! cell 2  ||!       cell 3||
+||left-aligned || centered || right-aligned||
+Notice how text wraps to the right of a table using "align=left".</pre></td></tr><tr><td 
+        class='markup2' valign='top'><table border='1' align='center' ><tr ><th  align='left'>cell 1</th><th  align='center'>cell 2</th><th  align='right'>cell 3</th></tr>
+<tr ><td  align='left'>left-aligned</td><td  align='center'>centered</td><td  align='right'>right-aligned</td></tr>
+</table>
+<div class='vspace'></div>
+<table border='1' align='left' ><tr ><th  align='left'>cell 1</th><th  align='center'>cell 2</th><th  align='right'>cell 3</th></tr>
+<tr ><td  align='left'>left-aligned</td><td  align='center'>centered</td><td  align='right'>right-aligned</td></tr>
+</table><p>Notice how text wraps to the right of a table using "align=left".
+</p>
+</td></tr></table>
+<p class='vspace'>Note: to get a table to align left (but not "float left") requires CSS, as in
+</p>
+<p class='vspace'><code class='escaped'>||style="margin-left:0px;"</code>
+</p>
+<p class='vspace'>The <code class='escaped'>bgcolor=</code> attribute sets the background color for a table.  At present there is no way to specify the color of individual rows or cells in this type of table.
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+|| border=1 align=center bgcolor=yellow
+||!cell 1      ||! cell 2  ||!       cell 3||
+||left-aligned || centered || right-aligned||</pre></td></tr><tr><td 
+        class='markup2' valign='top'><table border='1' align='center' bgcolor='yellow' ><tr ><th  align='left'>cell 1</th><th  align='center'>cell 2</th><th  align='right'>cell 3</th></tr>
+<tr ><td  align='left'>left-aligned</td><td  align='center'>centered</td><td  align='right'>right-aligned</td></tr>
+</table>
+</td></tr></table>
+<div class='vspace'></div><h2>Other examples</h2>
+<table class='markup vert' align='center'><caption>A more complex table</caption>
+      <tr><td class='markup1' valign='top'><pre>
+%define=sp padding-right:1em font-weight:bold%
+|| border=1
+|| [++Events Calendar++] ||||||||||
+|| '''May 2005''' || '''June 2005''' || '''July 2005''' || '''August 2005''' || '''September 2005''' ||
+||%sp%'''10'''%%6:30 - 8:30 Big Meeting\\\\\\
+%sp%'''17'''%%7:00 - 8:30 Bigger Meeting\\\\\\
+%sp%'''24'''%%7:00 - 8:30 Biggest Meeting|| || || || ||
+|| '''October 2005''' || '''November 2005''' || '''December 2005''' || '''January 2006''' || '''February 2006''' ||
+|| || || || || ||
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><table border='1' ><tr ><td  align='center' colspan='5'><span style='font-size:144%'>Events Calendar</span></td></tr>
+<tr ><td  align='center'><strong>May 2005</strong></td><td  align='center'><strong>June 2005</strong></td><td  align='center'><strong>July 2005</strong></td><td  align='center'><strong>August 2005</strong></td><td  align='center'><strong>September 2005</strong></td></tr>
+<tr ><td ><span  style='padding-right: 1em; font-weight: bold;'><strong>10</strong></span>6:30 - 8:30 Big Meeting<br /><br /><span  style='padding-right: 1em; font-weight: bold;'><strong>17</strong></span>7:00 - 8:30 Bigger Meeting<br /><br /><span  style='padding-right: 1em; font-weight: bold;'><strong>24</strong></span>7:00 - 8:30 Biggest Meeting</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td></tr>
+<tr ><td  align='center'><strong>October 2005</strong></td><td  align='center'><strong>November 2005</strong></td><td  align='center'><strong>December 2005</strong></td><td  align='center'><strong>January 2006</strong></td><td  align='center'><strong>February 2006</strong></td></tr>
+<tr ><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td></tr>
+</table>
+</td></tr></table>
+</div>

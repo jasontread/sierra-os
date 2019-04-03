@@ -1,0 +1,8 @@
+# use this file (custom.properties) to define custom strings used in your 
+# implementation of sierra-os. these values in this file will override those 
+# in the app.properties file. app.properties should not be modified
+
+# application title
+# sraos=My Web OS
+# abbreviated application title (used in user menu 'About...')
+# sraos.short=WebOS

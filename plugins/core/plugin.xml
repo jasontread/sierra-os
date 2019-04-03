@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE plugin PUBLIC "-//SIERRA//DTD SRAOS PLUGIN 1.0//EN" 
+  "http://sierra-os.googlecode.com/svn/trunk/etc/plugin_1_0.dtd">
+<plugin models="core-model.xml">
+  <application key="HelpManual" about="HelpManual.about" help-topic="HelpManualHelp" hidden="1" icon="help-manual.png" main-window="HelpManualWin" multi-instance="1">
+    <window key="HelpManualWin" default-center="1" default-height="300" default-maximize="0" default-width="500" manager="Core_HelpManager" scroll="0" tpl="help-manual.tpl">
+      <button key="hm_btn_back" enabled="0" icon="back.png" method="back" resource="text.back" target="win" />
+      <button key="hm_btn_fwd" divider-right="1" enabled="0" icon="forward.png" method="forward" resource="text.forward" target="win" />
+      <button key="hm_btn_print" enabled="0" icon="fileprint.png" method="print" resource="text.print" target="win" />
+      <menu key="hm_file" resource="text.file">
+        <menu key="hm_print" enabled="0" icon="fileprint.png" method="print" resource="text.print" target="win" />
+      </menu>
+      <menu key="hm_history" resource="text.history">
+        <menu key="hm_back" enabled="0" icon="back.png" method="back" resource="text.back" target="win" />
+        <menu key="hm_fwd" enabled="0" icon="forward.png" method="forward" resource="text.forward" target="win" />
+      </menu>
+      <menu key="hm_help" resource="text.help">
+        <menu key="hm_helpContents" icon="help.png" method="displayHelp" resource="text.helpContents" target="app" />
+      </menu>
+      <resize-component key="className: 'core_helpContent'" />
+      <resize-component key="className: 'core_helpTopics'" width="0" />
+    </window>
+  </application>
+  <application key="Search" about="Search.about" hidden="1" icon="search.png" main-window="SearchWin" manager="Core_Search" multi-instance="1" preferences="SearchPreferences" search-responder="1">
+    <window key="SearchWin" default-center="1" default-height="300" default-maximize="0" default-width="500" manager="Core_SearchWin" scroll="0" tpl="search.tpl" />
+    <window key="SearchPreferences" center-opener="1" default-height="325" default-maximize="0" default-width="400" fixed-size="1" icon="search.png" manager="Core_SearchPreferences" modal-app="1" multi-instance="1" resource="Search.preferences" status-bar="0" tpl="search-preferences.tpl" />
+  </application>
+  <application key="Terminal" about="Terminal.about" group="accessories" icon="terminal.png" main-window="TerminalWin" multi-instance="1" preferences="TerminalPreferences">
+    <window key="TerminalWin" default-height="300" default-maximize="0" default-width="450" manager="Core_Terminal" tpl="terminal.tpl" />
+    <window key="TerminalPreferences" center-opener="1" default-height="250" default-maximize="0" default-width="300" fixed-size="1" modal-app="1" resource="Terminal.preferences" status-bar="0" tpl="terminal-preferences.tpl" />
+  </application>
+  <!-- cli applications -->
+  <application key="alias" about="core.alias" cli="1" cli-ret-api="core.alias.ret" cli-ret-type="hash|boolean" manager="Core_Cmds_alias">
+    <cli-arg key="alias" boolean="0" freeform="1" match-name="^[a-zA-Z]{1,255}$" match-value="^.{1,255}$" multiple="1" resource="core.alias.alias" />
+    <cli-arg key="commit" abbr="c" resource="core.commit" />
+    <cli-arg key="print" abbr="p" default="1" resource="core.alias.print" />
+    <cli-arg key="share" abbr="s" resource="core.share" />
+  </application>
+  <application key="cd" about="core.cd" cli="1" cli-async="1" cli-ret-api="core.cd.ret" cli-ret-type="Core_VfsNode|String" manager="Core_Cmds_cd">
+    <cli-arg key="dir" freeform="1" resource="core.cd.dir" />
+  </application>
+  <application key="chgrp" about="core.chgrp" cli="1" cli-async="1" cli-ret-api="core.ret" cli-ret-type="hash" manager="Core_Cmds_owner">
+    <cli-arg key="changes" abbr="c" default="0" resource="core.changes" />
+    <cli-arg key="quiet" abbr="q" default="0" resource="core.quiet" />
+    <cli-arg key="verbose" abbr="v" default="0" resource="core.verbose" />
+    <cli-arg key="recursive" abbr="R" default="0" resource="core.recursive" />
+    <cli-arg key="preserve-root" default="0" resource="core.preserveRoot" />
+    <cli-arg key="max-recursion" abbr="M" boolean="0" match-value="^[1-9][0-9]*$" resource="core.maxRecursion" />
+    <cli-arg key="stop-dirs" abbr="L" default="0" resource="core.stopDirs" />
+    <cli-arg key="traverse-links" abbr="H" default="0" resource="core.traverseLinks" />
+    <cli-arg key="group" freeform="1" required="1" resource="core.chgrp.group" />
+    <cli-arg key="file" freeform="1" multiple="1" required="1" resource="core.file" />
+  </application>
+  <application key="chmod" about="core.chmod" cli="1" cli-async="1" cli-ret-api="core.ret" cli-ret-type="hash" manager="Core_Cmds_chmod">
+    <cli-arg key="changes" abbr="c" default="0" resource="core.changes" />
+    <cli-arg key="quiet" abbr="q" default="0" resource="core.quiet" />
+    <cli-arg key="verbose" abbr="v" default="0" resource="core.verbose" />
+    <cli-arg key="recursive" abbr="R" default="0" resource="core.recursive" />
+    <cli-arg key="preserve-root" default="0" resource="core.preserveRoot" />
+    <cli-arg key="max-recursion" abbr="M" boolean="0" match-value="^[1-9][0-9]*$" resource="core.maxRecursion" />
+    <cli-arg key="stop-dirs" abbr="L" default="0" resource="core.stopDirs" />
+    <cli-arg key="traverse-links" abbr="H" default="0" resource="core.traverseLinks" />
+    <cli-arg key="mode" freeform="1" match-name="^([0-7]{1,5}|([u|g|o|a]+[\+|=|\-]{1}[r|w|x|s|t|i|h]+))$" resource="core.mode" />
+    <cli-arg key="file" freeform="1" multiple="1" required="1" resource="core.file" />
+  </application>
+  <application key="chown" about="core.chown" cli="1" cli-async="1" cli-ret-api="core.ret" cli-ret-type="hash" manager="Core_Cmds_owner">
+    <cli-arg key="changes" abbr="c" default="0" resource="core.changes" />
+    <cli-arg key="quiet" abbr="q" default="0" resource="core.quiet" />
+    <cli-arg key="verbose" abbr="v" default="0" resource="core.verbose" />
+    <cli-arg key="recursive" abbr="R" default="0" resource="core.recursive" />
+    <cli-arg key="preserve-root" default="0" resource="core.preserveRoot" />
+    <cli-arg key="max-recursion" abbr="M" boolean="0" match-value="^[1-9][0-9]*$" resource="core.maxRecursion" />
+    <cli-arg key="stop-dirs" abbr="L" default="0" resource="core.stopDirs" />
+    <cli-arg key="traverse-links" abbr="H" default="0" resource="core.traverseLinks" />
+    <cli-arg key="user" freeform="1" required="1" resource="core.chown.user" />
+    <cli-arg key="file" freeform="1" multiple="1" required="1" resource="core.file" />
+  </application>
+  <application key="clear" about="core.clear" cli="1" cli-ret-api="text.na" cli-ret-type="true" manager="Core_Cmds_clear" />
+  <application key="date" about="core.date" cli="1" cli-ret-api="core.date.ret" cli-ret-type="String" manager="Core_Cmds_date" />
+  <application key="echo" about="core.echo" cli="1" cli-args-api="core.echo.args" cli-ret-api="core.echo.ret" cli-ret-type="String" manager="Core_Cmds_echo" />
+  <application key="exec" about="core.exec" cli="1" cli-async="1" manager="Core_Cmds_exec">
+    <cli-arg key="clear" abbr="c" resource="core.exec.clear" />
+    <cli-arg key="app" abbr="a" resource="core.exec.app" />
+    <cli-arg key="method" abbr="m" boolean="0" resource="core.exec.method" />
+    <cli-arg key="cmd" freeform="1" required="1" resource="core.exec.cmd" />
+    <cli-arg key="args" freeform="1" resource="core.exec.args" />
+  </application>
+  <application key="cp" about="core.cp" cli="1" cli-async="1" cli-ret-api="core.ret" cli-ret-type="hash" manager="Core_Cmds_cp">
+    <cli-arg key="force" abbr="f" default="0" resource="core.cp.force" />
+    <cli-arg key="interactive" abbr="i" default="1" resource="core.cp.interactive" />
+    <cli-arg key="link" abbr="l" default="0" resource="core.cp.link" />
+    <cli-arg key="preserve" abbr="p" boolean="0" default="mode,ownership" match-value="^[all|none]|[[mode|ownership|timestamps|created|updated][,[mode|ownership|timestamps|created|updated]]*]$" resource="core.cp.preserve" />
+    <cli-arg key="update" abbr="u" default="0" resource="core.cp.update" />
+    <cli-arg key="quiet" abbr="q" default="0" resource="core.quiet" />
+    <cli-arg key="verbose" abbr="v" default="0" resource="core.verbose" />
+    <cli-arg key="recursive" abbr="r" default="0" resource="core.recursive" />
+    <cli-arg key="max-recursion" abbr="M" boolean="0" match-value="^[1-9][0-9]*$" resource="core.maxRecursion" />
+    <cli-arg key="stop-dirs" abbr="L" default="0" resource="core.stopDirs" />
+    <cli-arg key="traverse-links" abbr="H" default="0" resource="core.traverseLinks" />
+    <cli-arg key="source" freeform="1" multiple="1" required="1" resource="core.cp.source" />
+    <cli-arg key="dest" freeform="1" required="1" resource="core.cp.dest" />
+  </application>
+  <application key="exit" about="core.exit" cli="1" cli-ret-api="text.na" cli-ret-type="true" manager="Core_Cmds_exit" />
+  <application key="export" about="core.export" cli="1" cli-ret-api="core.export.ret" cli-ret-type="hash|boolean" manager="Core_Cmds_export">
+    <cli-arg key="name" boolean="0" freeform="1" match-name="^[a-zA-Z0-9]{1,255}$" match-value="^.{1,255}$" multiple="1" resource="core.export.name" />
+    <cli-arg key="commit" abbr="c" resource="core.commit" />
+    <cli-arg key="print" abbr="p" default="1" resource="core.export.print" />
+    <cli-arg key="share" abbr="s" resource="core.share" />
+  </application>
+  <application key="help" about="core.help" cli="1" manager="Core_Cmds_help">
+    <cli-arg key="plugin" freeform="1" required="1" resource="core.help.plugin" />
+    <cli-arg key="topic" freeform="1" required="1" resource="core.help.topic" />
+  </application>
+  <application key="history" about="core.history" cli="1" cli-ret-api="core.history.ret" cli-ret-type="mixed" manager="Core_Cmds_history">
+    <cli-arg key="buffer" abbr="b" boolean="0" match-value="^[1-9][0-9]{1,3}$" resource="core.history.buffer" />
+    <cli-arg key="info" abbr="i" resource="core.history.info" />
+    <cli-arg key="reset" abbr="r" resource="core.history.reset" />
+    <cli-arg key="share" abbr="s" resource="core.history.share" />
+  </application>
+  <application key="kill" about="core.kill" cli="1" manager="Core_Cmds_kill">
+    <cli-arg key="pid" freeform="1" match-name="^[1-9][0-9]*$" multiple="1" required="1" resource="core.kill.pid" />
+  </application>
+  <application key="man" about="core.man" cli="1" cli-ret-api="core.man.ret" cli-ret-type="String" manager="Core_Cmds_man">
+    <cli-arg key="app" freeform="1" required="1" resource="core.man.app" />
+  </application>
+  <application key="ps" about="core.ps" cli="1" cli-ret-api="core.ps.ret" cli-ret-type="Array" manager="Core_Cmds_ps" />
+  <application key="pwd" about="core.pwd" cli="1" cli-ret-api="core.pwd.ret" cli-ret-type="Core_VfsNode" manager="Core_Cmds_pwd" />
+  <application key="run" about="core.run" cli="1" cli-async="1" cli-ret-api="core.run.ret" cli-ret-type="mixed" manager="Core_Cmds_run">
+    <cli-arg key="file" freeform="1" required="1" resource="core.run.file" />
+    <cli-arg key="args" boolean="0" freeform="1" multiple="1" resource="core.run.args" />
+  </application>
+  <application key="umask" about="core.umask" cli="1" cli-ret-api="core.umask.ret" cli-ret-type="String|boolean" manager="Core_Cmds_umask">
+    <cli-arg key="print" abbr="p" default="1" resource="core.umask.print" />
+    <cli-arg key="symbolic" abbr="S" resource="core.umask.symbolic" />
+    <cli-arg key="mode" freeform="1" match-name="^([0-7]{1,5}|([u|g|o|a]+[\+|=|\-]{1}[r|w|x|s|t|i|h]+))$" multiple="1" resource="core.mode" />
+    <cli-arg key="commit" abbr="c" resource="core.commit" />
+    <cli-arg key="reset" abbr="r" resource="core.umask.reset" />
+    <cli-arg key="share" abbr="s" resource="core.share" />
+  </application>
+  <application key="unalias" about="core.unalias" cli="1" manager="Core_Cmds_unalias">
+    <cli-arg key="alias" freeform="1" match-name="^[a-zA-Z]{1,255}$" multiple="1" resource="core.unalias.alias" />
+    <cli-arg key="commit" abbr="c" resource="core.commit" />
+    <cli-arg key="reset" abbr="r" resource="core.unalias.reset" />
+    <cli-arg key="share" abbr="s" resource="core.share" />
+  </application>
+  <application key="unset" about="core.unset" cli="1" manager="Core_Cmds_unset">
+    <cli-arg key="name" freeform="1" match-name="^[a-zA-Z0-9]{1,255}$" multiple="1" resource="core.unset.name" />
+    <cli-arg key="commit" abbr="c" resource="core.commit" />
+    <cli-arg key="reset" abbr="r" resource="core.unset.reset" />
+    <cli-arg key="share" abbr="s" resource="core.share" />
+  </application>
+  <application key="whoami" about="core.whoami" cli="1" cli-ret-api="core.whoami.ret" cli-ret-type="String" manager="Core_Cmds_whoami" />
+  
+  <help-topic key="HelpManualHelp">
+    <help-topic key="overview" content="help-manual-overview.html" resource="HelpManualHelp.overview" />
+    <help-topic key="navigation" content="help-manual-navigation.html" resource="HelpManualHelp.navigation" />
+  </help-topic>
+  <help-topic key="WikiHelp">
+    <help-topic key="wikiOverview" content="wiki-overview.html" icon="wiki.png" resource="WikiHelp.overview" />
+    <help-topic key="beginnerTopics" content="wiki-beginner-topics.html" resource="WikiHelp.beginnerTopics">
+      <help-topic key="basicEditing" content="wiki-basic-editing.html" resource="WikiHelp.basicEditing" />
+      <help-topic key="links" content="wiki-links.html" resource="WikiHelp.links" />
+      <help-topic key="images" content="wiki-images.html" resource="WikiHelp.images" />
+      <help-topic key="textFormattingRules" content="wiki-text-formatting-rules.html" resource="WikiHelp.textFormattingRules">
+        <help-topic key="paragraphs" content="wiki-paragraphs.html" resource="WikiHelp.paragraphs" />
+        <help-topic key="indentedParagraphs" content="wiki-indented-paragraphs.html" resource="WikiHelp.indentedParagraphs" />
+        <help-topic key="bulletsAndLists" content="wiki-bullets-and-lists.html" resource="WikiHelp.bulletsAndLists">
+          <help-topic key="listStyles" content="wiki-list-styles.html" resource="WikiHelp.listStyles" />
+        </help-topic>
+        <help-topic key="definitionLists" content="wiki-definition-lists.html" resource="WikiHelp.definitionLists" />
+        <help-topic key="whitespaceRules" content="wiki-whitespace-rules.html" resource="WikiHelp.whitespaceRules" />
+        <help-topic key="horizontalLine" content="wiki-horizontal-line.html" resource="WikiHelp.horizontalLine" />
+        <help-topic key="emphasis" content="wiki-emphasis.html" resource="WikiHelp.emphasis" />
+        <help-topic key="references" content="wiki-references.html" resource="WikiHelp.references" />
+        <help-topic key="headings" content="wiki-headings.html" resource="WikiHelp.headings" />
+        <help-topic key="escapeSequence" content="wiki-escape-sequence.html" resource="WikiHelp.escapeSequence" />
+        <help-topic key="specialCharacters" content="wiki-special-characters.html" resource="WikiHelp.specialCharacters">
+          <help-topic key="wikiCharacters" content="wiki-characters.html" resource="WikiHelp.wikiCharacters" />
+          <help-topic key="specialCharactersList" content="wiki-special-characters-list.html" resource="WikiHelp.specialCharactersList" />
+        </help-topic>
+        <help-topic key="tablesBasic" content="wiki-tables-basic.html" resource="WikiHelp.tables" />
+      </help-topic>
+    </help-topic>
+    <help-topic key="intermediateTopics" content="wiki-intermediate-topics.html" resource="WikiHelp.intermediateTopics">
+      <help-topic key="tables" content="wiki-tables.html" resource="WikiHelp.tables" />
+      <help-topic key="tableDirectives" content="wiki-table-directives.html" resource="WikiHelp.tableDirectives" />
+      <help-topic key="wikiStyles" content="wiki-styles.html" resource="WikiHelp.wikiStyles">
+        <help-topic key="wikiStyleExamples" content="wiki-style-examples.html" resource="WikiHelp.wikiStyleExamples" />
+        <help-topic key="wikiStyleColors" content="wiki-style-colors.html" resource="WikiHelp.wikiStyleColors" />
+      </help-topic>
+      <help-topic key="variables" content="wiki-variables.html" resource="WikiHelp.variables" />
+      <help-topic key="markupMasterIndex" content="wiki-markup-master-index.html" resource="WikiHelp.markupMasterIndex" />
+      <help-topic key="markupTricks" content="wiki-markup-tricks.html" resource="WikiHelp.markupTricks" />
+    </help-topic>
+  </help-topic>
+  <window key="AboutOs" default-center="1" default-height="400" default-maximize="0" default-width="400" icon="blank.gif" resource="text.null" save-state="0" status-bar="0" tpl="msgbox.tpl" />
+  <window key="DateChooser" center-opener="1" default-height="150" default-maximize="0" default-width="300" fixed-size="1" manager="Core_DateChooser" modal-win="1" multi-instance="1" icon="date.png" resource="DateChooser" save-state="0" status-bar="0" tpl="date-chooser.tpl" />
+  <window key="MsgBox" default-center="1" default-height="250" default-maximize="0" default-width="400" icon="blank.gif" multi-instance="1" resource="text.null" save-state="0" status-bar="0" tpl="msgbox.tpl" />
+  <window key="MsgBoxModal" center-opener="1" default-height="250" default-maximize="0" default-width="400" icon="blank.gif" modal-app="1" multi-instance="1" resource="text.null" save-state="0" status-bar="0" tpl="msgbox.tpl" />
+  <window key="SpellCheckWin" center-opener="1" default-height="280" default-maximize="0" default-width="300" fixed-size="1" manager="Core_SpellCheckManager" modal-win="1" multi-instance="1" icon="spellcheck.png" resource="SpellChecker" save-state="0" tpl="spell-checker.tpl" />
+  <window key="UserGroupSelector" center-opener="1" default-height="300" default-maximize="0" default-width="300" manager="Core_UserGroupSelector" modal-app="1" multi-instance="1" icon="accounts.png" resource="UserGroupSelector.userGroupHeader" save-state="0" status-bar="0" tpl="user-group-selector.tpl" />
+  <window key="WikiSandbox" center-opener="1" default-height="300" default-maximize="0" default-width="400" fixed-size="1" manager="Core_WikiSandbox" multi-instance="1" icon="wiki.png" resource="WikiSandbox" save-state="0" status-bar="0" tpl="wiki-sandbox.tpl" />
+</plugin>
+

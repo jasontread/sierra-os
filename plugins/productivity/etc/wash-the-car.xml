@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE my-projects PUBLIC "-//SIERRA//DTD SRAOS Productivity::MyProjects//EN" 
+  "http://sierra-os.googlecode.com/svn/trunk/etc/plugins/productivity/etc/my-projects.dtd">
+<!-- 
+This file contains a sample project template defining the general structure for 
+washing a car. It is provided to demonstrate how to configure and use project 
+templates in the MyProjects application provided by this plugin. To enable this 
+project in MyProjects add the following xml element to app-config:
+
+<param id="plugins/productivity/etc/wash-the-car.xml" type="my-projects" />
+-->
+
+<my-projects resources="etc/plugins/productivity/l10n/wash-the-car">
+  <template key="washTheCar" complete-confirm="WashTheCar.confirm" due-date="+0-+0-+3" icon="plugins/productivity/icons/${size}/wash-the-car.png" name="WashTheCar.name" summary="WashTheCar.summary" type="WashTheCar">
+    
+    <file key="fileNewOdyssey" category="fileCatPics" name="WashTheCar.fileNewOdyssey" path="plugins/productivity/etc/clean-car-picture.png" />
+    <file key="fileTaskList" category="fileCatMisc" name="WashTheCar.fileTaskList" path="plugins/productivity/etc/wash-the-car.pdf" />
+    <file key="fileTaskListDoc" category="fileCatMisc" name="WashTheCar.fileTaskListDoc" path="plugins/productivity/etc/wash-the-car.doc" />
+    <file key="fileTaskListHtml" category="fileCatMisc" name="WashTheCar.fileTaskListHtml" path="plugins/productivity/etc/wash-the-car.html" />
+    <file-category key="fileCatMisc" name="WashTheCar.fileCatMisc" />
+    <file-category key="fileCatPics" name="WashTheCar.fileCatPics" />
+    
+    <message key="msgBuyNew" message="WashTheCar.msgBuyNew" title="WashTheCar.msgBuyNewTitle" category="msgCatRantings" files="fileNewOdyssey" />
+    <message-category key="msgCatRantings" name="WashTheCar.msgCatRantings" />
+    
+    <task key="taskPrepare" description="WashTheCar.taskPrepare" due-date="+0-+0-+1" list="1" title="WashTheCar.taskPrepareTitle">
+      <task key="taskPrepareArmorAll" complete-confirm="WashTheCar.taskPrepareArmorAll.confirm" title="WashTheCar.taskPrepareArmorAll" />
+      <task key="taskPrepareHose" title="WashTheCar.taskPrepareHose" />
+      <task key="taskPrepareSoap" title="WashTheCar.taskPrepareSoap" />
+      <task key="taskPrepareSponge" title="WashTheCar.taskPrepareSponge" />
+      <task key="taskPrepareTowels" title="WashTheCar.taskPrepareTowels" />
+      <task key="taskPrepareVacuum" title="WashTheCar.taskPrepareVacuum" />
+      <task key="taskPrepareWindex" title="WashTheCar.taskPrepareWindex" />
+    </task>
+    
+    <task key="taskExterior" list="1" predecessor="taskPrepare" due-date="+0-+0-+2" title="WashTheCar.taskExterior">
+      <task key="taskExteriorWash" title="WashTheCar.taskExteriorWash" />
+      <task key="taskExteriorDry" title="WashTheCar.taskExteriorDry" />
+      <task key="taskExteriorTires" title="WashTheCar.taskExteriorTires" />
+      <task key="taskExteriorWindows" title="WashTheCar.taskExteriorWindows" />
+    </task>
+    
+    <task key="taskInterior" list="1" predecessor="taskPrepare" due-date="+0-+0-+2" title="WashTheCar.taskInterior">
+      <task key="taskInteriorVacuum" title="WashTheCar.taskInteriorVacuum" />
+      <task key="taskInteriorArmorAll" title="WashTheCar.taskInteriorArmorAll" />
+    </task>
+    
+    <whiteboard key="wbSample" init-bg-path="plugins/productivity/etc/clean-car-picture.png" title="WashTheCar.wbSample" />
+  </template>
+</my-projects>

@@ -1,0 +1,143 @@
+<div class="coreWikiHelp">
+<p class='vspace'>There are four directives for table processing.  All must be at the beginning of a line to have any effect.
+</p>
+<div class='vspace'></div><h3><code class='escaped'>(:table (attr...):)</code></h3>
+<p>Generates a new HTML &lt;table&gt; tag with the attributes provided in <em>attr...</em>.
+Closes the previous table, if any.
+Valid attributes and values are:
+</p><ul><li>border <em>(a positive integer)</em>
+</li><li>bordercolor <em>(a color name or hex number; doesn't display in all browsers)</em>
+</li><li>cellspacing <em>(a positive integer indicating the space between cells)</em>
+</li><li>cellpadding <em>(a positive integer indicating the interior border of a cell)</em>
+</li><li>width <em>(a positive integer or percent)</em>
+</li><li>bgcolor <em>(a color name or hex number)</em>
+</li><li>align <em>(left, center or right)</em>
+</li><li>summary <em>(does not display; used primarily to help visually disabled people navigate)</em>
+</li></ul><div class='vspace'></div><h3><code class='escaped'>(:cell (attr...):)</code></h3>
+<p>Generates a new cell with the attributes given by <em>attr...</em>.  
+Closes the previous table cell, if any.
+In HTML, this creates a new "&lt;td attr&gt;" tag (and possibly &lt;table&gt;, &lt;tr&gt;, and &lt;/td&gt; tags if they are needed to produce a valid HTML table). 
+</p>
+<div class='vspace'></div><div class='indent'><span  style='font-style: italic; color: green;'> <strong>Note:</strong> Placing a space after the cell markup "(:cell:) " causes subsequent text on that line to be treated as preformatted text.</span>
+</div><p class='vspace'>Valid attributes and values are:
+</p><ul><li>align <em>(left, center or right)</em>
+</li><li>valign <em>(top, middle or bottom)</em>
+</li><li>colspan <em>(a positive integer)</em>
+</li><li>rowspan <em>(a positive integer)</em>
+</li><li>bgcolor <em>(a color name or hex number)</em>
+</li><li>width <em>(a positive integer or percent)</em>
+</li></ul><div class='vspace'></div><h3><code class='escaped'>(:cellnr (attr..):)</code></h3>
+<p>Generates a new cell at the beginning of the next row.
+Closes the previous table cell, if any.
+In HTML, this creates a "&lt;tr&gt;&lt;td attr&gt;" tag, and possibly &lt;table&gt;, &lt;/td&gt;, and &lt;/tr&gt; tags if they are needed for valid HTML.
+Valid attributes and values are:
+</p><ul><li>align <em>(left, center or right)</em>
+</li><li>valign <em>(top, middle or bottom)</em>
+</li><li>colspan <em>(a positive integer)</em>
+</li><li>rowspan <em>(a positive integer)</em>
+</li><li>bgcolor <em>(a color name or hex number)</em>
+</li><li>width <em>(a positive integer or percent)</em>
+</li></ul><div class='vspace'></div><h3><code class='escaped'>(:tableend:)</code></h3>
+<p>Closes the previous table cell and closes off any table.  Generates &lt;/td&gt;, &lt;/tr&gt;, and &lt;/table&gt; tags as needed.
+</p>
+<div class='vspace'></div><h2>Notes</h2>
+<p>For the table, cell, and cellnr tags the author can specify any attributes that would be valid in the HTML &lt;table&gt; or &lt;td&gt; tags.  Thus you can specify rowspan, colspan, etc. arguments to build arbitrary tables.  However, it's not possible to nest a <code class='escaped'>(:table:)</code> inside of a <code class='escaped'>(:cell:)</code> or <code class='escaped'>(:cellnr:)</code> -- the next paragraph explains why.
+</p>
+<p class='vspace'>Many are likely to ask why we didn't just use the standard HTML table markup (&lt;table&gt;, &lt;tr&gt;, &lt;td&gt;, &lt;th&gt;) instead of creating a new markup, and allowing nested tables as a result.  There are two answers:  first, the HTML table markup is very ugly for naive authors, and second, it'd be very easy for authors to create tables that are incorrect HTML and that display incorrectly (or not at all) on some browsers.  Even seasoned web professionals sometimes get the table markup wrong, so it's a bit unrealistic to expect the average author to always get it right, or to be able to read arbitrary HTML table markup that someone else has created.
+</p>
+<div class='vspace'></div><div class='indent'><span  style='color: green;'> <em>Common comment:</em> Surely, the average or naive author would not be writing HTML directly, but using a tool, such as FrontPage, or even MSWord, to generate the HTML. This would be a lot simpler than learning even the simplest <span class='wikiword'>PmWiki</span> markups.</span>
+<div class='vspace'></div></div><div class='indent'><span  style='color: green;'> <em>Pm's Response:</em> And once the HTML has been generated and posted, how is someone else going to edit or modify the table if they don't have the original FrontPage or MSWord file used to create it?  Remember that we're talking about <em>collaborative</em> authoring.  The HTML that those packages generate is among the hardest to read and edit of all!</span>
+</div><p class='vspace'>It's difficult to write the code needed to make <span class='wikiword'>PmWiki</span> understand and fix arbitrary table markup, so <span class='wikiword'>PmWiki</span> uses the simplified version above.  Still, this version is able to handle most table requirements (with the possible exception of nested tables).
+</p>
+<p class='vspace'>And, this is not to say that nested HTML tables are impossible in <span class='wikiword'>PmWiki</span> --they just can't be easily created by wiki authors using the default wiki markup.
+</p>
+<div class='vspace'></div><h3>Example 1.  A table using table directive markup.</h3>
+<table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+(:table border=1 cellpadding=5 cellspacing=0:)
+(:cell:) a1
+(:cell:) b1
+(:cell:) c1
+(:cell:) d1
+(:cellnr:) a2
+(:cell:) b2
+(:cell:) c2
+(:cell:) d2
+(:tableend:)
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><table border='1' cellpadding='5' cellspacing='0' ><tr><td  valign='top'> a1
+</td><td  valign='top'> b1
+</td><td  valign='top'> c1
+</td><td  valign='top'> d1
+</td></tr><tr><td  valign='top'> a2
+</td><td  valign='top'> b2
+</td><td  valign='top'> c2
+</td><td  valign='top'> d2
+</td></tr></table>
+</td></tr></table>
+<p class='vspace'>In HTML, this is the same as
+</p>
+<div class='vspace'></div><div class='indent'><pre class='escaped'>
+&lt;table border='1' cellpadding='5' cellspacing='0'&gt;
+  &lt;tr&gt;
+    &lt;td&gt;a1&lt;/td&gt;
+    &lt;td&gt;b1&lt;/td&gt;
+    &lt;td&gt;c1&lt;/td&gt;
+    &lt;td&gt;d1&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;a2&lt;/td&gt;
+    &lt;td&gt;b2&lt;/td&gt;
+    &lt;td&gt;c2&lt;/td&gt;
+    &lt;td&gt;d2&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+</pre>
+</div><div class='vspace'></div><hr />
+<h3>Floating Table with bulleted navigation list</h3>
+<table border='1' width='30%' align='right' bgcolor='#cccccc' cellspacing='0' ><tr><td  valign='top'>
+<p><strong>Navigation Links</strong>
+</p></td></tr><tr><td  valign='top'>
+<ul><li><a class='wikilink' href='http://www.pmwiki.org/wiki/PmWiki/Tables'>Tables</a>
+</li><li><a class='selflink' href='http://www.pmwiki.org/wiki/PmWiki/TableDirectives'>Table directives</a>
+</li></ul></td></tr></table>
+<p class='vspace'>What if you wanted to create a nice little table like a table of contents in a page like this? In this example, the table is floating right and contains some links in a bulleted list. This is a nice demonstration of how it's possible to build a little table of contents in the page, which might navigate to other pages just within the same wiki group. Note that having a bulleted list <em>won't work in a ordinary table</em> - it only works inside an  table created with table directives such as the example code used here.
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>(:table border=1 width=30% align=right bgcolor=#cccc99 cellspacing=0 :)
+(:cellnr:)
+'''Navigation Links'''
+(:cellnr:)
+*[[Tables]]
+*[[Table directives]]
+(:tableend:)
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><table border='1' width='30%' align='right' bgcolor='#cccc99' cellspacing='0' ><tr><td  valign='top'>
+<p><strong>Navigation Links</strong>
+</p></td></tr><tr><td  valign='top'>
+<ul><li><a class='wikilink' href='#' onclick="OS.getWindowInstance(this).getManager().displayArticle('tables')">Tables</a>
+</li><li><a class='selflink' href='#' onclick="OS.getWindowInstance(this).getManager().displayArticle('tableDirectives')">Table directives</a>
+</li></ul></td></tr></table>
+</td></tr></table>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>(:table border=1 width=30% align=right bgcolor=#cccc99 cellspacing=0 :)
+(:cellnr colspan=2 align=center:)
+'''Navigation Links'''
+(:cellnr align=center:)
+[[Tables]]
+(:cell align=center:)
+[[Table directives]]
+(:tableend:)
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><table border='1' width='30%' align='right' bgcolor='#cccc99' cellspacing='0' ><tr><td colspan='2' align='center'  valign='top'>
+<p><strong>Navigation Links</strong>
+</p></td></tr><tr><td align='center'  valign='top'>
+<p><a class='wikilink' href='#' onclick="OS.getWindowInstance(this).getManager().displayArticle('tables')">Tables</a>
+</p></td><td align='center'  valign='top'>
+<p><a class='selflink' href='#' onclick="OS.getWindowInstance(this).getManager().displayArticle('tableDirectives')">Table directives</a>
+</p></td></tr></table>
+</td></tr></table>
+<p class='vspace'>Looking at the markup here, notice that we have used a #cccc99 hex color for the table background. Also, the <code class='escaped'>(:cellnr:)</code> markup creates a new row, a new cell and closes the row at the end.
+</p>
+
+</div>

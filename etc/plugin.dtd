@@ -1,0 +1,1297 @@
+<!--
+ +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+
+ | SIERRA::OS : PHP RIA Framework      http://code.google.com/p/sierra-os  |
+ +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+
+ | Copyright 2005 Jason Read                                               |
+ |                                                                         |
+ | Licensed under the Apache License, Version 2.0 (the "License");         |
+ | you may not use this file except in compliance with the License.        |
+ | You may obtain a copy of the License at                                 |
+ |                                                                         |
+ |     http://www.apache.org/licenses/LICENSE-2.0                          |
+ |                                                                         |
+ | Unless required by applicable law or agreed to in writing, software     |
+ | distributed under the License is distributed on an "AS IS" BASIS,       |
+ | WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.|
+ | See the License for the specific language governing permissions and     |
+ | limitations under the License.                                          |
+ +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+
+-->
+
+
+<!--
+XML DTD for a SIERRA::OS plugin, Version 1.0
+
+This file defines a SIERRA::OS plugin. Each plugin can be deployed by simply 
+adding the plugin as a sub-directory in sraos/etc/plugins/. Each plugin 
+directory MUST use the following structure (where "plugin-dir" is the name of 
+the directory and also the plugin's unique identifier):
+
+plugin-dir/plugin.xml          a definition of the plugin based on this dtd
+plugin-dir/etc                 contains any configuration related files 
+                               including entity model xml files that should be 
+                               initialized when this plugin is used. the 
+                               entities contained within these files should be 
+                               configured using the "entities" element
+plugin-dir/etc/l10n            contains properties and other localized files. 
+                               any plugin.properties will automatically be 
+                               included (according to the browser's locale 
+                               preferences) in the strings available to any 
+                               plugin application or window manager using the 
+                               getString method. strings for entity models used 
+                               by the plugin must all be contained within a 
+                               single properties file in this directory where 
+                               the name of that file is the same as the name of 
+                               the plugin
+plugin-dir/lib                 contains any php source files used by this 
+                               plugin. any .php files in this directory will 
+                               automatically be included when the os is loaded
+                               UNLESS the file name is prefixed with an 
+                               underscore (_). php functions and classes should 
+                               be prefixed by the plugin's identifier
+plugin-dir/tpl                 smarty templates used by this plugin
+plugin-dir/www                 web visible files for this plugin. these can be 
+                               access using the uri: /plugins/plugin-dir/. a 
+                               symbolic link between this directory and that uri 
+                               path will automatically be created when the 
+                               plugin is first installed
+plugin-dir/www/css             css files that should be included when a window 
+                               from the plugin is displayed. all .css files in 
+                               this directory will be automatically included in 
+                               the xhtml for the os when this plugin is used. 
+                               all css element names should be prefixed by the 
+                               plugin's identifier
+plugin-dir/www/lib             javascript source files that should be included 
+                               when a component of the plugin is displayed. 
+                               these should contain class definitions for the 
+                               managers used by the plugin. all .js files in 
+                               this directory will automatically included in the 
+                               xhtml for the os when this plugin is used. all 
+                               javascript classes and global methods should be 
+                               prefixed by the plugin's identifier
+plugin-dir/www/images          contains any images used by the plugin
+plugin-dir/www/icons           contains the icons used by the plugin. every icon
+                               MUST have a 16, 32, and 64 pixel version
+plugin-dir/www/icons/16        contains the 16 pixel icons used by the plugin
+plugin-dir/www/icons/32        contains the 32 pixel icons used by the plugin
+plugin-dir/www/icons/64        contains the 64 pixel icons used by the plugin
+
+
+To support validation of your plugin xml file, include the following
+DOCTYPE element at the beginning (after the "xml" declaration):
+
+<!DOCTYPE plugin PUBLIC "-//SIERRA//DTD SRAOS PLUGIN 1.0//EN" 
+  "http://sierra-os.googlecode.com/svn/trunk/etc/plugin_1_0.dtd">
+-->
+
+
+<!--
+ +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+
+ |                        Defined Types                                 |
+ +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+
+-->
+
+
+<!-- 
+A "Boolean" represents a boolean attribute values
+-->
+<!ENTITY % Boolean "(1|0)">
+
+
+<!-- 
+"Icon" is the name of an icon image. each plugin archive MUST contain an 
+images/icons directory with 3 sub-directories: 16, 32, 64 containing 16, 32, and 
+64 pixel versions of every icon used by the plugin
+-->
+<!ENTITY % Icon "CDATA">
+
+
+<!-- 
+An "Resource" is the key in the application SRA_ResourceBundle that contains a 
+language specific string
+-->
+<!ENTITY % Resource "CDATA">
+
+
+<!--
+ +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+
+ |                        Top Level Elements                            |
+ +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+
+-->
+
+<!--
+The "plugin" element is the root element of a SIERRA :: OS plugin definition. It 
+contains sub-elements to define the applications provided by this plugin, the 
+entities supported, and the help topics
+                  
+dependencies      space separated list of other plugins that this plugin is 
+                  dependent upon. the plugin will be unavailable and an error 
+                  logged if these dependencies are not met. plugins are uniquely 
+                  identified by their directory name in the sraos/etc/plugins 
+                  directory
+                  
+models            space separated list of entity-model xml file names located in 
+                  the plugin etc/ directory that should be initialized and 
+                  maintained when this plugin is present. changes to these files 
+                  will automatically reload the corresponding classes in that 
+                  entity model. be careful of entity naming conflicts between 
+                  plugins. to avoid this, prefix your entities with the plugin 
+                  identifier. all plugin models will be imported into the base 
+                  os model (app-model.xml) for processing. thus different 
+                  plugins can references entities from other plugins. also, the 
+                  global views and error messages defined in the base os model 
+                  can be re-used throughout the plugin models. individual plugin 
+                  models cannot import other models. any entity models used by 
+                  the plugin, must use a properties file located in the plugin 
+                  l10n directory under the same name as the plugin. the plugin 
+                  entity models will NOT be automatically loaded unless the 
+                  base etc/app-model.xml file is dirty (just save that file to 
+                  reload plugin entity models)
+                  
+resource          the label for this plugin. this should reference a string 
+                  value in one of the resources properties files. If not 
+                  specified the plugin identifier will be used
+
+
+Used in:	NA
+-->
+<!ELEMENT plugin (application*, entity*, entity-action*, help-topic*, window*)>
+<!ATTLIST plugin	dependencies  		 CDATA			 #IMPLIED>
+<!ATTLIST plugin	models        		 CDATA			 #IMPLIED>
+<!ATTLIST plugin	resource			     %Resource;  #IMPLIED>
+
+
+<!--
+The "application" element defines an individual application within a plugin. if 
+a menu is specified for the application, the menu items specified will be 
+displayed in the implicit application menu. this is the menu that is displayed 
+on the left side of the menu using the name of the application. it includes 
+about, preferences and quit menu items. if menu is specified, those items will 
+appear above the implicit application menu items followed by a divider. menus 
+are not used in cli apps (see cli attribute below)
+
+key       				The unique identifier for this application. this value must be 
+                  unique within the plugin definition
+                  
+about             the content to display in the about dialog for this 
+                  application. this may be any of the following values:
+                   1. a plugin resource bundle string identifier
+                   2. a platform relative localized file name. for example, if 
+                      this value is "myhelp.html", the help topic content should 
+                      exist in a file "plugin-dir/etc/l10n/myhelp.html". 
+                      additional country/language specific help files may also 
+                      be specified using the convention described in the 
+                      following api documentation:
+                      sierra/lib/util/l10n/SRA_ResourceBundle::findLocaleFile()
+                  all content should be html formatted including line breaks. 
+                  this is REQUIRED if the application contains any windows
+                  
+cli               whether or not this application should be run via the core 
+                  Terminal as a command line (non-GUI) application. cli 
+                  applications are different from gui applications in the 
+                  following ways:
+                  
+                  1) the application identifier (key) should be unique globally 
+                  accross ALL plugins. this is the value through which this 
+                  application can be run from the Terminal. if duplicate names 
+                  exist a naming conflict error will be displayed when 
+                  executing that command and the full application identifier
+                  ([plugin id]:[app id]) will be necessary in order to execute 
+                  that application
+                  
+                  2) Unless otherwise specified, cli applications are hidden 
+                  (see 'hidden' attribute below). 
+                  
+                  3) if an icon is not specified the Terminal icon will be used
+                  
+                  4) 'main-window' is ignored
+                  
+                  5) 'about' is accessible via the 'man' command. the about 
+                  content can be html formatted
+                  
+                  6) 'help-topic' is accessible via the 'help' command
+                  
+                  7) 'multi-instance' is always true
+                  
+                  8) 'preferences' is ignored
+                  
+                  9) 'search-responder' is ignored
+                  
+                  10) 'service' is ignored
+                  
+                  11) onFocus and onUnFocus SRAOS_ApplicationManager methods are 
+                  never invoked
+                  
+                  12) cli application instances are terminated when a workspace 
+                  toggle or OS reload occurs, so the SRAOS_ApplicationManager 
+                  getState, onWorkspaceToggleOff, and onWorkspaceToggleOn 
+                  methods are never invoked. when a cli application (or any 
+                  other application) is terminated in this way, the onTerminate 
+                  method (with force set to true) should handle any necessary 
+                  clean up activities
+                  
+                  13) the params parameter of the init method will contain a 
+                  hash of all of the current environment variables as well as 
+                  the following initialization arguments:
+                   'args' :     the full command line arguments string
+                   'argv':      an array containing the command line arguments. 
+                                arguments according to the cli-arg sub-element 
+                                definitions
+                   'argc':      the # arguments in argv
+                   'term':      a reference to the Terminal manager instance
+                                (Core_Terminal). this object will contain the 
+                                methods 'echo', 'exec', 'getHistory', 'getNode' 
+                                'getEnv', 'getTerminal' and other methods which 
+                                may be used within the cli application instance. 
+                                for more information on these methods, see the 
+                                api documentation provided in Core_Terminal.js.
+                                If the application is being executed outside of 
+                                a Terminal shell, the 'isHidden' method of term
+                                will return true
+                                
+                  14) all cli applications MUST specify a manager class and 
+                  this class must additionally contain the 'run' method. 
+                  
+                  15) application menus and windows are ignored
+                  
+cli-args-api      for cli apps. if the standard argument model is not used using 
+                  cli-arg sub-elements, and this application accepts arguments, 
+                  this should reference a string to display in the options 
+                  section of the man entry for this application. if both this 
+                  attribute and cli-arg sub-elements are specified, this value 
+                  will be displayed at the top of the options section of the man 
+                  entry
+                  
+cli-async         whether or not this cli application executes asynchronously. 
+                  the return value for asynchronous cli applications will not be
+                  immediately available when invoked using OS.exec. for more 
+                  details, see the api for OS.exec
+                  
+cli-ret-api       the resource bundle string to use to describe the return value 
+                  for cli applications. if not specified, the default api will 
+                  be used: "true on success, false otherwise"
+                  
+cli-ret-type      the return data type for cli applications. by default, the 
+                  return type is 'boolean'. the return value of a cli execution 
+                  should be set to the corresponding 
+                  SRAOS_ApplicationManager.results instance attribute for that
+                  application. this value is used when for cli applications 
+                  invoked using the SRAOS.exec method
+                  
+group             resource identifier for this application's group. grouped 
+                  applications are not displayed immediately in the applications 
+                  popup menu, but instead are grouped into a sub-menu item of 
+                  that menu with other applications sharing the same group
+
+help-topic        reference (help-topic key) to the help topic that should be 
+                  displayed for help related information about this application
+                  
+hidden            whether or not this application is hidden. hidden applications 
+                  do not appear in the dock applications launcher or process 
+                  list and may be used as background services for example
+                  
+icon              the icon to use to represent this application graphically. 
+                  every application MUST have a corresponding icon. all windows 
+                  displayed by this application will automatically utilize this 
+                  icon unless an overriding icon is specified
+                  
+main-window       a reference to a window contained in the enclosing windows 
+                  element that is the main window for this application
+                  
+manager           the name of the javascript class (within one of the plugin 
+                  javascript source files) that should be instantiated and 
+                  assigned to the SRAOS_Application instance _manager variable. 
+                  one instance of this manager will exist per instance of this 
+                  application. for more information, review the api 
+                  documentation in www/html/lib/SRAOS_ApplicationManager.js
+                  
+multi-instance    whether or not this application supports multiple concurrent 
+                  instances. by default, an application only supports a single 
+                  concurrent instance. change this attribute to true to allow 
+                  multiple instances of this application to be active 
+                  concurrently within a given os instance
+                  
+perma-docked      whether or not this application should have a permanent dock 
+                  icon. permanent dock icons cannot be moved or removed from the 
+                  user's dock. they are placed first in the dock starting from 
+                  the left side after the workspace selector
+                  
+preferences       an optional application window identifier that should be 
+                  displayed for this application's preferences panel. the 
+                  preferences panel is opened when the user selects preferences 
+                  from the application menu (the left most menu). if not 
+                  specified, preferences will not be displayed in the 
+                  application menu
+                  
+resource          the label for this application. this should reference a string 
+                  value in one of the resources properties files. this value 
+                  will be displayed in the applications directory and other 
+                  locations referencing this application. If not specified, the 
+                  "key" will be used
+                  
+search-responder  should this application respond to user searches? user 
+                  searches are performed utilizing the search icon in the upper 
+                  right corner of the OS workspace. generally, only 1 
+                  application within a sierra::os instance should respond to 
+                  user searches. search-responder applications must be 
+                  multi-instance. each time a search is performed a new instance 
+                  of the application will be launched with the initialization 
+                  parameter "search" set to the search string entered by the 
+                  user, and an optional "entities" parameter set to an array of 
+                  entity identifiers specifying which entities should be 
+                  included in the search
+                  
+service           services are applications that are started when the user first
+                  logs in and run in the background throughout the duration of 
+                  the user's session. services can have windows but NOT a 
+                  main-window, so when the service is started,a window will not 
+                  appear. all of the same manager callbacks apply to an service 
+                  application. only 1 instance of a service will be run accross 
+                  multiple workspaces. services are hidden in the applications 
+                  menu. services cannot be multi-instance. they will also appear
+                  in the "About" process list where the user will be able to 
+                  terminate them unless the service is "hidden"
+
+
+Used in:	plugin
+-->
+<!ELEMENT application (cli-arg*, menu?, window*)>
+<!ATTLIST application	key			  		 ID  			   #REQUIRED>
+<!ATTLIST application	about		  		 CDATA		   #IMPLIED>
+<!ATTLIST application	cli            %Boolean;   "0">
+<!ATTLIST application	cli-args-api   CDATA	     #IMPLIED>
+<!ATTLIST application	cli-async      %Boolean;   "0">
+<!ATTLIST application	cli-ret-api    CDATA	     "text.cliReturnDefault">
+<!ATTLIST application	cli-ret-type   CDATA	     "boolean">
+<!ATTLIST application	group		  		 CDATA		   #IMPLIED>
+<!ATTLIST application	help-topic		 IDREF       #IMPLIED>
+<!ATTLIST application	hidden         %Boolean;   "0">
+<!ATTLIST application	icon     	     %Icon;      #IMPLIED>
+<!ATTLIST application	main-window		 IDREF       #IMPLIED>
+<!ATTLIST application	manager   		 CDATA       #IMPLIED>
+<!ATTLIST application	multi-instance %Boolean;   "0">
+<!ATTLIST application	perma-docked   %Boolean;   "0">
+<!ATTLIST application	preferences    CDATA       #IMPLIED>
+<!ATTLIST application	resource			 %Resource;  #IMPLIED>
+<!ATTLIST application	search-responder %Boolean; "0">
+<!ATTLIST application	service        %Boolean;   "0">
+
+
+<!--
+The "cli-arg" element defines a single command line argument. it is used in 
+cli applications (see 'cli' attribute definition in the 'application' element 
+above). it facilitates argument validation, parsing and description within the 
+core Terminal application. each argument is a name/value pair. the value may be 
+either boolean or a text value. the arguments specified by the user when the cli 
+application is executed will be passed to that application in the params.argv 
+hash: sudocode- 'argv[[cli-arg key]] = [value]' (value will be true or false 
+only for boolean arguments. arguments are provided by the user in either a short 
+or long form where the long form uses the format: '[2 dashes][key][=value]' and the 
+short form uses the format '-[abbr-char][ value]'. the only exception to this 
+rule is for freeform arguments (see 'freeform' attribute definition below). 
+[value] is only required for non-boolean arguments.
+
+only the arguments explicitely specified for a cli application will be passed to 
+that application in params.argv. however, params.args will also be provided. 
+thus, to implement an alternative argument model, cli-arg elements should not be 
+specified
+
+key       				the identifier for this argument. this will be the value by 
+                  which is may be referenced in the argv hash. it should not 
+                  contain any non-alphanumeric characters other than a dash
+                  
+abbr              a single alphanumeric character abbreviation for this argument. 
+                  this is the value by which the argument may be specified by 
+                  the user in short form as described above. as with the 'key', 
+                  it MUST be unique within the enclosing application. abbr IS 
+                  case-sensitive. if not specified, the short form will not be 
+                  allowed for this argument
+                  
+boolean           whether or not this is a boolean argument. the [value] portion
+                  of boolean arguments is not required. if a boolean argument 
+                  is specified in either short or long form without a value it 
+                  will be assumed to be true. if a value is specified, only 0 
+                  will be considered non-true
+                  
+default           the default value for this argument. if true, this argument 
+                  will ALWAYS be included in argv with either this value if it 
+                  was not provided by the user, or the user provided value 
+                  otherwise. if false, this argument will ONLY be included in 
+                  argv if it was provided by the user. set to 0 for false, 1 for 
+                  true for boolean arguments
+                  
+freeform          whether or not this argument is freeform. freeform arguments 
+                  are those not entered using the short or long form specified
+                  above and whose hash index is defined by the user. a cli 
+                  application can only have 1 freeform argument. free form 
+                  arguments use the format: '[name][=value]'. the value for 
+                  a freeform argument in argv will be a name/value pair in the 
+                  form of a hash: sudocode - 'argv[[key]]={[name]: [value]}'. 
+                  if 'multiple' is true, the value will be an array of 
+                  name/value pairs: 
+                  [{[name1]: [value1], ..., [nameN]: [valueN]"]. to support 
+                  non-boolean freeform argument values 'boolean' MUST be changed 
+                  to true. boolean freeform values will be converted to arrays 
+                  of keys when multiple is true, and a single string when it is 
+                  not
+                  
+match-name        a regular expression to apply against the name values for 
+                  freeform arguments. not applicable to non-freeform arguments. 
+                  if a name value fails to match this regex the application will
+                  not be executed and a relevant error message will be displayed
+                  
+match-value       a regular expression to apply against the value(s) provided 
+                  for this argument. if a value fails to match this regex the 
+                  application will not be executed and a relevant error message 
+                  will be displayed. ignored for 'boolean' arguments. if not 
+                  specified for non-boolean arguments, any value will be allowed
+                  
+multiple          can the user provide multiple instances of this argument? if 
+                  true, the value in the argv hash will always be an array. 
+                  only non-boolean and freeform arguments support this option
+                  
+required          is this argument required for execution of the application
+
+resource          the resource to use to describe this argument in the 
+                  application man entry
+
+Used in:	application
+-->
+<!ELEMENT cli-arg EMPTY>
+<!ATTLIST cli-arg	key			  		     CDATA		   #REQUIRED>
+<!ATTLIST cli-arg	abbr          		 CDATA       #IMPLIED>
+<!ATTLIST cli-arg	boolean       		 %Boolean;   "1">
+<!ATTLIST cli-arg	default        		 CDATA       #IMPLIED>
+<!ATTLIST cli-arg	freeform       		 %Boolean;   "0">
+<!ATTLIST cli-arg	match-name     		 CDATA       #IMPLIED>
+<!ATTLIST cli-arg	match-value    		 CDATA       #IMPLIED>
+<!ATTLIST cli-arg	multiple       		 %Boolean;   "0">
+<!ATTLIST cli-arg	required       		 %Boolean;   "0">
+<!ATTLIST cli-arg	resource      		 CDATA       #REQUIRED>
+
+
+<!--
+The "window" element defines a single window. windows are used to display data 
+and dialog to the user including modal popup alerts or confirmations, open 
+dialog windows, and primary application windows
+
+key       				The unique identifier for this window. this value must be 
+                  unique within the plugin definition
+                  
+can-close         whether or not the close icon/window option should be 
+                  available for this window. the default is true
+                  
+can-minimize      whether or not this window can be minimized. by default, a 
+                  window can always be minimized unless it is modal
+                  
+center-opener     whether or not the window should be opened centered over 
+                  whatever window was focused when it was opened. this value 
+                  overrides default-center. if there is no windows active when 
+                  this window is opened, it will be centered in the workspace
+                  
+close-confirm     specifying this parameter if you wish to prompt the user if 
+                  they attempt to close the window after making modifications to 
+                  the form fields contained within it. when the window is first 
+                  initialized (and after each time SRAOS_Window.resetDirtyFlags 
+                  is invoked), the state of its fields is records. if they user 
+                  makes any changes to those fields, the window will become 
+                  "dirty" as verified by the SRAOS_Window.isDirty method. If 
+                  the user attempts to close the window in a dirty state, and 
+                  this attribute has been specified, the user will be prompted 
+                  by the resource string represented by this attribute. if they 
+                  confirm the close, the window will be closed, otherwise it 
+                  will stay open
+                  
+default-center		whether or not the window should be centered in the os window
+                  by default
+                  
+default-height		the default height of this window when it is first opened
+
+default-maximize  whether or not the window should be maximized in the os window
+                  by default. if true, default-height, width, x and y will not 
+                  be applicable
+                  
+default-width 		the default width of this window when it is first opened
+
+default-x     		the default x position of this window when it is first opened
+
+default-y     		the default y position of this window when it is first opened
+
+fixed-position    whether or not this window is in a fixed position. fixed 
+                  position windows cannot be moved within the workspace
+
+fixed-size    		whether or not this window is a fixed size. if true, it will 
+                  not be resizable from the initial size set by default-height 
+                  and default-width (or default-maximize) and max/min 
+                  height/width will not be applicable and the resize image will 
+                  not be displayed for the window
+                  
+help-topic        reference (help-topic key) to the help topic that should be 
+                  displayed for help related information about this window
+                  
+icon              optional icon to use to represent this window (if different 
+                  from the application icon)
+                  
+manager           the name of the javascript class (within one of the plugin 
+                  javascript source files) that should be instantiated and 
+                  assigned to the SRAOS_Window instance _manager variable. one 
+                  instance of this manager will exist per instance of this 
+                  window. for more information, review the api documentation in 
+                  www/html/lib/SRAOS_WindowManager.js
+                  
+multi-instance    whether or not this window supports multiple concurrent 
+                  instances within a single application (or OS for non 
+                  application windows) instance. by default, a window only 
+                  supports a single concurrent instance
+                  
+max-height		    the maximum height of this window. if not specified, the 
+                  window will be resizable up to the full height of the os 
+                  window
+                  
+max-width 		    the maximum width of this window. if not specified, the 
+                  window will be resizable up to the full width of the os 
+                  window
+                  
+modal     		    modal windows are windows that must be responded to before any 
+                  further activity can take place. they are displayed over top 
+                  of any other window and cannot lose focus until they are 
+                  closed. a good use for modal windows if for popup alerts or 
+                  confirmation dialogs. modal windows are referred to as 
+                  blocking windows. MODAL WINDOWS are NOT preserved when an OS 
+                  workspace state is saved
+                  
+modal-app         similiar to "model" but blocking applies only to the current 
+                  focused application (presumably the application that opened 
+                  this window). if no application instances currently exit, no 
+                  blocking will be performed. if an application window is 
+                  "modal-app", then all other application windows (besides the 
+                  modal window) will be blocked
+                  
+modal-win         identical to "modal-app" but applies to the current focused 
+                  window only (other windows in the same application instance 
+                  will not be blocked)
+                  
+resource          the label for this window. this should reference a string 
+                  value in one of the resources properties files. this value 
+                  will be displayed in the window title bar by default. If not 
+                  specified, the invoking application resource will be used
+                  
+save-state        whether or not the state of this window should be saved from 
+                  1 instance to another. this will include 'maximized', 
+                  'centered', 'x', 'y', 'height', and 'width' state information
+                  
+scroll        		whether or not the canvas area of this window should be 
+                  scrollable. by default the canvas is scrollable. if not 
+                  scrollable, elements that do not fit within the canvas will be 
+                  hidden from view
+                  
+status-bar     		whether or not to display the status bar in this window. the 
+                  status bar is a small area at the bottom of the window where 
+                  window specific messages can be displayed
+                  
+tpl               the smarty template that should be used for the initial canvas 
+                  content. when window instances are created, any "id" and "for"
+                  attributes in the template xhtml will be prefixed with the 
+                  unique window identifier to avoid duplicate IDs in the dom. 
+                  keep this in mind when attempting to access elements in the 
+                  DOM for your window instance. use the win.getDivId() method to 
+                  obtain the window identifier
+
+Used in:	plugin, application
+-->
+<!ELEMENT window (button*, menu*, resize-component*)>
+<!ATTLIST window	key			  		     ID  			   #REQUIRED>
+<!ATTLIST window	can-close     		 %Boolean;   "1">
+<!ATTLIST window	can-minimize  		 %Boolean;   "1">
+<!ATTLIST window	center-opener 		 %Boolean;   "0">
+<!ATTLIST window  close-confirm			 %Resource;  #IMPLIED>
+<!ATTLIST window	default-center		 %Boolean;   "0">
+<!ATTLIST window	default-height		 CDATA       #IMPLIED>
+<!ATTLIST window	default-maximize	 %Boolean;   "1">
+<!ATTLIST window	default-width 		 CDATA       #IMPLIED>
+<!ATTLIST window	default-x 		     CDATA       "0">
+<!ATTLIST window	default-y 		     CDATA       "0">
+<!ATTLIST window	fixed-position     %Boolean;   "0">
+<!ATTLIST window	fixed-size 		     %Boolean;   "0">
+<!ATTLIST window	help-topic 		     IDREF       #IMPLIED>
+<!ATTLIST window	icon      		     %Icon;      #IMPLIED>
+<!ATTLIST window	manager    		     CDATA       #IMPLIED>
+<!ATTLIST window	multi-instance     %Boolean;   "0">
+<!ATTLIST window	max-height		     CDATA       #IMPLIED>
+<!ATTLIST window	max-width     		 CDATA       #IMPLIED>
+<!ATTLIST window	min-height		     CDATA       "200">
+<!ATTLIST window	min-width     		 CDATA       "300">
+<!ATTLIST window	modal     		     %Boolean;   "0">
+<!ATTLIST window	modal-app   	     %Boolean;   "0">
+<!ATTLIST window	modal-win   	     %Boolean;   "0">
+<!ATTLIST window  resource     			 %Resource;  #IMPLIED>
+<!ATTLIST window	save-state 		     %Boolean;   "1">
+<!ATTLIST window	scroll    		     %Boolean;   "1">
+<!ATTLIST window	status-bar         %Boolean;   "1">
+<!ATTLIST window	tpl                CDATA       #REQUIRED>
+
+
+<!--
+A "button" defines a single toolbar button and its corresponding click action. 
+Whenever a window is created these toolbar buttons will automatically be 
+displayed in the toolbar. the param sub-elements represent 0..* key/value pairs 
+that should be used as method invocation parameters. they will be passed to the 
+method in the form of an associative array. The nested server-side 
+constraint-group determines whether or not this button is visible. It is 
+evaluated only once when the OS is loaded.
+
+key       				The unique identifier for this button. this value must be 
+                  unique within the plugin definition
+                  
+divider-left      whether or not to display a divider to the left of this button
+
+divider-right     whether or not to display a divider to the right of this 
+                  button
+                  
+enabled           whether or not this button item is enabled by default. this 
+                  can be changed using the SRAOS_WindowInstance enable/disableButton 
+                  methods. 
+                  
+icon              the icon to use for this button
+                  
+method            the name of the method to invoke when this button is clicked. 
+                  this will be either an instance method of "target" or a 
+                  global/static method
+
+resource          the label for this button. this should reference a string 
+                  in the plugin's resources properties files. this value will be 
+                  used as the alt and title attributes of the rendered image 
+                  (displays a tooltip when the button is hovered over). If not 
+                  specified, the "key" will be used
+                  
+target            the target object containing the "method" to invoke. possible 
+                  targets include "os" for the SRAOS object, "app" for the 
+                  invoking application SRAOS_ApplicationInstance object, or 
+                  "win" for the invoking window SRAOS_WindowInstance object. if 
+                  not specified, the "method" will be assumed to be global or 
+                  static and invoked as such. The order of precedence for method 
+                  calls to "app" or "win" targets is, 1) the corresponding 
+                  manager for that app/win  (see application and window manager 
+                  attribute, 2) the app/win instance (SRAOS_ApplicationInstance 
+                  or SRAOS_WindowInstance), and 3) the app/win object 
+                  (SRAOS_Application or SRAOS_Window)
+                  
+
+Used in:	window
+-->
+<!ELEMENT button (constraint-group?, param*)>
+<!ATTLIST button	key       		     ID  			   #REQUIRED>
+<!ATTLIST button	divider-left		   %Boolean;   "0">
+<!ATTLIST button	divider-right		   %Boolean;   "0">
+<!ATTLIST button	enabled     		   %Boolean;   "1">
+<!ATTLIST button	icon      	       %Icon;		   #REQUIRED>
+<!ATTLIST button	method	  		     CDATA       #REQUIRED>
+<!ATTLIST button  resource      		 %Resource;  #IMPLIED>
+<!ATTLIST button	target    	       CDATA		   #IMPLIED>
+
+
+<!--
+A "menu" defines a single menu item used by a window. whenever the window 
+receives focus these menus will be loaded into the top menu bar. a menu may 
+contain nested-menus. the top level menus are those displayed in the top menu
+bar. the param sub-elements represent 0..* key/value pairs that should be used 
+as method invocation parameters. they will be passed to the method in the form 
+of an associative array. each menu MUST either specify a "method" or sub-menus. 
+The nested server-side constraint-group determines whether or not this menu is 
+visible. It is evaluated only once when the OS is loaded.
+
+key       				The unique identifier for this menu. this value must be unique 
+                  within the plugin definition
+                  
+checked           whether or not this menu item is checked. a small checkmark is 
+                  placed to the left of checked menu items. the checked status 
+                  can be changed using the SRAOS.setMenuItemChecked method. If
+                  the menu's window supports multiple instances, it is the 
+                  responsibility of the window instance manager to reset the 
+                  checked status of the menu when different instances of the 
+                  window are active. this can be performed by implementing the 
+                  manager "onFocus" event and applying the correct checked state 
+                  in that method
+                  
+divider-above     whether or not to display a divider above this menu. not 
+                  applicable for top-level menus
+
+divider-below     whether or not to display a divider below this menu. not 
+                  applicable for top-level menus
+                  
+enabled           whether or not this menu item is enabled by default. this 
+                  can be changed using the SRAOS_WindowInstance enable/disableMenuItem
+                  methods
+                  
+icon              an optional icon to display to the left of the menu label
+                  
+method            the name of the method to invoke when this menu item is 
+                  clicked. this will be either an instance method of "target" or 
+                  a global/static method
+
+resource          the label for this menu. this should reference a string 
+                  value in the plugin's resources properties files. If not 
+                  specified, the "key" will be used
+                  
+target            the target object containing the "method" to invoke. possible 
+                  targets include "os" for the SRAOS object, "app" for the 
+                  invoking application SRAOS_ApplicationInstance object, or 
+                  "win" for the invoking window SRAOS_WindowInstance object. if 
+                  not specified, the "method" will be assumed to be global or 
+                  static and invoked as such. The order of precedence for method 
+                  calls to "app" or "win" targets is, 1) the corresponding 
+                  manager for that app/win  (see application and window manager 
+                  attribute, 2) the app/win instance (SRAOS_ApplicationInstance 
+                  or SRAOS_WindowInstance), and 3) the app/win object 
+                  (SRAOS_Application or SRAOS_Window)
+                  
+
+Used in:	window
+-->
+<!ELEMENT menu (constraint-group?, menu*, param*)>
+<!ATTLIST menu	key		      		     ID  			   #REQUIRED>
+<!ATTLIST menu	checked     		     %Boolean;   "0">
+<!ATTLIST menu	divider-above		     %Boolean;   "0">
+<!ATTLIST menu	divider-below		     %Boolean;   "0">
+<!ATTLIST menu	enabled     		     %Boolean;   "1">
+<!ATTLIST menu	icon      	         %Icon;		   #IMPLIED>
+<!ATTLIST menu	method	  		       CDATA       #IMPLIED>
+<!ATTLIST menu  resource      			 %Resource;  #IMPLIED>
+<!ATTLIST menu	target    	         CDATA		   #IMPLIED>
+
+
+<!--
+The "constraint-group" element is used to specify 1 or more constraint 
+sub-elements that will be evaluated as a whole based on the "connective" 
+specified for the group (either conjunction or disjunction). the evaluation 
+includes short-circuiting for conjunctive join types (and)
+
+key           the name of this constraint group (required due to xml parser 
+              limitations)
+
+connective    whether the connective between constraints of this group should be 
+              conjunctively or disjunctively joined
+
+
+Used in:  button, menu
+-->
+<!ELEMENT constraint-group (constraint+)>
+<!ATTLIST constraint-group key        CDATA      #REQUIRED>
+<!ATTLIST constraint-group connective (and|or)   "and">
+
+
+<!--
+The "constraint" element is used to evaluate a single user object property 
+within the context of the enclosing constraint group
+
+key           the constraint OsUser object property identifier. this value may 
+              include attribute/method nesting. for example, to evaluate the 
+              names of all of the groups that the user belongs to, this value 
+              would be "getAllGroups_name"
+               
+negate        whether or not to negate the return value of this constraint
+
+operator      the operator to apply between the property and value:
+               
+               EQUALITY CONSTRAINTS
+               eq: attr and value are equal (case sensitive)
+               gt: attr is greater than value
+               lt: attr is less than value
+               
+               STRING CONSTRAINTS
+               startsWith: attr starts with value (case sensitive)
+               endsWith: attr ends with value (case sensitive)
+               substr: value is a sub-string of attr (case sensitive)
+               
+               ARRAY CONSTRAINTS
+               inArray: value is in the attr array (case sensitive)
+
+value         the constraint value
+
+
+Used in:  constraint-group
+-->
+<!ELEMENT constraint EMPTY>
+<!ATTLIST constraint   key           CDATA       #REQUIRED>
+<!ATTLIST constraint	 negate        %Boolean;   "0">
+<!ATTLIST constraint   operator      (eq|gt|lt|startsWith|endsWith|substr|inArray|notInArray) "eq">
+<!ATTLIST constraint   value         CDATA       #REQUIRED>
+
+
+<!--
+The "resize-component" identifies a single xhtml component in the window canvas 
+that should be proportionately resized whenever the containing window is resized
+
+key       				the hash required to find the component in the window. this is 
+                  a combination of xhtml attribute name/value pairs in the 
+                  format: [name]: "[value]". for example, to apply resizing to 
+                  a div with the class name "myDiv", this value would be the 
+                  following "className: 'myDiv'". multiple values can be 
+                  specified each separated by a comma. if multiple components 
+                  are returned from this expression, they will each be resized
+                  
+height            whether or not to apply height resizing for this component
+
+width             whether or not to apply width resizing for this component
+
+x-factor          the number of resizable components within the same x-axis as 
+                  this component
+                  
+y-factor          the number of resizable components within the same y-axis as 
+                  this component
+
+
+Used in:	window
+-->
+<!ELEMENT resize-component EMPTY>
+<!ATTLIST resize-component	key	     CDATA		   #REQUIRED>
+<!ATTLIST resize-component	height   %Boolean;   "1">
+<!ATTLIST resize-component	width    %Boolean;   "1">
+<!ATTLIST resize-component	x-factor CDATA		   "1">
+<!ATTLIST resize-component	y-factor CDATA		   "1">
+
+
+<!--
+An "entity" element defines a searchable element within the OS as well as how 
+access to that element should be obtained. a user will ONLY have access to an 
+entity if they have access to it's corresponding viewer through their 
+application permissions
+
+key       				the unique identifier for this entity. this value must be 
+                  unique within the plugin definition. if service-global is 
+                  FALSE, this value must correspond with a valid entity defined 
+                  in one of the plugins' models
+                  
+attr-connective   if the lookup-service is non-global, 1..* entity-search-attr 
+                  sub-elements MUST be specified to identify which attributes 
+                  will be included in the search. this attribute may be used 
+                  to specify the connective between those different search 
+                  attributes. the default connective is "or", meaning a match 
+                  will occur if any entities where the search attributes matches 
+                  the search term. changing this to "and" will change that 
+                  meaning to only those entities where all search attributes 
+                  match the search term
+                  
+attrs-callback    may be specified instead of nested "entity-displ-attr" 
+                  elements. this should be javascript code that will return an 
+                  array of attribute names that should be included in any ajax  
+                  service invocations (include-attrs). if both a callback and 
+                  nested "entity-displ-attr" elements are specified, the 
+                  callback attributes will be used. for global services, these 
+                  values MUST be a sub-set of the nested "entity-displ-attr" 
+                  elements. for non-global services, "entity-displ-attr" 
+                  nested elements are not required
+
+auto-displ-max    if the # of results returned by a given search are less then 
+                  or equal to this attribute value then the "display-callack" 
+                  will be invoked once for each result after a 1 second delay. 
+                  the default value for this attribute is 0, meaning 
+                  auto-display will not occur. the maximum value for this 
+                  attribute is 5.
+                  
+can-copy          whether or not this entity can be copied when it is 
+                  represented in the file system. the 'copy' method of the 
+                  corresponding entity instance will be used to create a copy 
+                  and then commit that copy as a new instance. if that 
+                  invocation returns an SRA_Error object, the copy will be 
+                  aborted and a generic error message returned
+                  
+can-create        whether or not this entity supports empty instantiations. if 
+                  true, the user will be able to create a blank instance of this 
+                  entity. when this occurs within the file system a new instance 
+                  of the entity will be created using the constructor with no
+                  initialization parameters and that instance will be inserted 
+                  into the database. an entity node within the file system will 
+                  then be able to be created based on the id of that new entity 
+                  instance
+                  
+can-delete        whether or not this entity can be deleted when it is 
+                  represented in the file system. the 'delete' method of the 
+                  corresponding entity instance will be invoked. if that 
+                  invocation returns an SRA_Error object, the delete will be 
+                  aborted and a generic error message returned
+                  
+can-move          whether or not this entity can be moved when it is 
+                  represented in the file system. this includes moving it to the 
+                  trash
+                  
+can-rename        whether or not this entity can be renamed when it is 
+                  represented in the file system
+
+displ-callback    name of the method that should be invoked when the user clicks 
+                  on one of the results for this entity. this method should 
+                  have the following signature: (obj : [Entity Instance]) : void. 
+                  this method will be searched for and invoked using the 
+                  following order: 
+                   1. [viewer primary window instance].manager
+                   2. [viewer application instance].manager
+                   3. static call using eval
+
+header-callback   an optional static method to invoke using eval to populate the 
+                  table header for each displayed attribute column. if not 
+                  specified, the entity-displ-attr resource or entity model 
+                  attribute label will be used. this method should have the 
+                  following signature: 
+                  (attribute : String, entity : String) : String
+                  
+help-topic        reference (help-topic key) to the help topic that should be 
+                  displayed for help related information about this entity
+                  
+icon              the icon to use to represent this entity in search results. if 
+                  not specified, the "viewer" icon will be used
+                  
+include-actions   whether or not actions should be included in the display 
+                  results for this entity. if true, the last column in the 
+                  display results will display action links (using the 16 pixel 
+                  action image) for each entity rendered
+
+include-not-found whether or not a grouping for this entity should be displayed 
+                  with the "resource-not-found" message when no entities match 
+                  the search criteria. by default, this attribute is TRUE. if 
+                  FALSE, and no entities are returned in the search, the entire 
+                  grouping for this entity will be left out of the search 
+                  results
+
+include-not-invoked whether or not a grouping for this entity should be 
+                  displayed with the "resource-not-found" message when the 
+                  ajax service for this entity is not invoked because none of 
+                  the nested "entity-search-attr" elements "match-regex" 
+                  expressions matched the search term. by default, this 
+                  attribute is FALSE, meaning the grouping for this entity will 
+                  be automatically excluded from the search results when this 
+                  occurs. Change this to TRUE to display the grouping for this 
+                  entity regardless of whether or not the search service was 
+                  invoked
+
+line-height       in order for the search results ajax-scroll pagination to 
+                  work properly, the line height for each entity must be 
+                  uniform. if "value-callback" is specified, and the line 
+                  height will exceed the default, then this attribute should be 
+                  specified. the value of this attribute is pixels
+
+lookup-service    the name of the ajax service that will respond to queries for 
+                  this entity. both global and non-global lookup services are 
+                  supported. non-global service types require 1 or more nested 
+                  "entity-search-attr" elements to be defined which will form 
+                  the basis for the ajax service invocation. for global 
+                  services these will translate into the following parameters:
+                   [attr]: [attr] is the name of the attribute (either a nested 
+                           "entity-displ-attr" for sorting constraints or a 
+                           nested "entity-search-attr"  search constraints. the 
+                           value for these parameters will be a bitmask 
+                           containing 1 or more of the 
+                           SRA_AjaxConstraint::operator constraint bit values 
+                           according to the "operator" specified 
+                           (entity-search-attr) or a sort constraint 
+                           (64=ascending, 128=descending for entity-displ-attr)
+                   search: the search term
+                  
+                  for non-global services, the standard 
+                  AjaxConstraintGroup/AjaxConstraint model will be used as 
+                  described in ajax-service-request_1_0.dtd. if any of the 
+                  nested "entity-search-attr" elements contain "match-regex" 
+                  attributes, the search term will be evaluated against that 
+                  expression. if it matches, the attribute will be included in 
+                  the service invocation, and if it does not, it will not. If 
+                  NONE of the nested "entity-search-attr" elements "match-regex" 
+                  expressions match the search term, then the service WILL NOT 
+                  be invoked for this entity. in order for pagination to 
+                  function correctly if a global method based lookup service is 
+                  utilized, that service MUST return the total result count 
+                  utilizing the SRA_WS_RESULT_COUNT_KEY key in the service 
+                  return value (see model/SRA_GlobalAjaxSerive for more 
+                  information) AND apply the $limit and $offset parameters 
+                  specified (for method based global services)
+                  
+match-regex       a regular expression that must match the search term in order 
+                  for this entity to be included in a search. search attribute 
+                  specific regular expressions can also be specified in the 
+                  nested entity-search-attr elements (for non-global services 
+                  only)
+                  
+pk-attr           the primary key attribute. specify this IF you wish for the 
+                  primary key to be retrieved in the ajax service request, but 
+                  not displayed in the search results
+                  
+property-setter   when this entity is represented in the file system, and a 
+                  corresponding property of the node representing it in the file 
+                  system is modified, this attribute may be used to specify a 
+                  callback on the instance of that entity (the value object/VO) 
+                  that should be invoked when that occurs. this method will have 
+                  the following signature: (attr : String, mixed : val) : void
+                  where attr/val may be any of the following possible 
+                  combination of values: "nodeId"/int, 
+                  'dateCreated'/SRA_GregorianDate, 
+                  'dateModified'/SRA_GregorianDate, 'name'/string, 
+                  'nodeGroup'/OsGroupVO, 'nodeOwner'/OsUserVO, 
+                  'parent'/CoreVfsNodeVO, 'permissions'/int, 'size'/int, 
+                  'linkedTo'/int
+                  If after setting these properties (only the dirty ones will 
+                  be set) the corresponding entity instance is dirty, it will 
+                  be updated using the 'update' method. change restrictions can 
+                  be added to the entity using the 'can-*' attributes
+                  
+resource          the label for this entity. this should reference a string 
+                  in the plugin's resources properties files. this attribute is 
+                  mandatory when service-global is TRUE, otherwise, if not 
+                  specified, the corresponding entity's resource will be used 
+                  instead
+                  
+resource-not-found the resource bundle string to display when no results are 
+                  returned for this entity in a given search. the default 
+                  string is "No Matches". based on the values for the 
+                  "include-not-found" and "include-not-invoked" attributes for 
+                  this entity, the grouping representing it may be left out of 
+                  the search results entirely
+                  
+sortable          whether or not the attributes displayed for this entity are 
+                  sortable. if they are, their corresponding columns in the 
+                  entity table will be sortable. nested "entity-displ-attr" 
+                  elements may override this value
+                  
+sort-callback     static javascript code that will return an a hash containing
+                  attribute names/sort method pairs specifying the default sort 
+                  attributes/sort method. the value should be equal to one of 
+                  the SRAOS_AjaxConstraint.OP_SORT_* sort operators 
+                  (64=ascending, 128=descending)
+
+service-global    whether or not "lookup-service" is a global ajax service
+
+table-class       an alternate class to utilize to format the search results 
+                  for this entity. the first row in this table will consist of 
+                  th cells containing the attribute headers, with one row 
+                  following for each entity instance returned by the searchs
+
+value-callback    an optional static method to invoke using eval to populate the 
+                  table value for each displayed attribute. if not specified, 
+                  the raw value of the attribute will be used. this method 
+                  should have the following signature: 
+                  (attribute : String, entityInstance : Object, entity : String) : String
+
+viewer            the application responsible for viewing entities of this 
+                  entity type. an instance of this application will be obtained 
+                  the first time that the user attempts to view an entity of 
+                  this type. the "displ-callback" will be invoked against this 
+                  same application instance for all subsequent entity display 
+                  requests 
+
+
+Used in:	plugin
+-->
+<!ELEMENT entity (entity-displ-attr*, entity-search-attr*)>
+<!ATTLIST entity	key       		      ID  			  #REQUIRED>
+<!ATTLIST entity	attr-connective     (and|or)    "or">
+<!ATTLIST entity	attrs-callback      CDATA       #IMPLIED>
+<!ATTLIST entity  auto-displ-max      CDATA       "0">
+<!ATTLIST entity  can-copy            %Boolean;   "0">
+<!ATTLIST entity  can-create          %Boolean;   "0">
+<!ATTLIST entity  can-delete          %Boolean;   "0">
+<!ATTLIST entity  can-move            %Boolean;   "0">
+<!ATTLIST entity  can-rename          %Boolean;   "0">
+<!ATTLIST entity	displ-callback      CDATA       #REQUIRED>
+<!ATTLIST entity	header-callback     CDATA       #IMPLIED>
+<!ATTLIST entity	help-topic 		      IDREF       #IMPLIED>
+<!ATTLIST entity	icon      	        %Icon;		  #REQUIRED>
+<!ATTLIST entity	include-actions     %Boolean;   "1">
+<!ATTLIST entity	include-not-found   %Boolean;   "1">
+<!ATTLIST entity	include-not-invoked %Boolean;   "0">
+<!ATTLIST entity  line-height         CDATA		    "17">
+<!ATTLIST entity  lookup-service      CDATA		    #REQUIRED>
+<!ATTLIST entity	match-regex         CDATA       #IMPLIED>
+<!ATTLIST entity  pk-attr        		  CDATA       #IMPLIED>
+<!ATTLIST entity	property-setter     CDATA       #IMPLIED>
+<!ATTLIST entity  resource      		  %Resource;  #IMPLIED>
+<!ATTLIST entity  resource-not-found  %Resource;  "text.noMatches">
+<!ATTLIST entity	service-global      %Boolean;   "0">
+<!ATTLIST entity	sortable            %Boolean;   "0">
+<!ATTLIST entity	sort-callback       CDATA       #IMPLIED>
+<!ATTLIST entity	table-class         CDATA       #IMPLIED>
+<!ATTLIST entity	value-callback      CDATA       #IMPLIED>
+<!ATTLIST entity  viewer              IDREF		    #REQUIRED>
+
+
+<!--
+The "entity-displ-attr" element defines an ordered list of the attributes that 
+should be included in the display of this entity in the search results view. 
+each entity returned by the ajax service must be indexed according to these 
+attribute names. for global services, 1 or more nested "entity-displ-attr" 
+elements are required. for non-global services, they are not required and if 
+they are not, whatever attributes returned by the service will be rendered in 
+the order they are specified
+
+key       				the name of the attribute as specified in the entity model for 
+                  non-global ajax services or internally for global ones
+
+resource          the resouce bundle string that should be used as a header 
+                  for this attribute. this value will only be used if a 
+                  "header-callback" is not specified for this entity. for 
+                  global services either the "header-callback" or this value 
+                  MUST be specified. for non-global services, if neither are 
+                  specified, the default entity label will be used
+                  
+sort              the default sort method to apply for this attribute. this 
+                  value will only be used if a "sort-callback" is not specified 
+                  for this entity. it should be equal to one of the 
+                  SRAOS_AjaxConstraint.OP_SORT_* sort operators (64=ascending, 
+                  128=descending)
+
+sortable          whether or not this attribute should be sortable. if specified, 
+                  this value will override the sortable flag in the enclosing 
+                  entity element
+
+
+Used in:	entity
+-->
+<!ELEMENT entity-displ-attr EMPTY>
+<!ATTLIST entity-displ-attr	key             CDATA      #REQUIRED>
+<!ATTLIST entity-displ-attr	resource        %Resource; #IMPLIED>
+<!ATTLIST entity-displ-attr	sort            (64|128)   #IMPLIED>
+<!ATTLIST entity-displ-attr	sortable        %Boolean;  "0">
+
+
+<!--
+The "entity-search-attr" element defines 1 or more search constraints that 
+should be applied when a search is invoked. for non-global services these are 
+the names of the attributes within the entity that should be included in the 
+search. this element is NOT used for global services.
+
+key       				the name of the attribute as specified in the entity model for 
+                  non-global ajax services or internally for global ones
+
+match-regex       a regular expression that must match the search term in order 
+                  for this attribute to be added to the search 
+                  constraints/params. if the search term does not match this 
+                  expression, this attribute will be exclude from the service 
+                  invocation. if none of the "entity-search-attr" sub-elements 
+                  match-regex expressions match for an entity, the entity will 
+                  be left out of the search (the service will not be invoked)
+                  
+operator          the operator to apply between the search term and this 
+                  attribute. this value will correspond with one ore more of the
+                  SRA_AjaxConstraint::operator constraint bit values. the 
+                  default is "32" which signifies that the search term must 
+                  exist at least once within the attribute value for each 
+                  entity in order for this constraint to match
+
+
+Used in:	entity
+-->
+<!ELEMENT entity-search-attr EMPTY>
+<!ATTLIST entity-search-attr	key                CDATA       #REQUIRED>
+<!ATTLIST entity-search-attr	match-regex        CDATA       #IMPLIED>
+<!ATTLIST entity-search-attr	operator	         CDATA       "32">
+
+
+<!--
+The "entity-action" element is used to define what, if any action may occur 
+within the context of a plugin for an instance of an entity. for example, the 
+messaging plugin creates a new pre-addressed message window given an instance of 
+the OsUser entity defined in the core plugin
+
+key       				the entity identifier. this is the plugin id followed by a 
+                  colon and the entity id (i.e. "core:OsUser")
+
+action            the static method to invoke this action. this should be just 
+                  the method name without any parameters. the signature for this 
+                  method should be: (entity : Object) : void where entity is the 
+                  instance of the entity that the action should be invoked for
+
+condition         an optional static method that should be invoked as a 
+                  condition for allowing an action to occur for an entity 
+                  instance. if this method returns true, the action will be 
+                  allowed, otherwise it will not. the signature for this method 
+                  should be (entity : Object) : boolean
+                  
+icon              the icon to display to represent this action
+
+resource          the resource identifier to display to represent this action
+
+skip-windows      space separated list of window identifiers that this action 
+                  should not be included in when the SRAOS.getActions method is 
+                  invoked. each id should be the plugin id followed by a colon 
+                  and the window is (i.e. core:HelpManualWin)
+
+
+Used in:	plugin
+-->
+<!ELEMENT entity-action EMPTY>
+<!ATTLIST entity-action     	key                CDATA       #REQUIRED>
+<!ATTLIST entity-action     	action             CDATA       #REQUIRED>
+<!ATTLIST entity-action     	condition          CDATA       #IMPLIED>
+<!ATTLIST entity-action     	icon    	         CDATA       #REQUIRED>
+<!ATTLIST entity-action     	resource           %Resource;  #REQUIRED>
+<!ATTLIST entity-action     	skip-windows       CDATA       #IMPLIED>
+
+
+<!--
+A "help-topic" defines a single node or leaf within the help manual hierarchy. 
+either content or sub-topics should be specified for every help-topic. the very 
+first help-top defined will be the default page displayed when the user 
+activates that corresponding help manual
+
+key       				The unique identifier for this help topic. this value must be 
+                  unique within the plugin definition
+                  
+expanded          whether or not this help topic should be expanded initially. 
+                  this only applies to help topics that contain sub-topics. by 
+                  default, nodes are initially collapsed
+                  
+content           the content to display for this help topic. this may be any of 
+                  the following values:
+                   1. a plugin resource bundle string identifier
+                   2. a platform relative localized file name. for example, if 
+                      this value is "myhelp.html", the help topic content should 
+                      exist in a file "plugin-dir/etc/l10n/myhelp.html". 
+                      additional country/language specific help files may also 
+                      be specified using the convention described in the 
+                      following api documentation:
+                      sierra/lib/util/l10n/SRA_ResourceBundle::findLocaleFile()
+                  all content should be html formatted including line breaks. 
+                  Content may include OS instance variables using the following 
+                  tags:
+                   #appName : the name of the application
+                   #appShortName : the application short name
+                   #uid: the user's id
+                   #email: the user's email address
+                   #name: the user's name
+                   #userName: the user's user name
+                   any additional plugin defined user attributes
+                  
+icon              an optional icon to use to represent this help topic in the 
+                  help manual hierarchy. default icons are provided by the help 
+                  manual if none is specified
+                  
+resource          the label for this help topic. this should reference a string 
+                  value in one of the plugin resources properties files. If not 
+                  specified, the "key" will be used
+                  
+
+Used in:	plugin
+-->
+<!ELEMENT help-topic (help-topic*)>
+<!ATTLIST help-topic key		 		     ID  			   #REQUIRED>
+<!ATTLIST help-topic content 	       CDATA		   #IMPLIED>
+<!ATTLIST help-topic expanded        %Boolean;   "0">
+<!ATTLIST help-topic icon   	       %Icon;		   #IMPLIED>
+<!ATTLIST help-topic resource      	 %Resource;  #IMPLIED>
+
+
+<!--
+ +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+
+ |                        Subordinate Elements                          |
+ +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+
+-->
+
+
+<!-- 
+The "param" element defines a generic key/value pair
+
+id                the param name - must be unique in the enclosing element
+
+value             the param value
+
+Used in:   button, menu
+-->
+<!ELEMENT param EMPTY>
+<!ATTLIST param key                  CDATA       #REQUIRED>
+<!ATTLIST param value                CDATA       #REQUIRED>

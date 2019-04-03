@@ -1,0 +1,55 @@
+8
+
+dir
+49
+https://sierra-os.googlecode.com/svn/trunk/plugins/accessories/etc
+https://sierra-os.googlecode.com/svn
+
+
+
+2008-01-11T11:32:18.695086Z
+49
+jason.t.read
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+0389a993-1a3a-0410-8417-2d91e4bb4074
+
+accessories-model.xml
+file
+
+
+
+
+2008-01-04T09:39:10.000000Z
+745f8468a602db6973cc2d5956fd91cf
+2008-01-11T05:03:53.906973Z
+38
+jason.t.read
+
+l10n
+dir
+
+sierra-os-accessories.spec
+file
+
+
+
+
+2008-01-04T11:23:57.000000Z
+236ecd434da0ab712b3fcfc5c2141a67
+2008-01-11T11:32:18.695086Z
+49
+jason.t.read
+

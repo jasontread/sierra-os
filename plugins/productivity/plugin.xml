@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE plugin PUBLIC "-//SIERRA//DTD SRAOS PLUGIN//EN" 
+  "http://sierra-os.googlecode.com/svn/trunk/etc/plugin.dtd">
+<plugin models="productivity-model.xml">
+  <application key="MyProjects" about="MyProjects.about" help-topic="MyProjectsHelp" icon="my-projects.png" main-window="MyProjectsWin" preferences="MyProjectsPreferences">
+    <window key="MyProjectsWin" default-height="350" default-maximize="1" default-width="750" manager="MyProjects" scroll="0" tpl="my-projects.tpl">
+      <button key="btnReloadMyProjects" icon="reload.png" method="refreshProjectList" resource="MyProjects.reload" target="win" />
+      <button key="btnNewMessage" divider-left="1" enabled="0" icon="message.png" method="newMessage" resource="MyProjects.newMessage" target="win" />
+      <button key="btnNewWhiteboard" enabled="0" icon="whiteboard.png" method="newWhiteboard" resource="MyProjects.newWhiteboard" target="win" />
+      <button key="btnNewTask" enabled="0" icon="task.png" method="newTask" resource="MyProjects.newTask" target="win" />
+      <button key="btnNewFile" enabled="0" icon="file.png" method="newFile" resource="MyProjects.newFile" target="win" />
+      <button key="btnSaveSearch" divider-left="1" enabled="0" icon="save-search.png" method="saveSearch" resource="MyProjects.saveSearch" target="win" />
+      <button key="btnDeleteSavedSearch" enabled="0" icon="delete.png" method="deleteSavedSearch" resource="MyProjects.deleteSavedSearch" target="win" />
+      <button key="btnRssSubscribe" divider-left="1" enabled="0" icon="rss.png" method="rssSubscribe" resource="MyProjects.rssSubscribe" target="win" />
+      <button key="btnIcalSubscribe" enabled="0" icon="ical.png" method="icalSubscribe" resource="MyProjects.icalSubscribe" target="win" />
+      <menu key="file" resource="text.file">
+        <menu key="newProjects" icon="my-projects.png" resource="text.newProject">
+          <menu key="newProject" icon="my-projects.png" method="newProject" resource="MyProjects.newBlank" target="win" />
+        </menu>
+        <menu key="newMessage" enabled="0" icon="message.png" method="newMessage" resource="MyProjects.newMessage" target="win" />
+        <menu key="newWhiteboard" enabled="0" icon="whiteboard.png" method="newWhiteboard" resource="MyProjects.newWhiteboard" target="win" />
+        <menu key="newTask" enabled="0" icon="task.png" method="newTask" resource="MyProjects.newTask" target="win" />
+        <menu key="newFile" enabled="0" icon="file.png" method="newFile" resource="MyProjects.newFile" target="win" />
+        <menu key="mySearches" divider-above="1" icon="search.png" resource="OsUser.savedSearches">
+          <menu key="saveSearch" enabled="0" icon="save-search.png" method="saveSearch" resource="MyProjects.saveSearch" target="win" />
+          <menu key="deleteSavedSearch" enabled="0" icon="delete.png" method="deleteSavedSearch" resource="MyProjects.deleteSavedSearch" target="win" />
+          <menu key="rssSubscribe" divider-above="1" enabled="0" icon="rss.png" method="rssSubscribe" resource="MyProjects.rssSubscribe" target="win" />
+          <menu key="icalSubscribe" enabled="0" icon="ical.png" method="icalSubscribe" resource="MyProjects.icalSubscribe" target="win" />
+        </menu>
+      </menu>
+      <menu key="view" resource="text.view">
+        <menu key="searchPanel" checked="1" method="toggleSearchPanel" resource="MyProjects.searchPanel" target="win" />
+        <menu key="reloadMyProjects" divider-above="1" icon="reload.png" method="refreshProjectList" resource="MyProjects.reload" target="win" />
+      </menu>
+      <menu key="help" resource="text.help">
+        <menu key="helpContents" icon="help.png" method="displayHelp" resource="text.helpContents" target="app" />
+      </menu>
+      <resize-component key="className: 'myProjectsCanvas'" height="1" width="1" />
+    </window>
+    <window key="AddComment" default-center="1" default-height="300" default-maximize="0" default-width="450" fixed-size="1" icon="comment.png" manager="MyProjectsAddComment" modal-app="1" resource="text.addComment" status-bar="0" tpl="my-projects-comment.tpl">
+      <button key="btnAddCommentSpellcheck" icon="spellcheck.png" method="spellcheck" resource="MyProjects.spellcheck" target="win" />
+      <button key="btnAddCommentHelpFormatting" divider-left="1" icon="help.png" method="Core_Services.displayWikiHelp" resource="MyProjects.formattingHelp" />
+      <menu key="addCommentTools" resource="text.tools">
+        <menu key="addCommentSpellcheck" icon="spellcheck.png" method="spellcheck" resource="MyProjects.spellcheck" target="win" />
+      </menu>
+      <menu key="addCommentHelp" resource="text.help">
+        <menu key="addCommentHelpFormatting" icon="help.png" method="Core_Services.displayWikiHelp" resource="MyProjects.formattingHelp" />
+      </menu>
+    </window>
+    <window key="NewProject" default-center="1" default-height="400" default-maximize="0" default-width="550" fixed-size="1" icon="my-projects.png" manager="MyProjectsNew" modal-app="1" resource="MyProjects.newProject" scroll="0" status-bar="0" tpl="my-projects-new.tpl" />
+    <window key="EditFile" default-center="1" default-height="375" default-maximize="0" default-width="500" fixed-size="1" icon="file.png" manager="MyProjectsEditFile" modal-app="1" resource="MyProjects.newFile" scroll="0" status-bar="0" tpl="my-projects-edit-file.tpl" />
+    <window key="EditMessage" default-center="1" default-height="400" default-maximize="0" default-width="500" fixed-size="1" icon="message.png" manager="MyProjectsEditMessage" modal-app="1" resource="MyProjects.editMessage" status-bar="0" tpl="my-projects-edit-message.tpl">
+      <button key="btnPrintMessage" icon="fileprint.png" method="print" resource="text.print" target="win" />
+      <button key="btnEditMessageSpellcheck" divider-left="1" icon="spellcheck.png" method="spellcheck" resource="MyProjects.spellcheck" target="win" />
+      <button key="btnEditMessageHelpFormatting" divider-left="1" icon="help.png" method="Core_Services.displayWikiHelp" resource="MyProjects.formattingHelp" />
+      <menu key="addMessageTools" resource="text.tools">
+        <menu key="addMessageSpellcheck" icon="spellcheck.png" method="spellcheck" resource="MyProjects.spellcheck" target="win" />
+      </menu>
+      <menu key="addMessageHelp" resource="text.help">
+        <menu key="addMessageHelpFormatting" icon="help.png" method="Core_Services.displayWikiHelp" resource="MyProjects.formattingHelp" />
+      </menu>
+    </window>
+    <window key="EditTask" default-center="1" default-height="400" default-maximize="0" default-width="500" fixed-size="1" icon="task.png" manager="MyProjectsEditTask" modal-app="1" resource="MyProjects.editTask" scroll="1" status-bar="0" tpl="my-projects-edit-task.tpl">
+      <button key="btnPrintTask" icon="fileprint.png" method="print" resource="text.print" target="win" />
+    </window>
+    <window key="EditWhiteboard" default-center="1" default-height="410" default-maximize="0" default-width="500" fixed-size="1" icon="whiteboard.png" manager="MyProjectsEditWhiteboard" modal-app="1" resource="MyProjects.editWhiteboard" status-bar="0" tpl="my-projects-edit-whiteboard.tpl" />
+    <window key="EmailParticipant" default-center="1" default-height="165" default-maximize="0" default-width="300" fixed-size="1" icon="account.png" manager="MyProjectsEmailParticipant" modal-win="1" resource="MyProjects.emailParticipant" status-bar="0" tpl="my-projects-email-participant.tpl" />
+    <window key="FilePreview" center-opener="1" default-height="435" default-maximize="0" default-width="360" icon="filesearch.png" manager="MyProjectsFilePreview" modal-win="1" resource="MyProjectsFilePreview" status-bar="0" tpl="my-projects-file-preview.tpl" />
+    <window key="MyProjectsPreferences" default-center="1" default-height="325" default-maximize="0" default-width="400" fixed-size="1" icon="my-projects.png" manager="MyProjectsPreferences" modal-app="1" resource="MyProjects.preferences" status-bar="0" tpl="my-projects-preferences.tpl" />
+    <window key="ParticipantSelector" default-center="1" default-height="250" default-maximize="0" default-width="350" fixed-size="1" icon="participants.png" manager="MyProjectsParticipantSelector" modal-win="1" resource="MyProjects.selectParticipants" status-bar="0" tpl="my-projects-participant-selector.tpl" />
+    <window key="TaskForm" default-center="1" default-height="400" default-maximize="0" default-width="650" icon="task-form.png" manager="MyProjectsTaskForm" modal-win="1" resource="MyProjects.taskForm" status-bar="0" tpl="my-projects-task-form.tpl">
+      <button key="btnTaskFormSpellcheck" icon="spellcheck.png" method="spellcheck" resource="MyProjects.spellcheck" target="win" />
+    </window>
+    <window key="ViewProject" default-center="1" default-height="375" default-maximize="0" default-width="550" fixed-size="1" icon="my-projects.png" manager="MyProjectsView" modal-app="1" resource="MyProjects.viewProject" scroll="0" status-bar="0" tpl="my-projects-view.tpl">
+      <button key="btnPrintProject" icon="fileprint.png" method="print" resource="text.print" target="win" />
+    </window>
+  </application>
+  <!--
+  <application key="MyToolbox" about="MyToolbox.about" icon="my-toolbox.png" main-window="MyToolboxWin">
+    <window key="MyToolboxWin" default-height="350" default-center="1" default-maximize="0" default-width="550" manager="MyToolbox" scroll="0" tpl="my-toolbox.tpl" />
+  </application>
+  -->
+  <entity key="MyProject" displ-callback="viewProject" icon="my-projects.png" lookup-service="myProjectsSearch" resource="MyProject" service-global="1" value-callback="MyProjects.renderProjectAttr" viewer="MyProjects">
+    <entity-displ-attr key="name" resource="MyProject" />
+    <entity-displ-attr key="typeStr" resource="MyProject.type" />
+    <entity-displ-attr key="creator" resource="text.creator" />
+    <entity-displ-attr key="dueDate" resource="text.dueDate" />
+  </entity>
+  <help-topic key="MyProjectsHelp">
+    <help-topic key="overview" content="help-overview.html" resource="MyProjectsHelp.overview" />
+    <help-topic key="createProject" content="help-create-project.html" icon="my-projects.png" resource="MyProjectsHelp.creatingProject" />
+    <help-topic key="editProject" content="help-edit-project.html" icon="edit.png" resource="MyProjectsHelp.editingProject" />
+    <help-topic key="projectList" content="help-project-list.html" icon="project-list.png" resource="MyProjects.projectList" />
+    <help-topic key="filterProjectList" content="help-filter-project-list.html" resource="MyProjectsHelp.filterProjectList">
+      <help-topic key="baseSearch" content="help-basic-search.html" icon="search.png" resource="MyProjectsHelp.basicSearch" />
+      <help-topic key="advancedSearch" content="help-advanced-search.html" icon="search.png" resource="MyProjectsHelp.advancedSearch" />
+    </help-topic>
+    <help-topic key="colorDesignators" content="help-color-designators.html" icon="color-designators.png" resource="MyProjectsHelp.colorDesignators" />
+    <help-topic key="dashboard" content="help-dashboard.html" icon="dashboard.png" resource="MyProjects.dashboard" />
+    <help-topic key="discussion" content="help-discussion.html" icon="message.png" resource="MyProjects.discussion" />
+    <help-topic key="tasks" content="help-tasks.html" icon="task.png" resource="MyProjects.tasks" />
+    <help-topic key="files" content="help-files.html" icon="file.png" resource="MyProjects.files" />
+  </help-topic>
+</plugin>
+

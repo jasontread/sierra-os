@@ -1,0 +1,99 @@
+<div class="coreWikiHelp">
+<p class='vspace'>Everything you wanted to know about wiki markup but were afraid to ask.
+</p>
+<div class='vspace'></div><h2>Links</h2>
+<p>See <a class='wikilink' href='#' onclick="OS.getWindowInstance(this).getManager().displayArticle('links')">Links</a>
+</p><h3>External links</h3>
+<dl><dt><code class='escaped'>http://example.com</code></dt><dd>
+</dd><dt><code class='escaped'>[[http://example.com]]</code></dt><dd>
+</dd><dt><code class='escaped'>[[http://example.com | link text]]</code></dt><dd>
+</dd><dt><code class='escaped'>[[link text -&gt; http://example.com]]</code></dt><dd>
+</dd></dl>
+<div class='vspace'></div><h2>Images</h2>
+<p>See <a class='wikilink' href='#' onclick="OS.getWindowInstance(this).getManager().displayArticle('images')">Images</a>
+</p><h3>Images as Images</h3>
+<dl><dt><code class='escaped'>http://example.com/image.gif</code></dt><dd>
+</dd><dt><code class='escaped'>http://example.com/image.gif"alt text"</code></dt><dd>
+</dd><dt><code class='escaped'>%lfloat% http://example.com/image.gif</code></dt><dd>
+</dd><dt><code class='escaped'>%rfloat% http://example.com/image.gif</code></dt><dd>
+</dd><dt><code class='escaped'>%center% http://example.com/image.gif</code></dt><dd>
+</dd><dt><code class='escaped'>%rframe% http://example.com/image.gif | Caption</code></dt><dd>
+</dd><dt><code class='escaped'>%lframe% http://example.com/image.gif | Caption</code></dt><dd>
+</dd><dt><code class='escaped'>%width=200px% http://example.com/image.gif</code></dt><dd>
+</dd><dt><code class='escaped'>%thumb% http://example.com/image.gif</code></dt><dd>
+</dd></dl><div class='vspace'></div><h3>Images as links</h3>
+<dl><dt><code class='escaped'>[[http://example.com/image.gif]]</code></dt><dd>
+</dd><dt><code class='escaped'>[[http://example.com/ | http://example.com/image.gif"alt text"]]</code></dt><dd>
+</dd><dt><code class='escaped'>%rframe thumb% [[http://example.com/image.gif | http://example.com/image.gif"alt text"]] | Caption </code></dt><dd>
+</dd></dl><div class='vspace'></div><h2>Start-of-line markup</h2>
+<p>See <a class='wikilink' href='#' onclick="OS.getWindowInstance(this).getManager().displayArticle('textFormattingRules')">Text Formatting Rules</a>
+</p>
+<div class='vspace'></div><h3>Lists</h3>
+<p>See <a class='wikilink' href='#' onclick="OS.getWindowInstance(this).getManager().displayArticle('bulletsAndLists')">Bullets and Lists</a>, <a class='wikilink' href='#' onclick="OS.getWindowInstance(this).getManager().displayArticle('listStyles')">List Styles</a> and <a class='wikilink' href='#' onclick="OS.getWindowInstance(this).getManager().displayArticle('wikiStyles')">WikiStyles</a>
+</p><dl><dt><code class='escaped'>* unordered list</code></dt><dd>
+</dd><dt><code class='escaped'>** deeper list</code></dt><dd>
+</dd><dt><code class='escaped'># ordered list</code></dt><dd>
+</dd><dt><code class='escaped'># %item value=#% arbitrary start number</code></dt><dd>
+</dd></dl><p>:<code class='escaped'># %decimal%, %roman%, %ROMAN%, %alpha%, %ALPHA% </code>
+</p><dl><dt><code class='escaped'>:term:definition</code></dt><dd>
+</dd></dl><div class='vspace'></div><h3>Headings</h3>
+<dl><dt><code class='escaped'>!! Heading</code></dt><dd>
+</dd><dt><code class='escaped'>!!! Deeper heading</code></dt><dd>
+</dd></dl><div class='vspace'></div><h3>Paragraph blocks</h3>
+<dl><dt><code class='escaped'>-&gt; indented text</code></dt><dd>
+</dd><dt><code class='escaped'>-&lt; hanging indent</code></dt><dd>
+</dd><dt><code class='escaped'>&lt;space&gt; preformatted text</code></dt><dd>
+</dd><dt><code>[@...@] preformatted block</code></dt><dd>
+</dd><dt><code class='escaped'>---- (horizontal rule)</code></dt><dd>
+</dd><dt><code class='escaped'>blank line is vertical space</code></dt><dd>
+</dd><dt><code class='escaped'>\ at end of line joins next line</code></dt><dd>
+</dd><dt><code class='escaped'>\\ at end of line produces a line break</code></dt><dd>
+</dd><dt><code class='escaped'>\\\ at the end of a line produces a blank line, even within a list item</code></dt><dd>
+</dd><dt><code class='escaped'>[[&lt;&lt;]]</code> produces a line break that clears floating content</dt><dd>
+</dd></dl><div class='vspace'></div><h3>Division blocks</h3>
+<p>See <a class='wikilink' href='#' onclick="OS.getWindowInstance(this).getManager().displayArticle('wikiStyles')">WikiStyles</a>
+</p><dl><dt><code class='escaped'>&gt;&gt;wikistyle&lt;&lt;</code></dt><dd>
+</dd><dt><code class='escaped'>(:div attr:)</code></dt><dd>
+</dd><dt><code class='escaped'>(:divend:), &gt;&gt;&lt;&lt;</code></dt><dd>
+</dd></dl><div class='vspace'></div><h2>Text markup</h2>
+<p>See <a class='wikilink' href='#' onclick="OS.getWindowInstance(this).getManager().displayArticle('textFormattingRules')">Text Formatting Rules</a>
+</p><h3>Character format</h3>
+<dl><dt><code class='escaped'>''emphasized'' (italic)</code></dt><dd>
+</dd><dt><code class='escaped'>'''strong''' (bold)</code></dt><dd>
+</dd><dt><code class='escaped'>'''''strong emphasis'''''</code></dt><dd>
+</dd><dt><code class='escaped'>@@monospaced@@</code></dt><dd>
+</dd><dt><code class='escaped'>[-small-], [--smaller--]</code></dt><dd>
+</dd><dt><code class='escaped'>[+big+], [++bigger++]</code></dt><dd>
+</dd><dt><code class='escaped'>'-small-', '+big+'</code></dt><dd>
+</dd><dt><code class='escaped'>'^superscript^', '_subscript_'</code></dt><dd>
+</dd><dt><code class='escaped'>{+inserted+} (underscore)</code></dt><dd>
+</dd><dt><code class='escaped'>{-deleted-} (strikethrough)</code></dt><dd>
+</dd><dt><code>[@escaped code@]</code></dt><dd>
+</dd><dt><code class='escaped'>[=escaped text=]</code></dt><dd>
+</dd></dl><div class='vspace'></div><h3>Posting markup</h3>
+<dl><dt><code>~~</code><code>~</code> (user's signature)</dt><dd>
+</dd><dt><code>~~</code><code>~~</code> (user's signature and date)</dt><dd>
+</dd></dl><div class='vspace'></div><h2>Tables</h2>
+<h3> Plain rows and columns of text</h3>
+<p>See <a class='wikilink' href='#' onclick="OS.getWindowInstance(this).getManager().displayArticle('tables')">Tables</a>
+</p><dl><dt><code class='escaped'>||table attributes</code></dt><dd>
+</dd><dt><code class='escaped'>||!table caption!||</code></dt><dd>
+</dd><dt><code class='escaped'>||left aligned  || centered ||  right aligned||</code></dt><dd>
+</dd><dt><code class='escaped'>||!column heading||</code></dt><dd>
+</dd><dt><code class='escaped'>||spanned columns ||||||</code></dt><dd>
+</dd></dl><div class='vspace'></div><h3>Structured tables</h3>
+<p>See <a class='wikilink' href='#' onclick="OS.getWindowInstance(this).getManager().displayArticle('tableDirectives')">Table directives </a>
+</p><dl><dt><code class='escaped'>(:table attr:)</code></dt><dd>
+</dd><dt><code class='escaped'>(:cellnr attr:)</code></dt><dd>
+</dd><dt><code class='escaped'>(:cell attr:)</code></dt><dd>
+</dd><dt><code class='escaped'>(:tableend:)</code></dt><dd>
+</dd></dl><div class='vspace'></div><h2>Directives</h2>
+<h3>Variables</h3>
+<p>See <a class='wikilink' href='#' onclick="OS.getWindowInstance(this).getManager().displayArticle('variables')">Variables</a>
+</p><dl><dt><code class='escaped'>{</code><em><code class='escaped'>$variable</code></em><code class='escaped'>}</code></dt><dd>
+</dd></dl><p>For example:
+</p><dl><dt><code class='escaped'>{$name}</code></dt><dd>
+</dd><dt><code class='escaped'>{$email}</code></dt><dd>
+</dd><dt><code class='escaped'>{$date}</code></dt><dd>
+</dd></dl>
+</div>

@@ -1,0 +1,902 @@
+<!--
+ +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+
+ | SIERRA::OS : PHP RIA Framework      http://code.google.com/p/sierra-os  |
+ +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+
+ | Copyright 2005 Jason Read                                               |
+ |                                                                         |
+ | Licensed under the Apache License, Version 2.0 (the "License");         |
+ | you may not use this file except in compliance with the License.        |
+ | You may obtain a copy of the License at                                 |
+ |                                                                         |
+ |     http://www.apache.org/licenses/LICENSE-2.0                          |
+ |                                                                         |
+ | Unless required by applicable law or agreed to in writing, software     |
+ | distributed under the License is distributed on an "AS IS" BASIS,       |
+ | WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.|
+ | See the License for the specific language governing permissions and     |
+ | limitations under the License.                                          |
+ +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+
+-->
+
+
+<!--
+XML DTD for the SIERRA::OS "productivity" plugin MyToolbox application, v1.0
+
+MyToolbox is a "Build and Release Management System". The purpose of MyToolbox 
+is to provide a means of organizing and managing complex software build and 
+deployoment processes. When used in conjunction with MyProjects, this tool can 
+also be used to incorporate workflows into completion of these processes. Aside 
+from software build management MyToolbox can also be used to manage other 
+complex processes such as automated setup and provisioning of a VM-based 
+development environment. 
+
+MyToolbox organizes processes within the context of a project. XML files based 
+on this DTD define a single project and the corresponding processes that will be 
+managed for that project by MyToolbox. In order for MyToolbox to recognize an 
+XML file, you must add a parameter to app-config where type="my-toolbox", 
+id="[unique identifier for the project]" and 
+value="[app/etc relative or absolute path to xml file]" (".xml" extension is 
+optional). For example:
+
+<param id="MySpecialProject" type="my-toolbox" value="plugins/myplugin/etc/my-toolbox.xml" />
+
+To support validation of your plugin xml file, include the following DOCTYPE 
+element at the beginning (after the "xml" declaration):
+
+<!DOCTYPE project PUBLIC "-//SIERRA//DTD SRAOS Productivity::MyToolbox//EN" 
+  "http://sierra-os.googlecode.com/svn/trunk/etc/plugins/productivity/etc/my-toolbox.dtd">
+-->
+
+
+<!--
+ +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+
+ |                            XML Elements                              |
+ +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+
+-->
+
+<!--
+the "project" element is the root element. it defines a single project that will 
+be visible in MyToolbox as well as the processes that may be invoked in the 
+context of that project. 
+
+the project element also specifies the default build tool that will be used to 
+invoke processes associated with it. the 'params' sub-elements may be used to 
+define build-tool specific configuration parameters. for more information on 
+which such parameters are available/required, review the documentation provided 
+for the "build-tool" selected (usually provided in the class header api)
+
+basedir           the base directory from where processes should be invoked for 
+                  this project. relative path determinations will be calculated 
+                  first based on this directory. if not specified, the directory 
+                  containing the xml file configuration will be assumed. the 
+                  path specified may be relative to the directory containing the 
+                  xml configuration, the app dir or the sierra framework 
+                  directory
+
+build-tool        the name of the PHP class defined in "build-tool-src" that 
+                  will be used to manage interaction with the underlying build 
+                  tool responsible for the processes defined for this project. 
+                  if not specified, the basename of "build-tool-src" (minus the 
+                  ".php" file extension) will be assumed to be the class name.
+                  this class should extend the base class template defined in 
+                  lib/MyToolboxBuildTool.php. the default build tool if another 
+                  is not specified, is Apache Ant defined in 
+                  lib/MyToolboxBuildToolAnt.php. this class must provide 
+                  certain standard methods used by MyToolbox in order to 
+                  complete the processes defined for this project. for more 
+                  information, see the documentation provided in 
+                  lib/MyToolboxBuildTool.php
+
+build-tool-src    the absolute or basedir/app lib/sys lib relative or absolute 
+                  path to the PHP source file containing the "build-tool" class 
+                  (".php" extension is optional)
+
+description       an optional description resource for this project
+
+icon              an optional uri to an icon to graphically represent this 
+                  project. this uri MUST contain the string "{$size}" which will 
+                  be replaced with either 16, 32 or 64 to display icons of those 
+                  corresponding sizes in MyToolbox (thus all 3 URIs much be 
+                  valid)
+                  
+label-revision    if a process contains any artifacts that utilize automated 
+                  revisioning, this attribute may be used to specify the 
+                  resource to use as the header for the revision type selection 
+                  area in the setup form for that process. if may use any of the 
+                  following imbedded keys: {$projectName}, {$artifact} (artifact 
+                  key) or {$artifactName}. If not specified, a default "Select a 
+                  revision type for {$artifactName}" label will be used
+
+label-revision-build the resource to use for for the build revision type label. 
+                  if not specified, a default "Build" label will be used
+
+label-revision-major the resource to use for for the major revision type label. 
+                  if not specified, a default "Major" label will be used
+
+label-revision-minor the resource to use for for the minor revision type label. 
+                  if not specified, a default "Minor" label will be used
+
+label-revision-revision the resource to use for for the revision/maintenance 
+                  revision type label. if not specified, a default "Revision" 
+                  label will be used
+
+label-status-*    optional resources to use for specific status labels. if not 
+                  specified, default "Failed", "Initialized", "Pending", 
+                  "Success" or "Waiting on Project" labels will be used
+
+name              the name resource for this project. this is the value that 
+                  will be displayed in MyToolbox for any project reference
+                  
+notify            space separated list of users, groups and/or email addresses 
+                  that should be notified by email whenever a process from this 
+                  project is initiated. each process "notify" method will 
+                  inherit this value unless another is specified. the search 
+                  order for values in this attribute will be 1) username, 2) 
+                  group name, 3) email address, 4) uid (prefix uids with "u" and 
+                  5) gid (prefix gids with "g"). notifications will be sent 
+                  using the creator's email address and name as the from address 
+                  and name
+                  
+notify-subject    an optional resource to use for notification subjects. this 
+                  resource may use any of the following imbedded keys:
+                    {$projectName}, {$process} (process "key") or {$processName}
+                  if not specified, a default subject will be used
+                  
+notify-subject-artifact same as "notify-subject" but used for artifacts only. if
+                  not specified, a default value will be used. this resource 
+                  may use any of the following imbedded keys:
+                    {$projectName}, {$process} (process "key") {$processName}, 
+                    {$artifact} (artifact "key"), {$artifactName}, 
+                    {$timestamp_[format string]} (where [format string] is a 
+                    SRA_GregorianDate::format() compatible string)or {$version}
+                  if not specified, a default subject will be used
+                  
+notify-tpl        an optional custom smarty template to use for process email 
+                  notifications. this template will have access to any of the 
+                  above "notify-subject" values in the form of smarty variables 
+                  as well as the following: $projectDescription, 
+                  $processDescription, $email (the email address for the 
+                  notification), $name (the name for the notification - not 
+                  available for email recipients) and $processObj (a reference 
+                  to the MyToolboxProcessVO instance). if not specified, a 
+                  default template will be used
+                  
+notify-tpl-artifact an optional custom smarty template to use for artifact email 
+                  notifications. this template will have access to any of the 
+                  above "notify-subject-artifact" values in the form of smarty 
+                  variables as well as the following: $artifactDescription, 
+                  $processDescription, $projectDescription, $email (the email 
+                  address for the notification), $name (the name for the 
+                  notification - not available for email recipients) and 
+                  $artifactObj (a reference to the MyToolboxArtifactVO 
+                  instance). if not specified, a default template will be used
+                  
+notify-tpl-html   same as "notify-tpl" but may be used to specify an html 
+                  formatted notification template (multipart email message will 
+                  be sent)
+                  
+notify-tpl-html-artifact same as "notify-tpl-artifact" but may be used to 
+                  specify an html formatted notification template (multipart 
+                  email message will be sent)
+                  
+resources         the basedir/app etc/sys etc relative or absolute path to the 
+                  resource bundle to use to lookup strings used by this project 
+                  (project name, description, etc.). if not specified, the app 
+                  resources will be used
+                  
+roles             a space separated list of group names or gids one of which a 
+                  user must be a member of in order to have access to this 
+                  project and its' processes
+
+
+Used in:	NA
+-->
+<!ELEMENT project (param*, process+)>
+<!ATTLIST project
+          basedir             CDATA       #IMPLIED
+          build-tool          CDATA       #IMPLIED
+          build-tool-src      CDATA       "plugins/productivity/MyToolboxBuildToolAnt"
+          description         CDATA       #IMPLIED
+          icon                CDATA       #IMPLIED
+          label-revision      CDATA       #IMPLIED
+          label-revision-build     CDATA  #IMPLIED
+          label-revision-major     CDATA  #IMPLIED
+          label-revision-minor     CDATA  #IMPLIED
+          label-revision-revision  CDATA  #IMPLIED
+          label-status-failed      CDATA  #IMPLIED
+          label-status-initialized CDATA  #IMPLIED
+          label-status-pending     CDATA  #IMPLIED
+          label-status-success     CDATA  #IMPLIED
+          label-status-wait        CDATA  #IMPLIED
+          name                CDATA       #REQUIRED
+          notify              CDATA       #IMPLIED
+          notify-subject      CDATA       #IMPLIED
+          notify-subject-artifact  CDATA  #IMPLIED
+          notify-tpl          CDATA       #IMPLIED
+          notify-tpl-artifact CDATA       #IMPLIED
+          notify-tpl-html     CDATA       #IMPLIED
+          notify-tpl-html-artifact CDATA  #IMPLIED
+          resources           CDATA       #IMPLIED
+          roles               CDATA       #IMPLIED>
+
+
+<!--
+the "process" element defines something that is done in an automated fashion 
+such as deployment or building a software release. projects define 1 or more 
+processes associated to them. additionally processes may define nested processes 
+which are processes that can only be invoked within the context of the parent 
+process. for example, a deployment process might have a sub-process for rolling 
+back the deployment
+
+processes can also define artifacts associated to them. artifacts are resources 
+including files or uris that are generated as a result of successful invocation 
+of that process. these artifacts are stored along with the process invocation 
+record
+
+processes can be manually invoked, automatically triggered or scheduled by a 
+MyToolbox user
+
+a process invocation has a start-to-finish lifecycle. this lifecycle is 
+monitored using statuses. the following statuses are used:
+
+  initialized: prior to invocation, while setup data is being collected 
+               (view-setup) which does not have to occur all at once (user may 
+               save data and return later to complete)
+  wait:        waiting for completion of "project" or "project-wf-step"
+  pending:     when the process is currently in progress but not yet completed.
+               this status is used for asynchronous processes where the 
+               build tool is being periodically queried for an updated status
+  success:     after successful build tool invocation
+  failed:      after failed build tool invocation
+  
+process status is determined by the build tool. the latter 3 statuses above are 
+the statuses that the build tool uses. for more information, see the api 
+documentation provided in lib/MyToolboxBuildTool.php
+
+the 'params' sub-elements may be used to define build-tool specific process 
+configuration parameters. for more information on which such process parameters 
+are available/required, review the documentation provided for the "build-tool" 
+selected (usually provided in the class header api)
+                  
+key               the unique referencing identifier for this process. this value 
+                  will be passed in the MyToolboxBuildTool::invokeProcess call
+                  
+basedir           the base directory from where this process should be invoked. 
+                  this value overrides the same value for the enclosing project
+
+build-tool        overrides the project "build-tool" for this process 
+                  (sub-processes still inherit from the project "build-tool"). 
+                  when specified, the enclosed "params" will also override the 
+                  project "params". essentially the same $params will be 
+                  passed into the build tool constructor as are passed into the 
+                  'invokeProcess' method when a process specific "build-tool" is 
+                  specified
+
+build-tool-src    overrides the project "build-tool-src" for this process 
+                  (sub-processes still inherit from the project 
+                  "build-tool-src")
+                  
+description       an optional description resource identifier for this process. 
+                  the description can be viewed when viewing or starting a 
+                  process
+                  
+entity            the optional name of an entity that may be used to collect 
+                  process invocation parameters, display process related 
+                  information to the user, and provide other customization 
+                  functionality for this process. this entity will be 
+                  instantiated and inserted when the invocation is invoked (but 
+                  following the display of "view-setup" and setting of the data 
+                  associated with that view). if any validation error occur in 
+                  attempting to insert the entity instance, these will be 
+                  displayed to the user and the process invocation will not be 
+                  allowed. the following attributes/methods may be defined for 
+                  this entity (if the entity instance becomes dirty after any of 
+                  these method invocations it will automatically be updated):
+                      
+                    pid : int - when this attribute exists, it will 
+                      automatically be set to the process invocation identifier 
+                      (the $pid value used in conjunction with the build tool 
+                      method invocations)
+                  
+                    canProcessProcessBeInvoked($id : string, &$msg : string) : boolean - 
+                      invoked prior to the process invocation (but after display 
+                      and processing of "view-setup"), where $id is the 
+                      identifier ("key") of this process. process invocation 
+                      will only be allowed if TRUE is returned. optionally, this 
+                      method may set the $msg parameter to an error message that 
+                      should be displayed to the user when FALSE is returned
+                      
+                    getProcessArtifactRevisionType($id : string) : string - 
+                      this method is invoked after display and processing of 
+                      "view-setup" but prior to display of the revision type 
+                      selection form. if this method exists and returns a valid 
+                      revision type for the artifact identified by $id (the 
+                      artifact "key"), then the user will not be prompted to 
+                      select a revision type for that artifact in the revision 
+                      type seleciton form
+                      
+                    getProcessArtifactPath($id : string, $path : string) : string - 
+                      this method may be used to change the default path for the 
+                      artifact identified by $id (the artifact "key"). the $path 
+                      parameter is the default path. if this method returns NULL 
+                      or an invalid path, $path will be used instead
+                      
+                    getProcessArtifactVersion($id : string, $version : string) : string - 
+                      this method may be used to customize the public version 
+                      identifier for the artifact identified by $id (the artifact 
+                      "key"). the $version parameter is the MyToolbox generated 
+                      public version identifier. if this method returns NULL 
+                      $version will be used instead
+                      
+                    getProcessLabel() : string - by default a process invocation 
+                      label displayed in MyToolbox will be a combination of the 
+                      process name, invoking username, and timestamp. if 
+                      defined, this method may be used to provide a customized 
+                      label to use for the process invocation instead of this 
+                      default value
+                      
+                    getProcessNotify() : string[] - overrides "notify" for this 
+                      process (each value in the return array should adhere to 
+                      the same format described for the "notify" process 
+                      attribute described in the project element above)
+                      
+                    getProcessNotifyArtifact($id : string) : string[] - 
+                      overrides "notify" in the enclosed artifact element 
+                      identified by $id (each value in the return array should 
+                      adhere to the same format described for the "notify" 
+                      process attribute described in the project element above)
+                    
+                    getProcessProjectSetup() : hash - if "project" is specified, 
+                      this method may be used to provide the setup data for that 
+                      project (may cause the project template setup screent to 
+                      be bypassed)
+                      
+                    processEnd($success : boolean, $duration : int, $log : string, $err : string) : void - 
+                      invoked when the build tool invocation ends where $success 
+                      is TRUE if the invocation was successful 
+                      (status==MY_TOOLBOX_BUILD_TOOL_STATUS_SUCCESS), $duration 
+                      is how long the invocation took in milliseconds, $log is 
+                      the return value from the build tool class 
+                      'getProcessResultsLog' method (if applicable), and $err is 
+                      the SRA_Error message (if build tool class instantiation 
+                      or 'invokeProcess'/'getProcessStatus' calls results in an 
+                      SRA_Error object)
+                      
+                    processStart(&$params : SRA_Params, &$env : hash) : void - 
+                      invoked prior to process invocation. $params is the 
+                      'invokeProcess' $params argument. when this value is 
+                      passed by reference (variable name must be preceded with 
+                      & in the build tool class) any changes made to it by this 
+                      method will be maintained through the call to 
+                      'invokeProcess'. the same is true of the $env argument 
+                      which is a hash containing the current environment 
+                      variables that will be set prior to the 'invokeProcess' 
+                      method call
+                      
+                    queryProcessStatus($status : string) : void - invoked each 
+                      time that the 'getProcessStatus' method is invoked (used 
+                      when the process execution is asynchronous). $status is 
+                      the status returned from that invocation
+                      
+                    replaceWithWfEntity(&$wfEntity : object) : void - invoked if 
+                      "project-wf-entity" is specified and the process is 
+                      invoked signifying that this entity will be replaced with 
+                      $wfEntity (this method may perform cleanup tasks such as 
+                      deleting itself from the database or copying data over to 
+                      $wfEntity)
+                      
+                    setProcessArtifact($id : string, $path : string, $fileName : string, $version : string) : void - 
+                      invoked for each enclosed "artifact" where $id is the 
+                      artifact id ("key"), $path is the absolute path (or 
+                      uri) to that artifact, $fileName is the "file-name" for 
+                      the artifact, and $version is the artifact version (if 
+                      applicable). invoked after successful process invocation. 
+                      the artifact file will be deleted from the file system 
+                      after invocation of this method if "delete-original" is 
+                      true for that artifact
+                      
+                    setProcessStatus($status : string) : void - invoked whenever 
+                      the status of the process changes
+                      
+                    setProcessTimeToCompletion($minutes : int) : void - invoked 
+                      if the process execution is asynchronous and the build 
+                      tool class has the method 'getProcessTimeToCompletion' 
+                      which returns a valid time for this process. $minutes will 
+                      be the current time to completion in minutes
+                      
+                    setupProcess($properties : hash) : void - invoked when a 
+                      process is initialized where $properties is a hash with 
+                      the following values:
+                        pid:         the unique process invocation id ($pid)
+                        processId:   the id of the process ("key")
+                        processName: the name of the project
+                        projectName: the name of the project
+                        uid:         the id of the user initializing the process
+                  
+hidden            whether or not to hide this process from users in the 
+                  MyToolbox interface. this might be set to true if the process 
+                  uses only triggers
+
+icon              an optional uri to an icon to graphically represent this 
+                  process. this uri MUST contain the string "{$size}" which will 
+                  be replaced with either 16, 32 or 64 to display icons of those 
+                  corresponding sizes in MyToolbox (thus all 3 URIs much be 
+                  valid). if not specified, a default icon will be used
+
+name              the name resource for this process. this is the value that 
+                  will be displayed in MyToolbox for any process reference. if 
+                  not specified, "key" will be used
+                  
+notify            may be used to override the project "notify" value 
+                  (sub-processes still inherit from the project "notify" value)
+                  in order to specify other notification recipients for this 
+                  process. the entity "getProcessNotify" may also be used to 
+                  specify notification recipients. notifications will be sent 
+                  using the creator's email address and name as the from address 
+                  and name
+                  
+notify-subject    may be used to override the project "notify-subject" 
+                  value (sub-processes still inherit from the project 
+                  "notify-subject" value)
+
+notify-tpl        may be used to override the project "notify-tpl" value 
+                  (sub-processes still inherit from the project "notify-tpl" 
+                  value)
+
+notify-tpl-html   may be used to override the project "notify-tpl-html" value
+                  (sub-processes still inherit from the project 
+                  "notify-tpl-html" value)
+                  
+project           if invocation of this process is dependent on completion of a 
+                  workflow or certain tasks, this attribute may be used to 
+                  specify the identifier of a project template that should be 
+                  used for this purpose. when used, the process invocation will 
+                  allow the user to go through the setup process ("view-setup" & 
+                  revision types), but will then require the user to create an 
+                  instance of and complete this project before the process 
+                  invocation can occur
+                  
+project-task      if this process can start once a project template task is 
+                  completed instead of when the project itself is completed, 
+                  this attribute may specify the id of that task (the task 
+                  "key" in the project template definition)
+
+project-wf-entity if this process is dependent on a workflow-based project 
+                  template, and the "entity" that should be used once the 
+                  process starts is an entity from the workflow, this attribute 
+                  should specify the workflow identifier for that entity. if 
+                  the process already has an entity associated with it, that 
+                  entity will be replaced with this one (after invocation of the 
+                  'replaceWithWfEntity' method)
+
+project-wf-step   if this process can start once a project workflow step is 
+                  completed instead of when the project itself is completed, 
+                  this attribute may specify the id of that step (the step 
+                  "key" in the workflow definition)
+                  
+recur-ignore-fail if a recurring instance of this process fails, setting this 
+                  attribute to true will result in the no record of that process 
+                  being recorded. this includes both the failed status and if 
+                  errors occur
+                  
+remote-uri        processes may be invoked on remote systems. in order to do so, 
+                  the script lib/_my-toolbox-remote-process.php MUST be 
+                  installed on that remote system and made visible through this 
+                  uri (where PHP is also enabled for that script on the Apache 
+                  web server for that system) accessible from the primary system 
+                  (the MyToolbox host). this value should be the uri to that 
+                  script. for more information, see the documentation provided 
+                  in the header of 
+                  _my-toolbox-remote-process.php
+                  
+roles             a space separated list of group names or gids one of which a 
+                  user must be a member of in order to have access to this 
+                  process
+                  
+roles-schedule    a space separated list of group names or gids one of which a 
+                  user must be a member of in order to have access to schedule 
+                  this process (if "schedule" is true), including recurrence
+                  
+schedule          can this process be scheduled by a MyToolbox user?
+
+schedule-recur    if "schedule" is true, can the user use recurrence in the 
+                  process schedule (i.e. schedule to occur every Sunday night at 
+                  1AM)
+
+schedule-recur-max if "schedule-recur" is true, this attribute may be used to 
+                  specify the max # of recurrening schedules that may exist for 
+                  this process accross all users
+                  
+setenv            a pipe (|) separated list of names/values to set in the 
+                  environment prior to invoking the build tool
+                  
+setenv-propertyfile load all properties in this file and environment variables. 
+                  duplicate properties specified in "setenv" will override these 
+                  values. may be localized
+                  
+trigger-ignore-fail if a triggered instance of this process fails, setting this 
+                  attribute to true will result in the no record of that process 
+                  being recorded. this includes both the failed status and if 
+                  errors occur
+                  
+view-error        if "entity" is specified, this value may specify a view to 
+                  display as the summary for the process when the process 
+                  invocation results in a system error
+                  
+view-fail         if "entity" is specified, this value may specify a view to 
+                  display as the summary for the process when the process 
+                  invocation fails
+                  
+view-notify       if an "entity" is specified for this process, this value may 
+                  specify the id of a view to use for any notifications in place 
+                  of "notify-tpl". this view will have access to the same smarty 
+                  variables
+
+view-notify-html  if an "entity" is specified for this process, this value may 
+                  specify the id of a view to use for any notifications in place 
+                  of "notify-tpl-html". this view will have access to the same 
+                  smarty variables
+                  
+view-pending      if "entity" is specified, this value may specify a view to 
+                  display as the summary for the process when the process 
+                  invocation is in a pending status (during asynchronous 
+                  process execution)
+                  
+view-setup        if "entity" is specified, this value may specify a view to 
+                  display prior to the process invocation. if this view contains 
+                  any fields, the data entered by the user for those fields will 
+                  be set using the "setAttributes" method. this view is 
+                  displayed first, prior to even the revisions type form (if 
+                  applicable). the user will not be allowed to proceed past this 
+                  form unless all of the mandatory entity validation passes and 
+                  the entity can be inserted into the database
+                  
+view-success      if "entity" is specified, this value may specify a view to 
+                  display as the summary for the process when the build tool 
+                  invocation is successful
+
+
+Used in:	project, process
+-->
+<!ELEMENT process (artifact*, param*, process*, trigger*)>
+<!ATTLIST process
+          key                 ID          #REQUIRED
+          basedir             CDATA       #IMPLIED
+          build-tool          CDATA       #IMPLIED
+          build-tool-src      CDATA       #IMPLIED
+          description         CDATA       #IMPLIED
+          entity              CDATA       #IMPLIED
+          hidden              %boolean;   "1"
+          icon                CDATA       #IMPLIED
+          name                CDATA       #IMPLIED
+          notify              CDATA       #IMPLIED
+          notify-subject      CDATA       #IMPLIED
+          notify-tpl          CDATA       #IMPLIED
+          notify-tpl-html     CDATA       #IMPLIED
+          project             CDATA       #IMPLIED
+          project-task        CDATA       #IMPLIED
+          project-wf-entity   CDATA       #IMPLIED
+          project-wf-step     CDATA       #IMPLIED
+          recur-ignore-fail   %boolean;   "0"
+          remote-uri          CDATA       #IMPLIED
+          roles               CDATA       #IMPLIED
+          roles-schedule      CDATA       #IMPLIED
+          schedule            %boolean;   "1"
+          schedule-recur      %boolean;   "0"
+          schedule-recur-max  CDATA       #IMPLIED
+          setenv              CDATA       #IMPLIED
+          setenv-propertyfile CDATA       #IMPLIED
+          triggered-ignore-fail %boolean; "0"
+          view-error          CDATA       #IMPLIED
+          view-fail           CDATA       #IMPLIED
+          view-notify         CDATA       #IMPLIED
+          view-notify-html    CDATA       #IMPLIED
+          view-pending        CDATA       #IMPLIED
+          view-setup          CDATA       #IMPLIED
+          view-success        CDATA       #IMPLIED>
+          
+          
+<!--
+the "artifact" element is used to associate an artifact or file with the 
+invocation of a process. an artifact is a file or uri that has been "built" as a 
+result of invoking a process. artifacts may be stored permanently or temporarily 
+based on the keep-* configuration attributes. artifacts may also be versioned 
+automatically by MyToolbox using the version* configuration attributes
+
+key               the unique identifier for this artifact
+
+category          the category or categories to assign this artifact to. this 
+                  value should be the resource identifier for that category. 
+                  multiple categories can be specified each separated by a 
+                  space. a category hierarchy can be specified by separating 
+                  each level (starting from the top) with a pipe (|). each 
+                  category resource may use the following imbedded keys: 
+                    {$artifact} (the artifact "key"), {$artifactName} or 
+                    {$timestamp_[format string]} (where [format string] is a 
+                    SRA_GregorianDate::format() compatible string)
+                  additionally, each category may specify an icon uri to use to 
+                  represent that category in the process navigator by separating 
+                  the category resource identifier and the icon uri using a 
+                  semi-colon. for example: 
+                    text.builds;/path/to/icons/16/icon.gif 
+                  icons should be 16 pixels square
+
+delete-original   whether or not to delete the original copy of this file
+
+description       an optional resource to use for the artifact description. if 
+                  not specified, no description will be available. this 
+                  resource may use any of the imbedded keys defined in 
+                  "file-name" below
+
+file-name         the name to assign to this file. this value may be a resource 
+                  key and also may have any of the following imbedded keys:
+                    {$artifact} (the artifact "key"), {$artifactName}, 
+                    {$timestamp_[format string]} (where [format string] is a 
+                    SRA_GregorianDate::format() compatible string), or 
+                    {$version} (if "version" is true)
+                  if not specified, the original name of the file will be used
+
+icon              an optional uri to an icon to graphically represent this 
+                  artifact. this uri MUST contain the string "{$size}" which 
+                  will be replaced with either 16, 32 or 64 to display icons of 
+                  those corresponding sizes in MyToolbox (thus all 3 URIs much 
+                  be valid). if not specified, a default icon will be used based 
+                  on the file extension/mime-type
+
+keep-days         if this artifact should be automatically deleted after a 
+                  certain amount of time, this attribute may be used to specify 
+                  the # of days after creation of the artifact when it should be 
+                  deleted. fractional values are allowed
+
+keep-num          if only a certain # of artifacts of this type should be 
+                  maintained by MyToolbox (accross all users), then this 
+                  attribute may specify that #. set this value to 0 if you do 
+                  not want to maintain any instances of this artifact in 
+                  MyToolbox (notifications/attachments will still occur). then 
+                  when deletion occurs, oldest artifacts will be deleted first
+
+label             an optional resource to use for the artifact label. if not 
+                  specified, the "file-name" value will be used. if "file-name" 
+                  is also not specified, the basename of the original file will 
+                  be used.this resource value may use any of the imbedded keys 
+                  defined in "file-name" 
+                  
+link              "path" may be a uri. if the artifact should be linked to this 
+                  uri instead of the file being copied, this attribute should be 
+                  set to true
+
+mime-type         the mime type for this artifact. if not specified, the mime 
+                  type will be automatically determined (if possible) based on 
+                  the extension of the original file
+
+notify            optional notification recipients for this artifact. if not 
+                  specified, and the process entity "getProcessNotifyArtifact" 
+                  method does not exist or does not return a value, no 
+                  notification will occur for this artifact. notifications will 
+                  be sent using the creator's email address and name as the from 
+                  address and name
+
+notify-attach     whether or not to attach the artifact file (using a mime 
+                  attachment) to any email notifaction messages sent
+
+notify-subject    may be used to override the enclosing project 
+                  "notify-subject-artifact" value if notifications are used for 
+                  this artifact
+
+notify-tpl        may be used to override the enclosing project 
+                  "notify-tpl-artifact" value if notifications are used for this 
+                  artifact
+
+notify-tpl-html   may be used to override the enclosing project 
+                  "notify-tpl-html-artifact" value if notifications are used for 
+                  this artifact
+
+path              the basedir/app relative or absolute path to the file that 
+                  should be used for this artifact. the path may be a regular 
+                  expression, but if multiple files exist matching that 
+                  expression, only the first match will be used
+                  
+project-attach    if the enclosing process has a project defined and this 
+                  attribute is true, this artifact will be attached to that 
+                  project when it is created
+
+project-category  if "project-attach" is true, this attribute may be used to 
+                  specify a project file category that this artifact should 
+                  automatically be assigned to (the "key" value for the 
+                  "file-category" in the project template)
+                  
+revision-levels   if "version" is true, this attribute will specify the # of 
+                  levels of revisioning to allow for this artifact. the default 
+                  is 4 where each successive level is specified in the numeric 
+                  auto-incrementing format: major.minor.maintenance.build. if 
+                  you wish to use fewer revision levels, you may change this 
+                  attribute value to 1, 2 or 3
+
+roles             a space separated list of group names or gids one of which a 
+                  user must be a member of in order to have access to this 
+                  artifact
+
+roles-major       a space separated list of group names or gids one of which a 
+                  user must be a member of in order to be able to create a major 
+                  revision to this artifact. if the user is not in one of these 
+                  groups, this revision type will not be an option when they 
+                  setup the process invocation
+
+roles-minor       a space separated list of group names or gids one of which a 
+                  user must be a member of in order to be able to create a minor 
+                  revision to this artifact. if the user is not in one of these 
+                  groups, this revision type will not be an option when they 
+                  setup the process invocation
+
+roles-revision    a space separated list of group names or gids one of which a 
+                  user must be a member of in order to be able to create a 
+                  maintenance revision to this artifact. if the user is not in 
+                  one of these groups, this revision type will not be an option 
+                  when they setup the process invocation
+
+version           whether or not to automatically version this artifact. when 
+                  true, MyToolbox will automatically assign a unique, 
+                  numerically incrementing version # (based on the revision type 
+                  selected when the process is invoked) to every new instance 
+                  of this artifact. the versioning schema used by MyToolbox is 
+                  a standard, 4-part string where each part is a numeric value 
+                  corresponding with 1 of 4 revision types. the revision types 
+                  used are major, minor, revision/maintenance and build where 
+                  the first type corresponds with the left-most value and the 
+                  last type corresponds with the right-most value. when a 
+                  process has a revisioned artifact, part of the setup process 
+                  for that process invocation will require the user to select a 
+                  revision type for that artifact. then, when/if the process 
+                  invocation is successful, and the artifact created, the 
+                  version assigned to that artifact will be the previous (or 
+                  initial) version with the corresponding revision type value 
+                  incremented by 1. the "version-prefix", "version-suffix" 
+                  attributes and entity "getProcessArtifactVersion" method, may 
+                  be used to modify the publicly visible version value
+                  
+                  For more information, see the documentation provided at: 
+                  http://en.wikipedia.org/wiki/Software_versioning
+
+version-prefix    an optional prefix for the publicly visible version value for 
+                  this artifact (may be a resource string)
+
+version-start     the starting software version. if "revision-levels" has been 
+                  specified, this value should not contain any more version 
+                  points than are necessary. if not specified, 0.0.0.0 will be 
+                  used (or the correct starting version based on the 
+                  "revision-levels" specified)
+
+version-suffix    an optional suffix for the publicly visible version value for 
+                  this artifact (may be a resource string)
+
+view-notify       if an "entity" is defined for the enclosing process, this 
+                  value may specify the id of a view to use for any 
+                  notifications in place of "notify-tpl". this view will have 
+                  access to the same smarty variables
+
+view-notify-html  if an "entity" is defined for the enclosing process, this 
+                  value may specify the id of a view to use for any 
+                  notifications in place of "notify-tpl-html". this view will 
+                  have access to the same smarty variables
+
+
+Used in:	process
+-->
+<!ELEMENT artifact EMPTY>
+<!ATTLIST artifact
+          key                 CDATA       #REQUIRED
+          category            CDATA       #IMPLIED
+          delete-original     %boolean;   "1"
+          description         CDATA       #IMPLIED
+          file-name           CDATA       #IMPLIED
+          icon                CDATA       #IMPLIED
+          keep-days           CDATA       #IMPLIED
+          keep-num            CDATA       #IMPLIED
+          label               CDATA       #IMPLIED
+          link                %boolean;   "0"
+          mime-type           CDATA       #IMPLIED
+          notify              CDATA       #IMPLIED
+          notify-attach       %boolean;   "0"
+          notify-subject      CDATA       #IMPLIED
+          notify-tpl          CDATA       #IMPLIED
+          notify-tpl-html     CDATA       #IMPLIED
+          path                CDATA       #REQUIRED
+          project-attach      %boolean;   "0"
+          project-category    CDATA       #IMPLIED
+          revision-levels     (1|2|3|4)   "4"
+          roles               CDATA       #IMPLIED
+          roles-major         CDATA       #IMPLIED
+          roles-minor         CDATA       #IMPLIED
+          roles-revision      CDATA       #IMPLIED
+          version             %boolean;   "0"
+          version-prefix      CDATA       #IMPLIED
+          version-start       CDATA       "0.0.0.0"
+          version-suffix      CDATA       #IMPLIED
+          view-notify         CDATA       #IMPLIED
+          view-notify-html    CDATA       #IMPLIED>
+          
+          
+<!--
+the "trigger" element can be used to define when a process should be invoked 
+automatically using a MyToolboxTrigger implementation. the 'param' sub-elements 
+will be passed into the "trigger" constructor. for more information, see the 
+documentation provided in MyToolboxTrigger.php. 
+
+if the process utilizes an entity and a "view-setup" that requires data entry, 
+'param' sub-elements (type="view-setup") may be used to specify the the data to 
+automatically set in the "view-setup" form. params of this type will be removed 
+from the params passed to the MyToolboxTrigger implementation constructor
+
+if the process has artifacts associated with it, 'param' sub-elements 
+(type="revision-type") can be used to specify the revision type(s) to use for 
+a given artifact, where the "key" is the artifact "key" and the "value" is the 
+revision type (one of the MY_TOOLBOX_ARTIFACT_REVISION_TYPE_* values). params of 
+this type will also be removed from the params passed to the MyToolboxTrigger 
+implementation constructor
+
+if an entity is associated with the process this trigger pertains to, the same 
+pre-invocation methods and validation will be invoked and must pass 
+satisfactorily in order for the process to be invoked. if this does not occur, 
+the process invocation will be cancelled, deleted, and an error logged
+
+key               the unique identifier for this trigger
+
+recur             specifies the max # of times that this trigger may occur. set 
+                  this value to "0" (the default value) in order to not cap the 
+                  number of recurring invocations that may occur
+
+trigger           the name of the PHP class defined in "trigger-src" that will 
+                  be used to determine when automatic process triggering should 
+                  occur. if not specified, the basename of "trigger-src" (minus 
+                  the ".php" file extension) will be assumed to be the class 
+                  name.this class should extend the base class template defined 
+                  in lib/MyToolboxTriggerImpl.php. for more information, see the 
+                  documentation provided in that class
+                  
+trigger-src       the absolute or basedir/app lib/sys lib relative path to the 
+                  PHP source file containing the "trigger" class (".php" 
+                  extension is optional)
+
+uid               the uid of the user to assign as the owner of any process 
+                  instances created as the result of this trigger. if not 
+                  specified, the root user will be used
+
+
+Used in:	process
+-->
+<!ELEMENT trigger (param*)>
+<!ATTLIST trigger
+          key                 CDATA       #REQUIRED
+          recur               CDATA       "0"
+          trigger             CDATA       #REQUIRED
+          trigger-src         CDATA       #REQUIRED
+          uid                 CDATA       #IMPLIED>
+          
+          
+<!-- 
+the "param" element defines key/value/type for specific configuration parameters
+
+id				        the param name
+
+type							the param type
+
+value							the param value
+
+Used in: 	project, process, trigger
+-->
+<!ELEMENT param EMPTY>
+<!ATTLIST param							id									CDATA				#REQUIRED>
+<!ATTLIST param							type								CDATA				#IMPLIED>
+<!ATTLIST param							value								CDATA				#IMPLIED>
+
+
+<!--
+ +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+
+ |                            XML Entities                              |
+ +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+
+-->
+
+<!-- 
+used to define a boolean data type where 1=TRUE and 0=FALSE
+-->
+<!ENTITY % boolean "(1|0|true|false|on|off|yes|no)">

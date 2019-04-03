@@ -1,0 +1,83 @@
+<div class="coreWikiHelp">
+<div class='vspace'></div><h2>Commenting out long blocks on a page</h2>
+<p>Also known as: multiline comments
+</p>
+<p class='vspace'>If you want to put many lines of comments on a page that are only visible in edit view and that can include directives that you don't want processed, use the "if false" trick:
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>this text will be visible
+(:if false:)
+here is some
+text
+(:searchbox:)
+with other directives
+(:if:)
+but the intervening lines will only show in edit view
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><p>this text will be visible
+<br  />but the intervening lines will only show in edit view
+</p>
+</td></tr></table>
+<div class='vspace'></div><h2>Spaceless block preformat</h2>
+<p>How can I do spaceless block preformat - that is, preformat multiple lines without prefixing each line with a single space?  For instance, I want to display a code block in the wiki.
+</p>
+<p class='vspace'>The answer is our old friend, [=...=], but <span  style='color: green;'>with a space</span> on the line before the opening bracket. Here is an example:
+</p><pre> 
+ [= 
+int main(int argc, char** argv)
+{
+  time_t epoch;
+  char sdate[MAXS];
+  struct tm* tmP;
+  if (argc&lt;2) {
+    USAGE(NULL);
+  }
+} 
+</pre><p><code>=]</code>
+</p>
+
+<div class='vspace'></div><h2>Indenting blocks of text with line breaks</h2>
+<p>Blocks of text to which <code class='escaped'>(:linebreaks:)</code> has been applied can be indented by preceding the first line of the block with indention arrows (<code class='escaped'>-&gt;</code>) and aligning subsequent lines under the first. An unindented line stops the block indentation.
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+(:linebreaks:)
+
+This is normal text, no indentation.
+
+-&gt; Here is some indented
+   text with line breaks
+   in the middle of the text.
+
+   We can even continue the indentation 
+   across paragraphs.
+
+Now we're back to normal again.
+
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><p class='vspace'>This is normal text, no indentation.
+</p>
+<div class='vspace'></div><div class='indent'>Here is some indented
+<br  />text with line breaks
+<br  />in the middle of the text.
+<br  /><div class='vspace'></div>We can even continue the indentation 
+<br  />across paragraphs.
+</div><p class='vspace'>Now we're back to normal again.
+</p>
+<div class='vspace'></div>
+</td></tr></table>
+
+<div class='vspace'></div><h2>Insert spacing within a text line</h2>
+<p>To insert additional spacing in a textline you can use space characters from the <a class='wikilink' href='#' onclick="OS.getWindowInstance(this).getManager().displayArticle('specialCharactersList')">SpecialCharactersList</a> like &amp;ensp; &amp;emsp; &amp;thinsp; &amp;nbsp; .
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre> 
+
+Some &amp;ensp; &amp;ensp; spacing
+
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><p class='vspace'>Some &ensp; &ensp; spacing
+</p>
+<div class='vspace'></div>
+</td></tr></table>
+</div>

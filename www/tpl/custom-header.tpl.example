@@ -1,0 +1,3 @@
+{* use this file (custom-header.tpl) to define a custom header that will be inserted directly above 
+   the dock *}
+<span>{$Controller->getAppName()}</span>

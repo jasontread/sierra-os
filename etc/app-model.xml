@@ -1,0 +1,661 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE entity-model PUBLIC "-//SIERRA//DTD ENTITY MODEL//EN" 
+  "http://sierra-php.googlecode.com/svn/trunk/lib/model/entity-model.dtd">
+<entity-model ddl-path="lib/model/sraos-ddl.sql" file-script-rewrite="1" file-script-uri="/files" ignore-bad-import="1" import="php::getImportModels()::php" resources="php::getImportResources()::php" sync-schema="1" ws-gateway-uri="/ws" ws-gateway-rewrite="1">
+  
+  
+  <entity key="OsGroup" ignore-bad-import="1" render-exclude="members" on-create-import="os_group_custom.sql" primary-key="gid">
+    <attribute key="gid" sequence="1">
+      <view key="input" extends="input-hidden" />
+    </attribute>
+    <attribute key="members" cardinality="0..*" table="user_groups" type="OsUser">
+      <var key="code" value='global $user; $options =&amp; $user->getOptionsMap("children", TRUE, TRUE);' />
+      <view key="input" extends="input-select-multiple" />
+      <view key="output" extends="ul">
+        <param id="arrayVal"  type="formatStr" value="{$userName} ({$name})" />
+      </view>
+    </attribute>
+    <attribute key="name" depends="required unique" max-length="128">
+			<view key="input" extends="input-text" />
+      <view key="output" extends="text" />
+    </attribute>
+    <attribute key="ownerUid" type="int" />
+    <attribute key="system" default="FALSE" type="boolean" />
+		<view key="input" template="model/sra-grid.tpl">
+      <param id="header"                                      value="{$getString(settings.group)}" />
+			<param id="name"            type="col-set0-0"           value="input" />
+      <param id="members"         type="col-set0-0"           value="input" />
+      <param id="gid"             type="pre-attrs"            value="input" />
+		</view>
+  </entity>
+  
+  
+  <entity key="OsUser" ignore-bad-import="1" render-exclude="adminGroups adminUsers adminWorkspaces allApps appPermissions children defaultWorkspace groups ownedGroups ownerUid passwordConfirm sharedWorkspaces workspaces" on-create-import="os_user.sql os_user_custom.sql" primary-key="uid">
+    <attribute key="uid" sequence="1">
+      <view key="input" extends="input-hidden" />
+    </attribute>
+    <attribute key="adminGroups" default="FALSE" type="boolean">
+			<view key="input" extends="input-checkbox" />
+      <view key="output" extends="text-yes-no" />
+    </attribute>
+    <attribute key="adminUsers" default="FALSE" type="boolean">
+			<view key="input" extends="input-checkbox" />
+      <view key="output" extends="text-yes-no" />
+    </attribute>
+    <attribute key="adminWorkspaces" default="TRUE" type="boolean">
+			<view key="input" extends="input-checkbox" />
+      <view key="output" extends="text-yes-no" />
+    </attribute>
+    <attribute key="allApps" default="TRUE" type="boolean">
+			<view key="input" extends="input-checkbox" />
+      <view key="output" extends="text-yes-no" />
+    </attribute>
+    <attribute key="appPermissions" cardinality="0..*" depends="options" max-length="128" table="user_app_permissions">
+      <var key="code" value='global $user; $options =&amp; $user->getApplicationOptions();' />
+      <view key="input" extends="input-select-multiple" />
+      <view key="output" extends="ul" />
+    </attribute>
+    <attribute key="children" cardinality="0..*" on-remove-delete="1" recursive-link="children" table-pk-column="owner_uid" type="OsUser">
+      <var key="displ" value="{$userName} ({$name})" />
+      <view key="toggle" field-name="toggleChildId" extends="input-toggle">
+        <param id="onchange"  type="select-attrs" value="document.forms[0].submit();" />
+      </view>
+      <view key="input" id-constraint="$_POST['toggleChildId']" render-attributes="1" />
+    </attribute>
+    <attribute key="defaultWorkspace" depends="option" type="int">
+      <var key="code" value='$options = $this->getWorkspaceOptions(TRUE);' />
+      <view key="input" extends="input-select" />
+      <view key="output" extends="text" />
+    </attribute>
+    <attribute key="email" depends="email unique" max-length="128">
+			<view key="input" extends="input-text" />
+      <view key="output" extends="email" />
+    </attribute>
+    <attribute key="externalAuth" default="FALSE" type="boolean">
+			<view key="input" extends="input-checkbox">
+        <param id="onchange"  type="input-attrs" value="document.forms[0].children_0_password.disabled = this.checked; document.forms[0].children_0_passwordConfirm.disabled = this.checked;" />
+      </view>
+    </attribute>
+    <attribute key="groups" cardinality="1..*" cardinality-err-resource="error.minGroups" render-include="name" table="user_groups" type="OsGroup">
+      <var key="displ" value="{$name}" />
+      <var key="code" value='global $user; $options =&amp; $user->getOptionsMap("ownedGroups", TRUE, TRUE);' />
+      <view key="input" extends="input-select-multiple" />
+      <view key="output" extends="ul">
+        <param id="arrayVal"  type="formatStr" value="{$name}" />
+      </view>
+    </attribute>
+    <attribute key="name" depends="required" max-length="128">
+			<view key="input" extends="input-text" />
+			<view key="input-tips" extends="input-text-tips">
+        <param id="ajaxService" type="ajaxTips" value="userLookup" />
+        <param id="serviceParam" type="ajaxTips" value="name" />
+        <param id="imbedValue" value="0" />
+      </view>
+      <view key="output" extends="text" />
+    </attribute>
+    <attribute key="ownedGroups" cardinality="0..*" on-remove-delete="1" recursive-link="children" table-pk-column="owner_uid" type="OsGroup" union-link="groups">
+      <var key="displ" value="{$name}" />
+      <view key="toggle" field-name="toggleGroupId" extends="input-toggle">
+        <param id="onchange"  type="select-attrs" value="document.forms[0].submit();" />
+      </view>
+      <view key="input" id-constraint="$_POST['toggleGroupId']" render-attributes="1" />
+    </attribute>
+    <attribute key="ownerUid" type="int" />
+    <attribute key="password" min-length="6" max-length="128" set-only="1" set-function="password">
+			<view key="input" extends="input-password" />
+      <view key="output" extends="password" />
+    </attribute>
+    <attribute key="passwordConfirm" skip-persistence="1">
+			<view key="input" extends="input-password" />
+      <view key="output" extends="password" />
+    </attribute>
+    <attribute key="picture" depends="maxFileSize mimeType" file-uri-attr="pictureUri" is-file="1" lazy-load-exclusive="1">
+      <thumbnail key="thumbnail" width="50" />
+      <var key="mimeTypes" value="image.*" />
+      <var key="maxFileSize" value="2097152" />
+      <view key="input" extends="input-image">
+        <param id="submitted" type="resetFields" value="1" />
+      </view>
+      <view key="output" extends="image" />
+    </attribute>
+    <attribute key="pictureUri" max-length="255" />
+    <attribute key="sharedWorkspaces" cardinality="0..*" column="workspace_id" depends="options" table="shared_workspaces" type="int">
+      <var key="code" value='global $user; $options =&amp; $user->getWorkspaceOptions(TRUE);' />
+      <view key="input" extends="input-select-multiple" />
+      <view key="output" extends="ul" />
+    </attribute>
+    <attribute key="thumbnail" file-uri-attr="thumbnailUri" is-file="1" lazy-load-exclusive="1" type="blob" />
+    <attribute key="thumbnailUri" default="OS_USER_MISSING_PICTURE_THUMBNAIL" max-length="255" />
+    <attribute key="userName" depends="mask unique required" max-length="64">
+      <msg key="mask" resource="error.userName" />
+      <var key="mask" value="^([a-z]{1})+(([_a-z0-9-]){2})+([_a-z0-9-])*$" />
+			<view key="input" extends="input-text" />
+      <view key="output" extends="text" />
+    </attribute>
+    <attribute key="workspaces" cardinality="0..*" on-remove-delete="1" table="user_workspace" type="Workspace">
+      <var key="displ" value="{$name}" />
+      <view key="toggle" field-name="toggleWorkspaceId" extends="input-toggle">
+        <param id="onchange"  type="select-attrs" value="document.forms[0].submit();" />
+      </view>
+      <view key="input" id-constraint="$_POST['toggleWorkspaceId']" render-attributes="1" />
+    </attribute>
+    
+    <validate key="password" attrs="password passwordConfirm" equal="1" resource="error.passwordsDoNotMatch" />
+    
+		<view key="account" template="model/sra-grid.tpl">
+      <param id="header"                                      value="{$getString(settings.account)}" />
+			<param id="userName"        type="col-set0-0"           value="output" />
+      <param id="email"           type="col-set0-0"           value="input" />
+			<param id="name"            type="col-set0-0"           value="input" />
+      <param id="picture"         type="col-set0-0"           value="input" />
+      <param id="password"        type="col-set0-0"           value="input" />
+      <param id="passwordConfirm" type="col-set0-0"           value="input" />
+      <param id="defaultWorkspace" type="col-set0-0"          value="input" />
+      <param id="groups"          type="col-set0-0"           value="output" />
+      <param id="uid"             type="formInitVals"         value='$user->getPrimaryKey()' />
+      <param id="userName"        type="formInitValsRemove" />
+		</view>
+    
+		<view key="children" template="model/sra-grid.tpl">
+      <param id="header"                                      value="{$getString(settings.children)}" />
+      <param id="userName"        type="col-set0-0"           value="output" />
+      <param id="children"        type="col-set0-0"           value="toggle" />
+      <param id="children"        type="post-attrs"           value="input" />
+      <param id="uid"             type="formInitVals"         value='$user->getPrimaryKey()' />
+      <param id="children_0_groups" type="formInitValsPre" value='array()' />
+      <param id="children_0_appPermissions" type="formInitValsPre" value='array()' />
+      <param id="children_0_sharedWorkspaces" type="formInitValsPre" value='array()' />
+      <param id="userName"        type="formInitValsRemove" />
+		</view>
+    
+		<view key="groups" template="model/sra-grid.tpl">
+      <param id="header"                                      value="{$getString(settings.groups)}" />
+      <param id="userName"        type="col-set0-0"           value="output" />
+      <param id="ownedGroups"     type="col-set0-0"           value="toggle" />
+      <param id="ownedGroups"     type="post-attrs"           value="input" />
+      <param id="uid"             type="formInitVals"         value='$user->getPrimaryKey()' />
+      <param id="ownedGroups_0_members" type="formInitValsPre" value='array()' />
+      <param id="userName"        type="formInitValsRemove" />
+		</view>
+    
+		<view key="input" template="model/sra-grid.tpl">
+      <param id="header"                                      value="{$getString(settings.account)} [{$getString(text.createdBy)} {$getParentUserName}]" />
+			<param id="userName"        type="col-set0-0"           value="input" />
+      <param id="email"           type="col-set0-0"           value="input" />
+			<param id="name"            type="col-set0-0"           value="input" />
+      <param id="picture"         type="col-set0-0"           value="input" />
+      <param id="password"        type="col-set0-0"           value="input" />
+      <param id="passwordConfirm" type="col-set0-0"           value="input" />
+      <param id="groups"          type="col-set0-0"           value="input" />
+      <param id="colSetWidth"     type="col-set-config1-0"    value="2" />
+      <param id="colSetLabelPos"  type="col-set-config1-0"    value="0" />
+      <param id="allApps"         type="col-set1-0"           value="input" />
+      <param id="appPermissions"  type="col-set2-0"           value="input" />
+      <param id="sharedWorkspaces" type="col-set2-0"          value="input" />
+      <param id="defaultWorkspace" type="col-set2-0"          value="input" />
+      <param id="colSetWidth"     type="col-set-config3-0"    value="2" />
+      <param id="colSetLabelPos"  type="col-set-config3-0"    value="0" />
+      <param id="adminWorkspaces" type="col-set3-0"           value="input" />
+      <param id="adminUsers"      type="col-set3-0"           value="input" />
+      <param id="adminGroups"     type="col-set3-0"           value="input" />
+      <param id="externalAuth"    type="col-set3-0"           value="input" />
+      <param id="uid"             type="pre-attrs"            value="input" />
+		</view>
+    
+		<view key="workspaces" template="model/sra-grid.tpl">
+      <param id="header"                                      value="{$getString(settings.workspaces)}" />
+      <param id="userName"        type="col-set0-0"           value="output" />
+      <param id="workspaces"      type="col-set0-0"           value="toggle" />
+      <param id="workspaces"      type="post-attrs"           value="input" />
+      <param id="uid"             type="formInitVals"         value='$user->getPrimaryKey()' />
+      <param id="workspaces_0_dockApplications" type="formInitValsPre" value='array()' />
+      <param id="workspaces_0_loginItems" type="formInitValsPre" value='array()' />
+      <param id="userName"        type="formInitValsRemove" />
+		</view>
+    
+    <ws key="userCreate" include-attrs="uid name userName password passwordConfirm" create="1" validators="password">
+      <ws-constraint-group>
+        <ws-constraint attr="ownerUid" auto-set="1" value="user_uid" value-type="global" />
+        <ws-constraint attr="user_adminUsers" attr-type="global" value="1" />
+      </ws-constraint-group>
+    </ws>
+    <ws key="userUpdate" include-attrs="uid name userName" update="1">
+      <ws-constraint-group>
+        <ws-constraint attr="ownerUid" value="user_uid" value-type="global" />
+        <ws-constraint attr="user_adminUsers" attr-type="global" value="1" />
+      </ws-constraint-group>
+    </ws>
+    <ws key="userDelete" delete="1">
+      <ws-constraint-group>
+        <ws-constraint attr="ownerUid" value="user_uid" value-type="global" />
+      </ws-constraint-group>
+    </ws>
+  </entity>
+  
+  
+  <entity key="Workspace" ignore-bad-import="1" on-create-import="os_workspace_custom.sql" primary-key="workspaceId">
+    <attribute key="workspaceId" sequence="1">
+      <view key="input" extends="input-hidden" />
+    </attribute>
+    <attribute key="background" depends="maxFileSize mimeType" file-uri-attr="backgroundUri" is-file="1" lazy-load-exclusive="1">
+      <var key="mimeTypes" value="image.*" />
+      <var key="maxFileSize" value="2097152" />
+      <view key="input" extends="input-image">
+        <param id="submitted" type="resetFields" value="1" />
+      </view>
+      <view key="output" extends="image" />
+    </attribute>
+    <attribute key="backgroundUri" max-length="255" />
+    <attribute key="dockApplications" cardinality="0..*" depends="options" max-length="128" table="workspace_dock_apps">
+      <var key="code" value='global $user; $options =&amp; $user->getApplicationOptions(TRUE);' />
+      <view key="input" extends="input-select-multiple" />
+      <view key="output" extends="ul" />
+    </attribute>
+    <attribute key="dockHide" default="FALSE" depends="required" type="boolean">
+			<view key="output" extends="text-yes-no" />
+			<view key="input" extends="input-select-bool-required" />
+    </attribute>
+    <attribute key="dockSize" default="32" depends="option required" type="int">
+      <var key="options" value="Workspace.dockSize.small=16 Workspace.dockSize.medium=32 Workspace.dockSize.large=64" />
+      <view key="input" extends="input-select-required" />
+      <view key="output" extends="option" />
+    </attribute>
+    <attribute key="loginItems" cardinality="0..*" depends="options" max-length="128" table="workspace_login_items">
+      <var key="code" value='global $user; $options =&amp; $user->getApplicationOptions(FALSE, FALSE);' />
+      <view key="input" extends="input-select-multiple" />
+      <view key="output" extends="ul" />
+    </attribute>
+    <attribute key="name" default="'Workspace 1'" depends="required" max-length="128">
+			<view key="input" extends="input-text" />
+      <view key="output" extends="text" />
+    </attribute>
+    <attribute key="theme" default="'standard'" depends="required" max-length="128">
+      <var key="code" value='$options =&amp; SRAOS_Theme::getThemeOptions();' />
+      <view key="input" extends="input-select" />
+      <view key="output" extends="option" />
+    </attribute>
+    <attribute key="users" cardinality="0..*" table="user_workspace" type="OsUser" />
+    
+		<view key="input" template="model/sra-grid.tpl">
+      <param id="header"                                      value="{$getString(settings.workspace)}" />
+      <param id="name"            type="col-set0-0"           value="input" />
+      <param id="background"      type="col-set0-0"           value="input" />
+      <param id="dockApplications" type="col-set0-0"          value="input" />
+      <param id="dockHide"        type="col-set0-0"           value="input" />
+      <param id="dockSize"        type="col-set0-0"           value="input" />
+      <param id="loginItems"      type="col-set0-0"           value="input" />
+      <param id="theme"           type="col-set0-0"           value="input" />
+      <param id="workspaceId"     type="pre-attrs"            value="input" />
+		</view>
+  </entity>
+  
+	<!-- global views -->
+	<global-views>
+		<!-- used to display a date -->
+		<view key="date" template="model/sra-attr.tpl">
+      <param id="stripNewlines" value="1" />
+    </view>
+    
+    <!-- used to display a date OR "Not Specified" if it is not set -->
+		<view key="date-not-specified" extends="date">
+      <param id="valueNOTSET" type="displayConds" value="{$getString(text.notSpecified)}" />
+		</view>
+    
+    <!-- money output (precedes value with $ and displays 2 decimal points) -->
+    <view key="money" template="model/sra-attr.tpl">
+      <param id="decimals" value="2" />
+      <param id="value" type="pre" value="$" />
+    </view>
+    
+    <!-- rounded money output (precedes value with $ and rounds cents) -->
+    <view key="money-rounded" extends="money">
+      <param id="decimals" value="0" />
+    </view>
+    
+		<!-- used to render an file link -->
+		<view key="file" template="model/sra-attr.tpl">
+      <param id="value" type="tpl" value="model/sra-html-file.tpl" />
+      <param id="link" value="[name kb]" />
+		</view>
+    
+		<!-- used to render an image link -->
+		<view key="image" template="model/sra-attr.tpl">
+			<param id="value" type="tpl" value="model/sra-html-img.tpl" />
+		</view>
+    
+		<!-- used to create a single checkbox fields -->
+		<view key="input-checkbox" template="model/sra-attr.tpl">
+      <param id="label" type="pos" value="4" />
+			<param id="value" type="tpl" value="model/sra-form-checkbox.tpl" />
+		</view>
+    <!-- used to create a checkbox list -->
+		<view key="input-checkboxes" template="model/sra-attr.tpl">
+			<param id="value" type="tpl" value="model/sra-form-option.tpl" />
+      <param id="useSelect" value="0" />
+      <param id="type" type="input-attrs" value="checkbox" />
+      <param id="label" type="post" value="&lt;br /&gt;" />
+		</view>
+    <!-- checkbox list with an other option -->
+		<view key="input-checkboxes-other" extends="input-checkboxes">
+			<param id="includeOtherOption" value="1" />
+		</view>
+    
+    <!-- click-in field (displays 'output' view as label and 'input' view as field) -->
+    <view key="input-ci" template="model/sra-view-ci.tpl">
+      <param id="view" value="output" />
+      <param id="ciView" value="field" />
+      <param id="noValueClass" value="lightFont" />
+      <param id="syncValue" value="1" />
+    </view>
+    <view key="input-ci-not-specified" extends="input-ci">
+      <param id="noValueResource" value="text.notSpecified" />
+    </view>
+		
+		<!-- used to display a date field -->
+		<view key="input-date" template="model/sra-attr.tpl">
+			<param id="value" type="tpl" value="model/sra-form-timestamp.tpl" />
+			<param id="day" type="firstOption" value="form.date.day" />
+			<param id="month" type="firstOption" value="form.date.month" />
+			<param id="year" type="firstOption" value="form.date.year" />
+			<param id="day" type="pos" value="2" />
+			<param id="month" type="pos" value="1" />
+			<param id="year" type="pos" value="3" />
+			<param id="day" type="range" value="* #" />
+			<param id="month" type="range" value="* #" />
+			<param id="year" type="range" value="-+10 #" />
+		</view>
+		<!-- used to display a date text field with a popup chooser -->
+		<view key="input-date-chooser" template="_date-chooser.tpl" />
+    <view key="input-date-chooser-ci" extends="input-date-chooser">
+      <param id="usesCi" value="1" />
+    </view>
+    <view key="input-date-chooser-ci-not-specified" extends="input-date-chooser-ci">
+      <param id="noValueResource" value="text.notSpecified" />
+    </view>
+    
+		<!-- used to create a hidden input fields -->
+		<view key="input-hidden" template="model/sra-attr.tpl">
+			<param id="value" type="tpl" value="model/sra-form-input.tpl" />
+      <param id="type" type="input-attrs" value="hidden" />
+		</view>
+    
+		<!-- used to create a file input fields -->
+		<view key="input-file" template="model/sra-attr.tpl">
+      <param id="value" type="tpl" value="model/sra-form-file.tpl" />
+      <param id="class" type="input-attrs" value="inputField" />
+      <param id="showViewLink" value="[name kb]" />
+      <param id="showResetLink" value="form.reset" />
+		</view>
+    
+		<!-- used to create a file input fields w/ 75 pixel thumbnail -->
+		<view key="input-image" template="model/sra-attr.tpl">
+      <param id="label" type="pos" value="1" />
+			<param id="label" type="tpl" value="model/sra-html-img.tpl" />
+      <param id="width" type="img-attrs" value="75" />
+      <param id="alt" type="img-attrs" value="text.currentImage" />
+      <param id="title" type="img-attrs" value="text.currentImage" />
+      <param id="showResetLink" value="form.reset" />
+      <param id="useButton" value="1" />
+      <param id="value" type="encl" value="br" />
+      <param id="value" type="enclClose" value="1" />
+      <param id="value" type="tpl" value="model/sra-form-file.tpl" />
+		</view>
+    
+		<!-- used to create a password input fields -->
+		<view key="input-password" template="model/sra-attr.tpl">
+      <param id="imbedValue" value="0" />
+			<param id="value" type="tpl" value="model/sra-form-input.tpl" />
+      <param id="type" type="input-attrs" value="password" />
+		</view>
+    
+    <!-- used to create a radio button list -->
+		<view key="input-radio" template="model/sra-attr.tpl">
+			<param id="value" type="tpl" value="model/sra-form-option.tpl" />
+      <param id="useSelect" value="0" />
+      <param id="type" type="input-attrs" value="radio" />
+      <param id="label" type="post" value="&lt;br /&gt;" />
+		</view>
+    
+    <!-- radio button list with an other option -->
+		<view key="input-radio-other" extends="input-radio">
+			<param id="includeOtherOption" value="1" />
+		</view>
+    
+    <!-- used to create a boolean yes/no radio button list -->
+		<view key="input-radio-boolean" template="model/sra-attr.tpl">
+			<param id="value" type="tpl" value="model/sra-form-option.tpl" />
+      <param id="useSelect" value="0" />
+      <param id="type" type="input-attrs" value="radio" />
+			<param id="0" type="options" value="text.no" />
+			<param id="1" type="options" value="text.yes" />
+		</view>
+		
+		<!-- used to create a select box -->
+		<view key="input-select" template="model/sra-attr.tpl">
+			<param id="firstOption" value="form.select" />
+			<param id="value" type="tpl" value="model/sra-form-option.tpl" />
+		</view>
+    <!-- select box with an other field below -->
+		<view key="input-select-other" extends="input-select">
+			<param id="includeOtherOption" value="1" />
+		</view>
+    <!-- required select field (does not include 'Select...' option) -->
+		<view key="input-select-required" template="model/sra-attr.tpl">
+			<param id="value" type="tpl" value="model/sra-form-option.tpl" />
+		</view>
+    <!-- select boolean field (yes/no) -->
+		<view key="input-select-bool" extends="input-select">
+      <param id="firstOption" value="form.select" />
+			<param id="0" type="options" value="text.no" />
+			<param id="1" type="options" value="text.yes" />
+		</view>
+    <!-- required select boolean field (yes/no) (does not include 'Select...' option) -->
+		<view key="input-select-bool-required" extends="input-select-required">
+			<param id="0" type="options" value="text.no" />
+			<param id="1" type="options" value="text.yes" />
+		</view>
+		<view key="input-toggle" template="model/sra-attr.tpl">
+			<param id="firstOption" value="form.select" />
+			<param id="value" type="tpl" value="model/sra-form-toggle.tpl" />
+      <param id="canCreate" value="form.new" />
+      <param id="canDelete" value="form.delete" />
+      <param id="canView" value="form.view" />
+      <param id="deleteConfirm" value="text.deleteConfirm" />
+      <param id="submitted" type="deleteFields" value="1" />
+		</view>
+		<view key="input-select-multiple" template="model/sra-attr.tpl">
+			<param id="value" type="tpl" value="model/sra-form-option.tpl" />
+      <param id="multiple" type="select-attrs" value="multiple" />
+      <param id="size" type="select-attrs" value="5" />
+      <param id="fieldNamePost" value="[]" />
+		</view>
+		
+		<!-- used to create a text box/text area input fields -->
+		<view key="input-text" template="model/sra-attr.tpl">
+      <param id="class" type="input-attrs" value="inputField" />
+      <param id="value" type="tpl" value="model/sra-form-input.tpl" />
+		</view>
+		<view key="input-textarea" template="model/sra-attr.tpl">
+      <param id="class" type="textarea-attrs" value="inputField" />
+      <param id="useTextArea" value="1" />
+      <param id="value" type="tpl" value="model/sra-form-input.tpl" />
+		</view>
+		<view key="input-text-ci" extends="input-text">
+      <param id="dynamicResize" value="1" />
+			<param id="noValueClass" value="lightFont" />
+      <param id="value" type="tpl" value="model/sra-form-input-ci.tpl" />
+		</view>
+    <view key="input-text-ci-not-specified" extends="input-text-ci">
+      <param id="noValueResource" value="text.notSpecified" />
+    </view>
+		<view key="input-textarea-ci" extends="input-textarea">
+      <param id="dynamicResize" value="1" />
+			<param id="noValueClass" value="lightFont" />
+      <param id="value" type="tpl" value="model/sra-form-input-ci.tpl" />
+    </view>
+    <view key="input-textarea-ci-not-specified" extends="input-textarea-ci">
+      <param id="noValueResource" value="text.notSpecified" />
+    </view>
+    
+		<!-- used to create a text box input field with ajax tips (ajaxService param [type ajaxTips] MUST additionally be set) -->
+		<view key="input-text-tips" extends="input-text" template="model/sra-attr.tpl">
+			<param id="value" type="tpl" value="model/sra-form-input-ajax-tips.tpl" />
+      <param id="tipsClass" type="ajaxTips" value="inputSuggestion" />
+      <param id="tipsSelClass" type="ajaxTips" value="selected" />
+      <param id="manualLoad" type="ajaxTips" value="1" />
+		</view>
+		
+		<!-- used to create an html link from a uri attribute -->
+		<view key="link" template="model/sra-attr.tpl">
+			<param id="href"  type="a-value-attrs" value="[$VAL]" />
+			<param id="value" type="encl" value="a" />
+			<param id="value" type="formatStr" value="{$getString(text.view)}" />
+			<param id="valueNULL" type="displayConds" value="{$getString(text.null)}" />
+		</view>
+    
+		<!-- used to create an email link -->
+		<view key="email" extends="link">
+			<param id="href"  type="a-value-attrs" value="mailto:[$VAL]" />
+			<param id="value" type="formatStr" value="{$getString(text.email)}" />
+		</view>
+    
+		<!-- used to display a line separated list -->
+		<view key="list" template="model/sra-attr.tpl">
+			<param id="between" value="&lt;br /&gt;" />
+      <param id="stripNewlines" value="1" />
+		</view>
+		<!-- used to display a line separated list -->
+		<view key="list-options" extends="list">
+      <param id="useOptionsLabel" value="1" />
+		</view>
+    
+		<!-- used to display a comma separated list -->
+		<view key="list-comma-separated" template="model/sra-attr.tpl">
+			<param id="between" value=", " />
+      <param id="stripNewlines" value="1" />
+		</view>
+		<view key="list-comma-separated-options" extends="list-comma-separated">
+      <param id="useOptionsLabel" value="1" />
+		</view>
+    
+		<!-- used to display a space separated list -->
+		<view key="list-space-separated" template="model/sra-attr.tpl">
+			<param id="between" value=" " />
+      <param id="stripNewlines" value="1" />
+		</view>
+    <view key="list-space-separated-options" extends="list-space-separated">
+      <param id="useOptionsLabel" value="1" />
+		</view>
+    
+    <!-- used to display the user friendly option value -->
+		<view key="option" template="model/sra-attr.tpl">
+      <param id="optionLabel" type="pos" value="3" />
+			<param id="value" type="pos" value="0" />
+		</view>
+    
+    <!-- used to display the user friendly option value OR "Not Specified" if the value is not se -->
+		<view key="option-not-specified" extends="option">
+      <param id="optionLabelNOTSET" type="displayConds" value="{$getString(text.notSpecified)}" />
+		</view>
+		
+		<!-- used to display the attribute value only (without label) -->
+		<view key="text" template="model/sra-attr.tpl" />
+    
+		<!-- used to display fo formatted text (replaces line breaks with <fo:block/>) -->
+		<view key="text-fo" extends="text">
+      <param id="addLineBreaks" value="1" />
+			<param id="addLineBreaksElement" value="fo:block" />
+		</view>
+    
+		<!-- used to display the attribute value with html characters escaped -->
+		<view key="text-html" extends="text">
+      <param id="convertHtml" value="1" />
+    </view>
+    
+		<!-- used to display the attribute value only (without label) but with 
+         newline characters stripped -->
+		<view key="text-stripped" extends="text">
+      <param id="stripNewlines" value="1" />
+    </view>
+    
+		<!-- used to display text as html (replaces line breaks with <br />) -->
+		<view key="text-html" extends="text">
+			<param id="addLineBreaks" value="1" />
+		</view>
+    
+		<!-- used to display the attribute value only (without label) OR "Not Specified" if the value is not set -->
+		<view key="text-not-specified" extends="text">
+      <param id="valueNOTSET" type="displayConds" value="{$getString(text.notSpecified)}" />
+    </view>
+    
+		<!-- used to create a boolean Yes/No/Not Set view -->
+		<view key="text-yes-no" template="model/sra-attr.tpl">
+			<param id="valueTRUE" type="displayConds" value="{$getString(text.yes)}" />
+			<param id="valueFALSE" type="displayConds" value="{$getString(text.no)}" />
+      <param id="valueNULL" type="displayConds" value="{$getString(text.no)}" />
+		</view>
+		
+		<!-- used to display a bulleted list -->
+		<view key="ul" template="model/sra-attr.tpl">
+			<param id="value"  type="encl" value="ul" />
+			<param id="arrayVal"  type="encl" value="li" />
+      <param id="class" type="ul-attrs" value="bullets" />
+		</view>
+    
+    <!-- used to generate a pdf using a smarty template that generates xsl-fo 
+         and XSLFormatter. the smarty template needs to be defined by extending 
+         views. for example:
+          <view key="pdf" extends="xslfo-pdf" template="plugins/myplugin/xlsfo.tpl">
+            <view-header key="Content-Disposition: inline; filename=sample.pdf" />
+          </view>
+    -->
+    <view key="xslfo-pdf" mime-type="application/pdf" view-processors="XSLFormatter" />
+    
+    <!-- used to generate a pdf using an xslt stylesheet to xsl-fo conversion 
+         and XSLFormatter. the xslt stylesheet needs to be defined by extending 
+         views. for example:
+          <view key="pdf" extends="xslt-pdf">
+            <param id="stylesheet" value="{APP_DIR}/etc/plugins/myplugin/tpl/xslt.xsl" />
+            <view-header key="Content-Disposition: inline; filename=sample.pdf" />
+          </view>
+    -->
+    <view key="xslt-pdf" mime-type="application/pdf" template="xml" view-processors="xsltproc XSLFormatter" />
+	</global-views>
+  
+  
+  <index key="os_group_name_idx" columns="name" modifier="unique" table="os_group" />
+  <index key="os_user_user_name_idx" columns="user_name" modifier="unique" table="os_user" />
+  <index key="os_user_email_password_idx" columns="email, password" table="os_user" /> 
+  
+  
+  <msg key="dateStr" resource="error.dateStr" />
+  <msg key="email" resource="error.email" />
+  <msg key="mask" resource="error.mask" />
+  <msg key="max" resource="error.max" />
+  <msg key="maxFileSize" resource="error.maxFileSize" />
+  <msg key="maxLength" resource="error.maxLength" />
+  <msg key="mimeType" resource="error.mimeType" />
+  <msg key="min" resource="error.min" />
+  <msg key="minLength" resource="error.minLength" />
+  <msg key="numeric" resource="error.numeric" />
+  <msg key="phone" resource="error.phone" />
+  <msg key="option" resource="error.option" />
+  <msg key="options" resource="error.option" />
+  <msg key="range" resource="error.range" />
+  <msg key="required" resource="error.required" />
+  <msg key="type" resource="error.type" />
+  <msg key="unique" resource="error.unique" />
+  <msg key="uri" resource="error.uri" /> 
+  
+  <view-processor key="XSLFormatter" args="-silent -d {$outputFile} -o {$randomFile1} -i {APP_DIR}/etc/xslformatter-config.xml" output-file-path="{$randomFile1}" path="/usr/XSLFormatter/run.sh" />
+  <view-processor key="xsltproc" args="--novalid {$stylesheet} {$outputFile}" path="/usr/bin/xsltproc" />
+  
+  
+  <!-- global ajax services -->
+  <ws-global key="userLookup" identifier="SELECT uid, name FROM os_user WHERE name like '#name#%' ORDER BY name" type="sql">
+    <ws-param key="limit" value="10" />
+    <ws-param key="name" allow-override="1" value="" />
+  </ws-global>
+  
+</entity-model>
+

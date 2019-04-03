@@ -1,0 +1,219 @@
+8
+
+dir
+0
+https://sierra-os.googlecode.com/svn/trunk/plugins/productivity/tpl
+https://sierra-os.googlecode.com/svn
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+my-projects-rss.tpl
+file
+
+
+
+add
+
+my-projects-edit-message.tpl
+file
+
+
+
+add
+
+my-projects-ical.tpl
+file
+
+
+
+add
+
+my-projects-view.tpl
+file
+
+
+
+add
+
+my-projects-edit-whiteboard.tpl
+file
+
+
+
+add
+
+my-projects-message-print.tpl
+file
+
+
+
+add
+
+my-projects-intro-email.tpl
+file
+
+
+
+add
+
+my-projects-intro-email-html.tpl
+file
+
+
+
+add
+
+my-projects-unsubscribe.tpl
+file
+
+
+
+add
+
+my-projects-edit-task.tpl
+file
+
+
+
+add
+
+my-projects-rss-show.tpl
+file
+
+
+
+add
+
+my-projects-task-notification.tpl
+file
+
+
+
+add
+
+my-projects-task-notification-html.tpl
+file
+
+
+
+add
+
+my-projects-subscriber-email.tpl
+file
+
+
+
+add
+
+my-projects-new.tpl
+file
+
+
+
+add
+
+my-projects-subscriber-email-html.tpl
+file
+
+
+
+add
+
+my-projects-view-div.tpl
+file
+
+
+
+add
+
+my-projects-print.tpl
+file
+
+
+
+add
+
+my-projects-participant-selector.tpl
+file
+
+
+
+add
+
+my-projects-task-print.tpl
+file
+
+
+
+add
+
+my-projects-file-preview.tpl
+file
+
+
+
+add
+
+my-toolbox.tpl
+file
+
+
+
+add
+
+my-projects-preferences.tpl
+file
+
+
+
+add
+
+my-projects-comment.tpl
+file
+
+
+
+add
+
+my-projects.tpl
+file
+
+
+
+add
+
+my-projects-edit-file.tpl
+file
+
+
+
+add
+
+my-projects-email-participant.tpl
+file
+
+
+
+add
+
+my-projects-task-form.tpl
+file
+
+
+
+add
+
+my-projects-drawboard.tpl
+file
+
+
+
+add
+

@@ -1,0 +1,6 @@
+svn-ci-url=https://sierra-os.googlecode.com/svn/trunk/
+svn-path=sierra-os
+svn-url=http://sierra-os.googlecode.com/svn/trunk/
+version=1.0.1
+versions-info=http://sierra-os.googlecode.com/svn/trunk/etc/.versions
+versions-readme=http://sierra-os.googlecode.com/svn/trunk/etc/.versions-readme

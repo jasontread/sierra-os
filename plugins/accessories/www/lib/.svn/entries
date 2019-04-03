@@ -1,0 +1,88 @@
+8
+
+dir
+49
+https://sierra-os.googlecode.com/svn/trunk/plugins/accessories/www/lib
+https://sierra-os.googlecode.com/svn
+
+
+
+2008-01-11T05:03:53.906973Z
+38
+jason.t.read
+
+
+svn:special svn:externals svn:needs-lock
+
+MyContacts.js
+file
+
+
+
+
+2008-01-04T09:41:40.000000Z
+b984515bcc2118f87b4030b7d4b562cb
+2008-01-11T05:03:53.906973Z
+38
+jason.t.read
+
+MyContactsPreferences.js
+file
+
+
+
+
+2008-01-04T08:24:22.000000Z
+3ddb9bef2071d415f26a4cb61771671e
+2008-01-11T05:03:53.906973Z
+38
+jason.t.read
+
+Accessories_GuessMyNumber.js
+file
+
+
+
+
+2008-01-04T08:24:22.000000Z
+b8777daa1c768aa8a0ffcb505ab141fe
+2008-01-11T05:03:53.906973Z
+38
+jason.t.read
+
+ImbeddedContact.js
+file
+
+
+
+
+2008-01-04T09:41:55.000000Z
+d166d0e9b408eabe95f6b3a4ac7b2a39
+2008-01-11T05:03:53.906973Z
+38
+jason.t.read
+
+MyContactsGroup.js
+file
+
+
+
+
+2008-01-04T08:24:22.000000Z
+7ebfe57d81f8397f6e44948581e71783
+2008-01-11T05:03:53.906973Z
+38
+jason.t.read
+
+MyContactsAddSubscription.js
+file
+
+
+
+
+2008-01-04T08:24:22.000000Z
+0478a919a5a88f60cdff569c2a4defc9
+2008-01-11T05:03:53.906973Z
+38
+jason.t.read
+

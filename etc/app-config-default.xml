@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE app-config PUBLIC "-//SIERRA//DTD APP CONFIG//EN"
+  "http://sierra-php.googlecode.com/svn/trunk/etc/app-config.dtd">
+<app-config browsers-supported="/Firefox/:/Safari/:/iCal/" date-format="m/d/Y g:i a" date-only-format="m/d/Y" error-log-file="sraos.log" include-before="SRAOS_PluginManager.php global-include.php" invalid-browser-tpl="messages.tpl?title=text.incompatibleBrowser.title&amp;msg=text.incompatibleBrowser" resources-file="app custom">
+  <!-- database authenticator -->
+  <authenticator key="sraos"
+                 cancel-tpl="messages.tpl?msg=text.cancelLogin"
+                 entity-type="OsUser"
+                 entity-user-col="user_name"
+                 failure-log="sraos-failure.log" 
+                 global-var="user"
+                 logout-fwd-uri="/"
+                 logout-get-var="logout"
+                 match-fail-tpl="messages.tpl?msg=text.unauthorized-to-access" 
+                 resource="text.login"
+                 sys-err-tpl="messages.tpl?msg=error.sys"
+                 tpl-var="user"
+                 type="SRA_DbAuthenticator">
+    <param id="db" value="sraos" />
+    <param id="table" value="os_user" />
+    <param id="user-col" value="user_name" />
+    <param id="pswd-col" value="password" />
+    <param id="pswd-fun" value="password" />
+  </authenticator>
+  
+  <db key="sraos"
+      host="localhost"
+      password="sraos"
+      user="sraos" /> 
+  
+  <ini-set key="max_execution_time" value="600" />
+  <ini-set key="memory_limit" value="256M" />
+  
+  <!-- access restrictions -->
+  <restrict-access authenticators="sraos" match="*" />
+  
+	<restrict-access authenticators="sraos" match="groups.php">
+		<param id="adminGroups" value="1" />
+	</restrict-access>
+  
+  <restrict-access authenticators="sraos" match="accounts.php">
+		<param id="adminUsers" value="1" />
+	</restrict-access>
+  
+  <restrict-access authenticators="sraos" match="workspaces.php">
+		<param id="adminWorkspaces" value="1" />
+	</restrict-access>
+  
+  <!-- sraos entity models -->
+  <use-entity-model key="sraos" path="app-model.xml"/>
+</app-config>

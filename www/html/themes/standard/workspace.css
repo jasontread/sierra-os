@@ -1,0 +1,727 @@
+a {
+  color: #6699cc;
+  text-decoration: underline;
+}
+
+a:visited {
+  color: #6699cc;
+  text-decoration: underline;
+}
+
+a img {
+  border: 0;
+}
+
+.baseWindowCanvas {
+  position: absolute;
+  visibility: hidden;
+}
+
+body {
+  background-image: url(../../themes/standard/backgrounds/default.jpg);
+  color: #333;
+	font-family: arial, helvetica, sans-serif;
+  font-size: 10pt;
+	margin: 0;
+	padding: 0;
+  overflow: hidden;
+  text-align: center;
+}
+
+.desktopIcon {
+  color: #fff;
+  cursor: pointer;
+  font-size: 11px;
+  height: 60px;
+  opacity: .9;
+  overflow: hidden;
+  padding: 2px;
+  position: absolute;
+  text-align: center;
+  width: 60px;
+}
+
+.desktopIcon:hover {
+  opacity: 1;
+}
+
+.desktopIcon div:hover {
+  text-decoration: underline;
+}
+
+.desktopIcon img {
+  border: 0;
+  padding-bottom: 2px;
+}
+
+.dockTrashHover {
+  
+}
+
+.dragObject {
+  background-image: url(../../lib/transmenus/white-90.png);
+  filter:alpha(opacity=90);
+  border: 1px solid #aaa;
+  cursor: pointer;
+  font-size: 11px;
+  line-height: 16px;
+  opacity: .9;
+  padding: 3px;
+  position: absolute;
+  text-align: left;
+  vertical-align: middle;
+  visibility: hidden;
+  width: 200px;
+  z-index: 1002;
+}
+
+.dragObject img {
+  padding-right: 2px;
+}
+
+.errorFont {
+  color: red;
+}
+
+h1 {
+  font-size: 20px;
+}
+
+h2 {
+  font-size: 18px;
+}
+
+h3 {
+  font-size: 16px;
+}
+
+#header {
+  margin: 0px;
+  padding: 0px;
+}
+
+#header #menu {
+  background-image: url(../../themes/standard/menubg.png);
+  font-size: 13px;
+  height: 23px;
+  line-height: 21px;
+  margin-left: 6px;
+  margin-right: 6px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+#header #menu .menu, #header #menu .menuApplication {
+  left: 30px;
+  position: absolute;
+  top: 0;
+  visibility: hidden;
+}
+
+#header #menu .menu .appMenu {
+  font-weight: bold;
+}
+
+#header #menu .menu span {
+  cursor: pointer;
+  margin-left: 3px;
+  padding: 3px 5px 3px 5px;
+}
+
+#header #menu #leftCorner {
+  background-image: url(../../themes/standard/menubg-left.gif);
+  background-repeat: no-repeat;
+  height: 23px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 6px;
+}
+
+#header #menu #rightCorner {
+  background-image: url(../../themes/standard/menubg-right.gif);
+  background-repeat: no-repeat;
+  height: 23px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 6px;
+}
+
+#header #menu #search {
+  cursor: pointer;
+  position: absolute;
+  right: 10px;
+  top: 3px;
+}
+
+#header #menu #userMenu {
+  cursor: pointer;
+  position: absolute;
+  left: 10px;
+  top: 3px;
+}
+
+.horzDivider {
+	border-top: 2px solid #aaa;
+  cursor: n-resize;
+  height: 3px;
+	margin: 0;
+  margin-top: 1px;
+	padding: 0;
+  position: absolute;
+}
+
+iframe {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  visibility: hidden;
+}
+
+.iframeFormTarget {
+  height: 1px;
+  width: 1px;
+}
+
+.inputField {
+  border: 1px solid #8c8c8c;
+}
+.inputField:focus {
+  border: 1px solid #333;
+}
+
+.inputSuggestion {
+  background: #eee;
+  border: 1px solid #656565;
+  cursor: pointer;
+  margin: 0;
+  padding: 1px;
+  position: absolute;
+  visibility: hidden;
+  z-index: 1001;
+}
+
+.inputSuggestion div {
+  padding: 2px 4px 2px 4px;
+  white-space: nowrap;
+}
+
+.inputSuggestion .selected {
+  background: #8c8c8c;
+  color: #fff;
+}
+
+#launchbar {
+  bottom: 0;
+  display: inline;
+  left: 50%;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  z-index: 1001;
+}
+
+#launchbar div {
+  cursor: pointer;
+  display: inline;
+}
+
+#launchbar div img {
+  opacity: .8;
+}
+
+#launchbar div img:hover {
+  opacity: 1;
+}
+
+#launchbar #dockMinimizedApps img {
+  background-repeat: no-repeat;
+}
+
+#launchbar img {
+  margin: 0;
+  padding: 0 0 6px 4px;
+}
+
+#launchbar #dockApplications {
+  padding-left: 10px;
+  padding-right: 0;
+}
+
+#launchbarPanel {
+  bottom: 0;
+  background: #eee;
+  border: 1px solid #000;
+  border-bottom: 0;
+  display: inline;
+  left: 50%;
+  margin: 0;
+  opacity: .2;
+  padding: 0;
+  position: absolute;
+  vertical-align: bottom;
+  white-space: nowrap;
+  z-index: 1001;
+}
+
+#launchbarPanel div {
+  display: inline;
+}
+
+#launchbarPanel img {
+  border: 0;
+  margin: 0;
+  padding: 7px 1px 0 3px;
+}
+
+#launchbarPanel #dockBorder {
+  padding: 0;
+  border-left: 1px solid #000;
+}
+
+.lightFont {
+  color: #999;
+}
+
+.link {
+  color: #6699cc;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.loading, .waitCoverMsg {
+  background: #fff;
+  height: 100%;
+  position: absolute;
+  width: 100%;
+  z-index: 1002;
+}
+
+.loading span {
+  left: 50%;
+  top: 45%;
+  margin-left: -16px;
+  margin-bottom: -35px;
+  position: absolute;
+}
+
+.loading span img {
+  margin-bottom: 5px;
+}
+
+.menuCheckedImg {
+  margin-right: 4px;
+  height: 11px;
+  width: 10px;
+}
+
+.menuHover, .menuHoverApp {
+  background: #6699cc;
+  color: #fff;
+}
+
+.menuHoverApp {
+  font-weight: bold;
+}
+
+.menuImg {
+  padding-right: 3px;
+}
+
+#modalWindowBg, .waitCover {
+  background-image: url(../../lib/transmenus/grey-40.png);
+  filter:alpha(opacity=90);
+  height: 100%;
+  opacity: .9;
+  position: absolute;
+  width: 100%;
+  visibility: hidden;
+  z-index: 1000;
+}
+
+.preferences {
+  text-align: center;
+}
+
+.preferencesButtons {
+  margin-top: 10px;
+  padding-bottom: 10px;
+  text-align: center;
+}
+
+.preferencesTable {
+  border-collapse: collapse;
+  border-top: 1px solid #aaa;
+  color: #333;
+	font-family: arial, helvetica, sans-serif;
+  font-size: 9pt;
+  margin: 5px;
+  padding: 0;
+  text-align: left;
+  width: 95%;
+}
+
+.preferencesTable input {
+  border: 1px solid #8c8c8c;
+  margin: 0;
+  padding: 2px;
+}
+
+.preferencesTable input:focus {
+  border: 1px solid #333;
+}
+
+.preferencesTable th {
+  background: #427DB5;
+  border: 1px solid #aaa;
+  border-top: 0;
+  color: #fff;
+  font-weight: bold;
+  padding: 4px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.preferencesTable tr {
+  background-color: #fff;
+}
+
+.preferencesTable td {
+  border: 1px solid #aaa;
+  border-top: 0;
+  padding: 2px;
+  padding-left: 4px;
+  vertical-align: top;
+}
+
+#searchPanel {
+  background-image: url(../../lib/transmenus/white-90.png);
+  filter:alpha(opacity=90);
+  border: 1px solid #656565;
+  border-right: 0;
+  border-top: 0;
+  height: 27px;
+  margin: 0;
+  padding: 5px;
+  opacity: .9;
+  position: absolute;
+  right: 0;
+  top: 23px;
+  visibility: hidden;
+  white-space: nowrap;
+  z-index: 1001;
+}
+
+#searchPanel input {
+  color: #000;
+  font-size: 12px;
+  margin-left: 5px;
+  width: 100px;
+}
+
+.tabs table {
+  border-collapse: separate;
+  border-spacing: 1px;
+}
+
+.tabs table tr .active {
+  border-bottom: 0;
+  font-weight: bold;
+}
+
+.tabs table tr .disabled, .tabs table tr .inactive {
+  background: #bbb;
+  border-bottom: 1px solid #aaa;
+}
+
+.tabs table tr .disabled {
+  color: #777;
+  cursor: default;
+}
+
+.tabs table tr td {
+  border-right: 1px solid #aaa;
+  color: #333;
+  cursor: pointer;
+  margin: 1px 0 0 1px;
+  padding: 4px 8px 3px 8px;
+  white-space: nowrap;
+}
+
+.tabs table tr .spacer {
+  border-bottom: 1px solid #aaa;
+  border-right: 0;
+  cursor: default;
+  width: 100%;
+}
+
+table tr td {
+  vertical-align: top;
+}
+
+.tree {
+  white-space: nowrap;
+}
+
+.tree div {
+  margin: 0;
+  padding: 0;
+}
+
+.tree img {
+  border: 0;
+  float: left;
+  margin: 0;
+  padding: 0;
+}
+
+.tree .nodeIcon {
+  cursor: pointer;
+  padding-right: 2px;
+}
+
+.tree .nodeLabel, .tree .nodeLabelSelected {
+  cursor: pointer;
+  font-size: 11px;
+  padding: 2px;
+}
+
+.tree .nodeLabelSelected {
+  background: #6699cc;
+  color: #fff;
+}
+
+.tree .treeNode16, .tree .treeNode32, .tree .treeNode64 {
+  line-height: 18px;
+  vertical-align: middle;
+}
+
+.tree .treeNode32 {
+  line-height: 34px;
+}
+
+.tree .treeNode64 {
+  line-height: 66px;
+}
+
+.vertDivider {
+	border-left: 2px solid #aaa;
+  cursor: e-resize;
+	margin: 0;
+	padding: 0;
+  position: absolute;
+  top: 0;
+  width: 3px;
+}
+
+.window {
+  margin: 0;
+  opacity: 1;
+  padding: 0;
+  position: absolute;
+  visibility: hidden;
+}
+
+.window .canvas {
+  background: #fff;
+  border: 1px solid #656565;
+  border-top: 1px solid #8c8c8c;
+  border-bottom: 0;
+  height: 100%;
+  margin: 0;
+  overflow: auto;
+  padding: 0;
+  position: relative;
+}
+
+.window .header {
+  position: relative;
+}
+
+.window .header .controlBar {
+  background-image: url(../../themes/standard/controlbarbg.jpg);
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+.window .header .controlBar .toolbar {
+  margin: 0;
+  padding: 0;
+}
+
+.window .header .controlBar .toolbar img {
+  margin: 0;
+  margin-left: 2px;
+  margin-top: 2px;
+  padding: 0;
+}
+
+.window .header .controlBar .toolbar .toolbarButton {
+  cursor: pointer;
+  opacity: .9;
+}
+
+.window .header .controlBar .toolbar .dividerLeft {
+  border-left: 1px solid #8c8c8c;
+  margin-left: 2px;
+  padding-left: 5px;
+}
+
+.window .header .controlBar .toolbar .dividerRight {
+  border-right: 1px solid #8c8c8c;
+  margin-right: 2px;
+  padding-right: 5px;
+}
+
+.window .header .controlBar .windowControls {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+}
+
+.window .header .controlBar .windowControls div {
+  border: 0;
+  cursor: pointer;
+  display: inline;
+  margin: 0;
+  opacity: .6;
+  padding: 0;
+}
+
+.window .header .controlBar .windowControls div:hover {
+  opacity: 1;
+}
+
+.window .header .controlBar .icon {
+  cursor: move;
+  position: absolute;
+  left: 5px;
+  top: 2px;
+}
+
+.window .header .controlBar .title {
+  cursor: move;
+  font-size: 11px;
+  line-height: 20px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.window .header .leftCorner {
+  background-image: url(../../themes/standard/controlbarbg-left.gif);
+  background-repeat: no-repeat;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 4px;
+}
+
+.window .header .rightCorner {
+  background-image: url(../../themes/standard/controlbarbg-right.gif);
+  background-repeat: no-repeat;
+  height: 100%;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 4px;
+}
+
+.window .statusBar {
+  background: #ebebeb;
+  border: 1px solid #656565;
+  border-top: 1px solid #8c8c8c;
+  height: 12px;
+  padding: 2px;
+  position: relative;
+  text-align: left;
+}
+
+.window .statusBar .statusText {
+  font-size: 11px;
+  line-height: 12px;
+}
+
+.window .statusBarEmpty {
+  border-bottom: 1px solid #8c8c8c;
+  position: relative;
+}
+
+.window .resize {
+  background-image: url(../../themes/standard/resize.gif);
+  bottom: 1px;
+  cursor: se-resize;
+  height: 11px;
+  opacity: .7;
+  position: absolute;
+  right: 1px;
+  width: 11px;
+}
+
+.window .resize:hover {
+  opacity: 1;
+}
+
+.window .waitCover {
+  left: 0;
+  opacity: .6;
+  position: absolute;
+  top: 0;
+  visibility: hidden;
+  z-index: auto;
+}
+
+.window .waitCoverMsg {
+  background: none;
+  left: 0;
+  text-align: center;
+  top: 50%;
+  margin-top: 8px;
+  visibility: hidden;
+  z-index: auto;
+}
+
+.window .waitCoverMsg .waitMsg {
+  background: #eee;
+  opacity: .7;
+  padding: 1px;
+  padding-top: 0;
+}
+
+.window .waitCoverMsg .progressImg, .window .waitCoverMsg .progressImgStatus {
+  background: #fff;
+  border: 1px solid #8c8c8c;
+  border-left: 0;
+  height: 6px;
+  margin: 0;
+  padding: 0;
+  width: 100px;
+}
+
+.window .waitCoverMsg .progressImgStatus {
+  background: #6699cc;
+  border: 1px solid #8c8c8c;
+  border-right: 0;
+  width: 0;
+}
+
+#windowMenu {
+  position: absolute;
+  visibility: hidden;
+  z-index: 1001;
+}
+
+#workspace {
+  border: 0;
+  margin: 0;
+  overflow: hidden;
+  padding: 20px;
+  position: relative;
+  text-align: left;
+}
+
+#workspaceBody {
+  visibility: hidden;
+}

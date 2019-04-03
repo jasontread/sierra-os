@@ -1,0 +1,72 @@
+<div class="coreWikiHelp">
+<p class='vspace'>As well as the ordinary ordered and unordered lists it is possible to use the styles <code class='escaped'>%ROMAN%</code>, <code class='escaped'>%roman%</code>, <code class='escaped'>%ALPHA%</code>, and <code class='escaped'>%alpha%</code>. The style is used in the first element of an ordered list, for example:
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+# %ROMAN% Top level
+## %ALPHA% Second level
+## Second level
+## Second level
+### Second level
+### Third level
+## Second level
+### Third level
+#### %alpha% Fourth level
+##### %roman% Fifth level
+##### Fifth level
+#### Fourth level
+# Top level
+# Top level
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><ol  style='list-style: upper-roman;'><li> Top level
+<ol  style='list-style: upper-alpha;'><li> Second level
+</li><li>Second level
+</li><li>Second level
+<ol><li>Second level
+</li><li>Third level
+</li></ol></li><li>Second level
+<ol><li>Third level
+<ol  style='list-style: lower-alpha;'><li> Fourth level
+<ol  style='list-style: lower-roman;'><li> Fifth level
+</li><li>Fifth level
+</li></ol></li><li>Fourth level
+</li></ol></li></ol></li></ol></li><li>Top level
+</li><li>Top level
+</li></ol>
+</td></tr></table>
+<p class='vspace'>Also consideration is being given to adding a <code class='escaped'>value</code> style which will allow the setting of an arbitrary start point or value for the list, for example:
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+# %item value=2517% Top level
+## %ROMAN% Second level
+## Second level
+## Second level
+### Second level
+### Third level
+## Second level
+### Third level
+#### %alpha% Fourth level
+##### %roman% Fifth level
+##### Fifth level
+#### Fourth level
+# Top level
+# Top level
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><ol><li value='2517' > Top level
+<ol  style='list-style: upper-roman;'><li> Second level
+</li><li>Second level
+</li><li>Second level
+<ol><li>Second level
+</li><li>Third level
+</li></ol></li><li>Second level
+<ol><li>Third level
+<ol  style='list-style: lower-alpha;'><li> Fourth level
+<ol  style='list-style: lower-roman;'><li> Fifth level
+</li><li>Fifth level
+</li></ol></li><li>Fourth level
+</li></ol></li></ol></li></ol></li><li>Top level
+</li><li>Top level
+</li></ol>
+</td></tr></table>
+</div>

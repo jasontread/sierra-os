@@ -1,0 +1,167 @@
+<div class="coreWikiHelp">
+<div class='vspace'></div><h2>Placing images in pages</h2>
+<p>To place an image into a page, enter the address (url) of the image into the markup text.  Any <em>alternate text</em> (used for tooltips and for browsers that do not display images) is placed in double quotes immediately following the image url.
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+http://www.idir.org/core/pc.jpg"Paper clips"
+Paper clips are fun to work with.
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><div><img src='http://www.idir.org/core/pc.jpg' alt='Paper clips' title='Paper clips' /></div>
+<p>Paper clips are fun to work with.
+</p>
+</td></tr></table>
+<p class='vspace'>To create a <a class='wikilink' href='#' onclick="OS.getWindowInstance(this).getManager().displayArticle('links')">link</a> to an image (like <a class='urllink' href='http://www.idir.org/core/pc.jpg' rel='nofollow'>http://www.idir.org/core/pc.jpg</a> as opposed to displaying the image itself), use double brackets to mark the link, as in <code class='escaped'>[[http://www.idir.org/core/pc.jpg]]</code> or <code class='escaped'>[[Attach:image.jpeg]]</code>.
+</p>
+<p class='vspace'>To have an image link to another location, use the image as the link text as in <code class='escaped'>[[http://pmwiki.org | Attach:image.jpg"PmWiki"]]</code>.
+</p>
+<div class='vspace'></div><h2>Captions and floating images</h2>
+<p><strong>Vertical Alignment</strong> (such as in tables, i.e. valign)<br /> - Fill in details here...
+</p>
+<p class='vspace'>A caption can be added to an image using a vertical brace and the caption text.
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+http://www.idir.org/core/pc.jpg"Paper clips" | '''Figure 1'''
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><div><img src='http://www.idir.org/core/pc.jpg' alt='Paper clips' title='Paper clips' /><br /><strong>Figure 1</strong></div>
+</td></tr></table>
+<p class='vspace'>Normally, images are displayed "in line" with the surrounding text. Use <code class='escaped'>%center%</code> to center an image. Use <code class='escaped'>%right%</code> to right-align an image.
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+commodo consequat. %center%http://www.idir.org/core/pc.jpg"Paper
+clips"%%
+
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+commodo consequat. Lorem ipsum dolor sit amet, consectetur adipisicing
+elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+%right% http://www.idir.org/core/gem.jpg%%
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><p  style='text-align: center;'>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. <img src='http://www.idir.org/core/pc.jpg' alt='Paper clips' title='Paper clips' />
+</p>
+<p class='vspace'  style='text-align: right;'>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.  <img src='http://www.idir.org/core/gem.jpg' alt='' title='' />
+</p>
+</td></tr></table> 
+<p class='vspace'>To left or right-align an image with text wrapping around it, use the <code class='escaped'>%lfloat%</code> or <code class='escaped'>%rfloat%</code> <a class='wikilink' href='#' onclick="OS.getWindowInstance(this).getManager().displayArticle('wikiStyles')">WikiStyles</a>. 
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+%lfloat text-align=center margin-top=5px margin-right=25px
+margin-bottom=5px margin-left=25px%
+http://www.idir.org/core/gem.jpg | '''Rock on!'''
+'''The image is left-aligned, with margins set; the caption is centered;
+the text wraps on the right side of the image.'''
+
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+commodo consequat. Lorem ipsum dolor sit amet, consectetur adipisicing
+elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+Ut enim ad minim
+veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+commodo consequat. 
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><div><span class='lfloat' style='text-align: center; margin-top: 5px; margin-right: 25px; margin-bottom: 5px; margin-left: 25px;'> <img src='http://www.idir.org/core/gem.jpg' alt='' title='' /><br /><strong>Rock on!</strong></span></div>
+<p><strong>The image is left-aligned, with margins set; the caption is centered; the text wraps on the right side of the image.</strong>
+</p>
+<p class='vspace'>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+commodo consequat. 
+</p>
+</td></tr></table>
+<p class='vspace'>The <code class='escaped'>[[&lt;&lt;]]</code> markup breaks floating text, and the text continues at the bottom of the image.
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+%lfloat% http://www.idir.org/core/gem.jpg
+'''The image is left-aligned, and the text wraps on the right side of the
+image. The text after the ''[@[[&lt;&lt;]]@]'' markup continues below the
+image.'''
+[[&lt;&lt;]]
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+commodo consequat. 
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><div><span class='lfloat'> <img src='http://www.idir.org/core/gem.jpg' alt='' title='' /></span></div>
+<p><strong>The image is left-aligned, and the text wraps on the right side of the image. The text after the <em><code class='escaped'>[[&lt;&lt;]]</code></em> markup continues below the image.</strong>
+<br clear='all' />
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+</p>
+</td></tr></table>
+<p class='vspace'>Use the <code class='escaped'>%lframe%</code> or <code class='escaped'>%rframe%</code> styles to float an image and place a frame around the image and its caption.  The frame can be formatted via wikistyles:
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+%rframe% http://www.idir.org/core/gem.jpg | '''Rock on!'''
+'''The image is right-aligned, and the text wraps on the left side of the
+image.'''
+
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+commodo consequat. Lorem ipsum dolor sit amet, consectetur adipisicing
+elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+%cframe width=100px bgcolor=lightblue border='3px solid red' padding=20px%
+http://www.idir.org/core/gem.jpg
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><div><span class='frame rfloat'> <img src='http://www.idir.org/core/gem.jpg' alt='' title='' /><br /><strong>Rock on!</strong></span></div>
+<p><strong>The image is right-aligned, and the text wraps on the left side of the image.</strong>
+</p>
+<p class='vspace'>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+</p>
+<div class='vspace'></div><div class='frame' style='margin-left: auto; margin-right: auto; width: 100px; text-align: center; background-color: lightblue; border: 3px solid red; padding: 20px;'> <img src='http://www.idir.org/core/gem.jpg' alt='' title='' /></div>
+</td></tr></table>
+<div class='vspace'></div><h2>Resizing images <a name='resizing' id='resizing'></a></h2>
+<p>To resize an image via wikistyles, use <code class='escaped'>%width=50px%</code> or <code class='escaped'>%height=50px%</code> in front of an image.    The <code class='escaped'>%thumb%</code> wikistyle is a helpful shortcut for <code class='escaped'>%width=100px%</code>.
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+%width=50px% http://www.idir.org/core/bubble.jpg \\
+%height=50px% http://www.idir.org/core/bubble.jpg \\
+%thumb% http://www.idir.org/core/bubble.jpg
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><div> <img width='50px' src='http://www.idir.org/core/bubble.jpg' alt='' title='' />  <img height='50px' src='http://www.idir.org/core/bubble.jpg' alt='' title='' />  <img width='100px' src='http://www.idir.org/core/bubble.jpg' alt='' title='' /></div>
+</td></tr></table>
+<p class='vspace'>Note: Resizing an image via wikistyles only affects how it is displayed in a browser; it does not reduce the transfer size of the image itself - hence resizing via wikistyles is not an acceptable method of generating a page-full of images, or 'gallery'.
+</p>
+<p class='vspace'>Resized images using <code class='escaped'>%thumb%</code> can also be floated with frames, as well as made into links.
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+%lframe thumb% [[http://www.idir.org/core/bubble.jpg |
+http://www.idir.org/core/bubble.jpg"Burst the bubble"]] |
+[-Bubble-]
+%lframe thumb% http://www.idir.org/core/pc.jpg"Clip the ticket" |
+[-Paper Clips-]
+%lframe thumb% [[DocumentationIndex |
+http://www.idir.org/core/gem.jpg"Visit the Documentation Index"]]
+| [[http://www.rockon.org | [-Rock On-]]]
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><div><span class='frame lfloat frame lfloat'> <a class='urllink' href='http://www.idir.org/core/bubble.jpg' rel='nofollow'><img width='100px' src='http://www.idir.org/core/bubble.jpg' alt='Burst the bubble' title='Burst the bubble' /></a><br /><span style='font-size:83%'>Bubble</span></span></div>
+<div><span class='frame lfloat frame lfloat'> <img width='100px' src='http://www.idir.org/core/pc.jpg' alt='Clip the ticket' title='Clip the ticket' /><br /><span style='font-size:83%'>Paper Clips</span></span></div>
+<div><span class='frame lfloat frame lfloat'> <a class='wikilink' href='http://www.pmwiki.org/wiki/PmWiki/DocumentationIndex'><img width='100px' src='http://www.idir.org/core/gem.jpg' alt='Visit Rock On.org' title='Visit Rock On.org' /></a><br /><a class='wikilink' href='http://www.rockon.org'><span style='font-size:83%'>Rock On</span></a></span></div>
+</td></tr></table>
+<p class='vspace'><a name='notes' id='notes'></a>
+</p><h3>Notes</h3>
+<ul><li><strong>An image file that lacks a correct extension</strong> can be displayed by addition of a "false" extension to the URL. For example, if the url is <code class='escaped'>http://www.example.com/script/tux</code>, add a fake query string on the end with the desired extension (e.g., <code class='escaped'>http://www.example.com/script/tux?format=.png</code>). If query strings are unsuitable, a fragment identifier should work, e.g. <code class='escaped'>http://www.example.com/script/tux#file.png</code>.
+<div class='vspace'></div></li><li>Relative width is possible by using percentages.
+</li></ul><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+%width=10pct% http://www.idir.org/core/bubble.jpg \\
+%height=30pct% http://www.idir.org/core/bubble.jpg 
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><div> <img width='10%' src='http://www.idir.org/core/bubble.jpg' alt='' title='' />  <img height='30%' src='http://www.idir.org/core/bubble.jpg' alt='' title='' /> </div>
+</td></tr></table>
+<div class='vspace'></div><h3>Credits</h3>
+<p>The images on this page were obtained from <a class='urllink' href='http://www.flickr.com' rel='nofollow' target='newWindow'>http://www.flickr.com</a> and are redistributed under a Creative Commons License.
+</p>
+
+</div>

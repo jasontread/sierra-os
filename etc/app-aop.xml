@@ -1,0 +1,684 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE entity-model PUBLIC "-//SIERRA//DTD ENTITY MODEL//EN" 
+  "http://sierra-php.googlecode.com/svn/trunk/lib/model/entity-model.dtd">
+<entity-model>
+  <entity key="Workspace">
+    <aop>
+      <aspect key="deleteWorkspaceCache" pointcut="dao.update"><![CDATA[
+      global $user;
+      if ($record->isDirty() && $user) {
+        $user->deleteWorkspaceCache();
+      }
+      ]]></aspect>
+      <aspect key="getDockApplications" pointcut="vo.getDockApplications" when="after"><![CDATA[
+      // verify that user has access to these applications
+      global $user;
+      $keys = array_keys($this->_dockApplications);
+      foreach($keys as $key) {
+        $pieces = explode(':', $this->_dockApplications[$key]);
+        if (!$user->hasAppAccess($pieces[0], $pieces[1])) {
+          unset($this->_dockApplications[$key]);
+        }
+      }
+      ]]></aspect>
+      <aspect key="setWorkspaceUsers" pointcut="dao.insert"><![CDATA[
+      global $user;
+      if (!$record->getPrimaryKey() && !$record->getUsers() && $user) {
+        $record->addUsers($user);
+      }
+      ]]></aspect>
+      <aspect key="setTheme" pointcut="vo.WorkspaceVO" when="after"><![CDATA[ $this->myTheme = SRAOS_Theme::getTheme($this->getTheme()); ]]></aspect>
+      <introduction key="include_theme" class="vo" type="include" value="SRAOS_Theme.php" />
+      <introduction key="addMyThemeAttr" class="vo" type="attribute" value="myTheme" />
+      <introduction key="includePluginManager" class="vo" type="include" value="SRAOS_PluginManager.php" />
+      <introduction key="getAllUsers" class="vo" type="method" value="&amp; getAllUsers()"><![CDATA[
+      $users =& $this->getUsers();
+      $dao =& SRA_DaoFactory::getDao('OsUser');
+      $db =& SRA_Controller::getAppDb();
+      $results =& $db->fetch('SELECT uid FROM shared_workspaces WHERE workspace_id=' . $this->getPrimaryKey(), array(SRA_DATA_TYPE_INT));
+      while($row =& $results->next()) {
+        $users[$row[0]] =& $dao->findByPk($row[0]);
+      }
+      return $users;
+      ]]></introduction>
+      <introduction key="getLoginItems" class="vo" type="method" value="getWorkspaceLoginItems()"><![CDATA[
+      $loginItems =& $this->getLoginItems();
+      $items = array();
+      foreach($loginItems as $loginItem) {
+        $pieces = explode(':', $loginItem);
+        $items[$pieces[0]] = $pieces[1];
+      }
+      return $items;
+      ]]></introduction>
+    </aop>
+  </entity>
+  <entity key="OsGroup">
+    <aop>
+      <aspect key="doNotRemoveFromOwnGroup" pointcut="vo.removeMembers"><![CDATA[
+      // don't remove a user from his own group
+      global $user;
+      if ($user->equals($members) && $user->getGroups($this->getPrimaryKey())) {
+        return;
+      }
+      if (OsUserVO::isValid($members) && $members->getGroups($this->getPrimaryKey()) && count($members->getGroups()) == 1) {
+        $tpl =& SRA_Controller::getAppTemplate();
+        $tpl->assign('msg', 'error.removeFromOnlyGroup');
+        return;
+      }
+      ]]></aspect>
+      <aspect key="doNotRemoveRootFromSysGroup" pointcut="vo.removeMembers"><![CDATA[
+      // don't remove a root user from a system group
+      if ($this->isSystem()) {
+        $eval = is_array($members) ? $members : array($members);
+        $keys = array_keys($eval);
+        $dao =& SRA_DaoFactory::getDao('OsUser');
+        $rootUser =& $dao->getRootUser();
+        foreach($keys as $key) {
+          if ($rootUser->equals($eval[$key])) {
+            unset($eval[$key]);
+          }
+        }
+        if (count($eval) == 0) { return; }
+      }
+      ]]></aspect>
+      <aspect key="doNotDeleteSystemGroups" pointcut="dao.delete"><![CDATA[
+      if ($record->isSystem()) {
+        if ($completeTransaction) { $this->_db->rollback(); }
+        $msg = 'OsGroupDAO::update: Failed - system groups cannot be deleted';
+        return SRA_Error::logError($msg, __FILE__, __LINE__, SRA_ERROR_PROBLEM, SRA_Controller::isAppInDebug());
+      }
+      ]]></aspect>
+      <aspect key="setDefaultOwnerUid" pointcut="dao.insert"><![CDATA[
+      global $user;
+      if ($user && !$record->recordExists && !$record->getOwnerUid() && $user->getPrimaryKey()) {
+        $record->setOwnerUid($user->getPrimaryKey());
+      }
+      ]]></aspect>
+      <aspect key="doNotUpdateSystemGroups" pointcut="vo.validate" when="after"><![CDATA[
+      if (!$id && $this->isSystem() && $this->isDirty('name')) {
+        $this->validateErrors['name'] = $rb->getString('error.cannotUpdateSysGroups');
+      }
+      ]]></aspect>
+
+      <introduction key="getGidFromName" class="vo" type="method" value="getGidFromName($name)"><![CDATA[
+      // returns the gid of a user provided the $name
+      $db =& SRA_Controller::getAppDb();
+      return SRA_Database::getQueryValue($db, 'SELECT gid FROM os_group WHERE name=' . $db->convertText($name));
+      ]]></introduction>
+      <introduction key="getNameFromGid" class="vo" type="method" value="&amp; getNameFromGid($gid)"><![CDATA[
+      // returns the name of a group provided the $gid
+      $db =& SRA_Controller::getAppDb();
+      $results =& $db->fetch('SELECT name FROM os_group WHERE gid=' . $db->convertInt($gid));
+      if ($results->count()) {
+        $row =& $results->next();
+        return $row[0];
+      }
+      else {
+        return NULL;
+      }
+      ]]></introduction>
+      <introduction key="getUserAdminGroup" class="dao" type="method" value="&amp; getUserAdminGroup()"><![CDATA[
+      $groups =& $this->findByQuery('SELECT gid FROM os_group WHERE name="userAdmin"');
+      return $groups[0];
+      ]]></introduction>
+      <introduction key="getUserHash" class="vo" type="method" value="getUserHash($gid=NULL, $col='name', $includeUids=NULL, $excludeUids=NULL, $keyCol='uid')"><![CDATA[
+      // returns the users associated with the $gid specified as a hash indexed 
+      // by $keyCol, where the value is the user's name (unless another OsUser 
+      // column is specified in the $col parameter). this method may be 
+      // invoked either statically or as part of an instance. $gid is not 
+      // required in the case of the latter
+      static $_groupUserHash = array();
+      $gid = $gid ? $gid : ($this ? $this->getGid() : NULL);
+      $key = $gid . '_' . $col;
+      
+      if ($gid && !isset($_groupUserHash[$key])) {
+        $_groupUserHash[$key] = array();
+        $db =& SRA_Controller::getAppDb();
+        $results =& $db->fetch('SELECT u.' . $col . ', u.' . $keyCol . ' FROM user_groups g, os_user u WHERE g.gid=' . $db->convertInt($gid) . ' AND g.uid=u.uid ORDER BY u.' . $col, array(SRA_DATA_TYPE_TEXT, SRA_DATA_TYPE_INT));
+        while($row =& $results->next()) {
+          $_groupUserHash[$key][$row[1]] = $row[0];
+        }
+      }
+      if (isset($_groupUserHash[$key]) && count($_groupUserHash)) {
+        if ($includeUids || $excludeUids) {
+          $hash = array();
+          $uids = array_keys($_groupUserHash[$key]);
+          foreach($uids as $uid) {
+            if ((!$includeUids || in_array($uid, $includeUids)) && (!$excludeUids || !in_array($uid, $excludeUids))) {
+              $hash[$uid] = $_groupUserHash[$key][$uid];
+            }
+          }
+          return count($hash) ? $hash : NULL;
+        }
+        else {
+          return $_groupUserHash[$key];
+        }
+      }
+      else {
+        return NULL;
+      }
+      ]]></introduction>
+      <introduction key="isMember" class="vo" type="method" value="isMember($uid=NULL, $gid=NULL)"><![CDATA[
+      // returns TRUE if the current user is a member of this group. if $uid is 
+      // specified, the user that will be evaluated will be the user associated 
+      // with that $uid. this method can also be invoked statically using the 
+      // $gid parameter
+      global $user;
+      if ((is_numeric($uid) || OsUserVO::isValid($user)) && (is_numeric($gid) || OsGroupVO::isValid($this))) {
+        return SRA_Database::getQueryValue(SRA_Controller::getAppDb(), 'SELECT uid FROM user_groups WHERE gid=' . ($gid ? $gid : $this->getPrimaryKey()) . ' AND uid=' . ($uid ? $uid : $user->getUid()), SRA_DATA_TYPE_INT);
+      }
+      return FALSE;
+      ]]></introduction>
+      <introduction key="isOwner" class="vo" type="method" value="isOwner($uid=NULL)"><![CDATA[
+      // returns TRUE if the current user is an owner of this group. if $uid is 
+      // specified, the user that will be evaluated will be the user associated 
+      // with that $uid
+      global $user;
+      if ($uid) {
+        $dao =& SRA_DaoFactory::getDao('OsUser');
+        $user =& $dao->findByPk($uid);
+      }
+      return OsUserVO::isValid($user) && in_array($this->getOwnerUid(), $user->getAllUids()) ? TRUE : FALSE;
+      ]]></introduction>
+      <introduction key="validateGid" class="vo" type="method" value="validateGid($gid)"><![CDATA[
+      // returns TRUE if $gid is valid
+      return SRA_Database::getQueryValue(SRA_Controller::getAppDb(), 'SELECT count(*) FROM os_group WHERE gid=' . $gid, SRA_DATA_TYPE_INT);
+      ]]></introduction>
+    </aop>
+  </entity>
+  <entity key="OsUser">
+    <aop>
+      <advice key="sharedWorkspaces"><![CDATA[
+      global $user;
+      if ($user->getUid() != $this->getUid()) {
+        // only a parent or user itself may add/remove shared workspaces
+        $sharedWorkspaces = is_array($sharedWorkspaces) ? $sharedWorkspaces : array($sharedWorkspaces);
+        $keys = array_keys($sharedWorkspaces);
+        foreach($keys as $key) {
+          if (!$user->getWorkspaces($sharedWorkspaces[$key])) {
+            unset($sharedWorkspaces[$key]);
+          }
+        }
+        if (!count($sharedWorkspaces)) {
+          return;
+        }
+      }
+      ]]></advice>
+      <advice key="updateSystemGroups"><![CDATA[ $record->updateSystemGroups(); ]]></advice>
+      
+      <aspect key="addSharedWorkspaces" advice="sharedWorkspaces" pointcut="vo.addSharedWorkspaces" />
+      <aspect key="deleteWorkspaceCache" pointcut="dao.update"><![CDATA[
+      global $user;
+      if ($record->isDirty() && $record->equals($user)) {
+        $user->deleteWorkspaceCache();
+      }
+      ]]></aspect>
+      <aspect key="externalAuthDefaultValue" pointcut="vo.OsUserVO" when="after"><![CDATA[
+      if ($appendDirty && !$this->recordExists && !isset($initVals['externalAuth']) && SRA_Controller::getAppParams('useExternalAuth', 'sraos')) {
+        $this->setExternalAuth(TRUE);
+      }
+      ]]></aspect>
+      <aspect key="renderExternalAuth" pointcut="vo.renderAttribute"><![CDATA[
+      // don't render external authentication flag unless external authenticator has been defined
+      if ($attribute == 'externalAuth' && !SRA_Controller::getAppParams('useExternalAuth', 'sraos')) { return; }
+      // don't render password fields when external authentication is used
+      if (($attribute == 'password' || $attribute == 'passwordConfirm') && $this->isExternalAuth() && SRA_Controller::getAppParams('useExternalAuth', 'sraos')) { return; }
+      ]]></aspect>
+      <aspect key="removeSharedWorkspaces" advice="sharedWorkspaces" pointcut="vo.removeSharedWorkspaces" />
+      
+      <aspect key="validatePassword" pointcut="vo.validate"><![CDATA[
+      // no password
+      if (!$this->getPrimaryKey() && !isset($this->_password)) {
+        $this->_password = '';
+        $this->_confirmPassword = '';
+      }
+      ]]></aspect>
+      <aspect key="defaultThumbnail" pointcut="vo.getThumbnailUri"><![CDATA[
+      if (!$clean && !$this->_thumbnailUri) { return OS_USER_MISSING_PICTURE_THUMBNAIL; }
+      ]]></aspect>
+      <aspect key="deleteGroupValidation" pointcut="vo.validate" when="after"><![CDATA[
+      // cannot delete any group if that is a user's only group OR groups that not actually OWNED by the user
+      if (isset($this->_dirty['ownedGroups']) && isset($this->_dirty['ownedGroups'][SRA_ATTRIBUTE_REMOVE_DIRTY_KEY])) {
+        $keys = array_keys($this->_dirty['ownedGroups'][SRA_ATTRIBUTE_REMOVE_DIRTY_KEY]);
+        foreach ($keys as $key) {
+          if ($this->getGroups($key)) {
+            $this->validateErrors['ownedGroups'] = 'error.deleteUnownedGroup';
+          }
+          else {
+            $members =& $this->_dirty['ownedGroups'][SRA_ATTRIBUTE_REMOVE_DIRTY_KEY][$key]->getMembers();
+            $mkeys = array_keys($members);
+            foreach ($mkeys as $mkey) {
+              if (count($members[$mkey]->getGroups()) == 1) {
+                $this->validateErrors['ownedGroups'] = 'error.deletePrimaryGroup';
+              }
+            }
+          }
+        }
+      }
+      ]]></aspect>
+      <aspect key="minWorkspaces" pointcut="vo.validate" when="after"><![CDATA[
+      if (!$this->validateErrors && $this->isDirty('workspaces') && !$this->getNumWorkspaces()) {
+        $this->validateErrors['workspaces'] = $rb->getString('error.minWorkspace');
+      }
+      ]]></aspect>
+      <aspect key="updateSystemGroupsInsert" advice="updateSystemGroups" pointcut="dao.insert" />
+      <aspect key="setOwnership" pointcut="dao.insert" when="after"><![CDATA[
+      if ($record->getPrimaryKey()) {
+        if (count($groups =& $record->getGroups()) == 1) {
+          $keys = array_keys($groups);
+          foreach ($keys as $key) {
+            if ($groups[$key]->getName() == $record->getUserName()) {
+              $record->addOwnedGroups($groups[$key]);
+              $sql = 'UPDATE os_group SET owner_uid = ' . $record->getAttrDbValue() . ' WHERE gid = ' . $groups[$key]->getAttrDbValue();
+              $this->_db->execute($sql);
+              break;
+            }
+          }
+        }
+        global $user;
+        $sql = 'UPDATE os_user SET owner_uid = ' . $user->getAttrDbValue() . ' WHERE uid = ' . $record->getAttrDbValue();
+        $this->_db->execute($sql);
+        $record->_ownerUid = $user->getPrimaryKey();
+        // reset uids and gids
+        unset($user->_allUids);
+        unset($user->_allGids);
+      }
+      ]]></aspect>
+      <aspect key="setDefaultVals" pointcut="vo.OsUserVO" when="after"><![CDATA[
+      if (!$this->recordExists) {
+        if (!$this->getGroups()) { $groups = array(new OsGroupVO(array('name' => $this->getUserName()))); $this->setGroups($groups); }
+      }
+      ]]></aspect>
+      <aspect key="delete" pointcut="dao.delete"><![CDATA[
+      if ($record->recordExists) {
+        global $user;
+        $sql = 'UPDATE os_user SET owner_uid = ' . $user->getAttrDbValue() . ' WHERE owner_uid = ' . $record->getAttrDbValue();
+        $this->_db->execute($sql);
+        $workspaces =& $record->getWorkspaces();
+        $keys = array_keys($workspaces);
+        foreach ($keys as $key) {
+          $workspaces[$key]->delete();
+        }
+        $groups =& $record->getOwnedGroups(FALSE, FALSE, TRUE);
+        $keys = array_keys($groups);
+        foreach($keys as $key) {
+          if ($groups[$key]->getName() == $record->getUserName()) { $groups[$key]->delete(); }
+        }
+        $sql = 'DELETE FROM user_groups WHERE uid = ' . $record->getAttrDbValue();
+        $this->_db->execute($sql);
+        $sql = 'UPDATE os_group SET owner_uid = ' . $user->getAttrDbValue() . ' WHERE owner_uid = ' . $record->getAttrDbValue();
+        $this->_db->execute($sql);
+      }
+      ]]></aspect>
+      <aspect key="addGlobalUserVar" pointcut="vo.newInstanceFromForm"><![CDATA[ global $user; ]]></aspect>
+      <aspect key="dontClearDefaultWorkspace" pointcut="vo.setDefaultWorkspace"><![CDATA[
+      if (!trim($defaultWorkspace)) {
+        return;
+      }
+      ]]></aspect>
+      <aspect key="removeDefaultMembers" pointcut="vo.newInstanceFromForm" when="after"><![CDATA[
+      if (!isset($initVals['ownedGroups_0_gid']) && isset($initVals['ownedGroups_0_members']) && !count($initVals['ownedGroups_0_members'])) {
+        unset($initVals['ownedGroups_0_members']);
+      }
+      ]]></aspect>
+      
+      <introduction key="deleteWorkspaceCache" class="vo" type="method" value="deleteWorkspaceCache()"><![CDATA[
+      // deletes workspace cache if it exists
+      $workspace =& $this->getActiveWorkspace();
+      if (isset($_SESSION['cachedWorkspace' . $workspace->getWorkspaceId()] )) { unset($_SESSION['cachedWorkspace' . $workspace->getWorkspaceId()]); }
+      ]]></introduction>
+      <introduction key="includePluginManager" class="vo" type="include" value="SRAOS_PluginManager.php" />
+      <introduction key="workspaceIdFormName" class="vo" type="constant" value="SRAOS_USER_ACTIVE_WORKSPACE_IDENTIFER='workspaceId'" />
+      <introduction key="getRootUid" class="dao" type="method" value="getRootUid()"><![CDATA[
+      static $_rootUid;
+      if (!isset($_rootUid)) {
+        // returns the uid of the root system user
+        $_rootUid = SRA_Database::getQueryValue(SRA_Controller::getAppDb(), 'SELECT min(uid) FROM os_user', SRA_DATA_TYPE_INT);
+      }
+      return $_rootUid;
+      ]]></introduction>
+      <introduction key="getRootUser" class="dao" type="method" value="&amp; getRootUser()"><![CDATA[
+      // returns a reference to the root system user
+      $dao =& SRA_DaoFactory::getDao('OsUser');
+      return $dao->findByPk(OsUserDAO::getRootUid());
+      ]]></introduction>
+      <introduction key="getActiveWorkspace" class="vo" type="method" value="&amp; getActiveWorkspace()"><![CDATA[
+      // look for workspace identifier (SRAOS_USER_ACTIVE_WORKSPACE_IDENTIFER) in 
+      // $_POST. If not found, return first workspace
+      $workspaces =& $this->getAllWorkspaces();
+      $defaultId = $this->getDefaultWorkspace();
+      $keys = array_keys($workspaces);
+      return $workspaces[isset($_POST[SRAOS_USER_ACTIVE_WORKSPACE_IDENTIFER]) && isset($workspaces[$_POST[SRAOS_USER_ACTIVE_WORKSPACE_IDENTIFER]]) ? $_POST[SRAOS_USER_ACTIVE_WORKSPACE_IDENTIFER] : ($defaultId && isset($workspaces[$defaultId]) ? $defaultId : $keys[0])];
+      ]]></introduction>
+      <introduction key="getNumWorkspaces" class="vo" type="method" value="getNumWorkspaces($excludeShared = FALSE)"><![CDATA[
+      return count(($excludeShared ? $this->getWorkspaces() : $this->getAllWorkspaces()));
+      ]]></introduction>
+      <introduction key="canUseApplication" class="vo" type="method" value="canUseApplication($pluginId, $appId)"><![CDATA[
+      return $this->isAllApps() || in_array("${pluginId}:${appId}", $this->getAppPermissions());
+      ]]></introduction>
+      <introduction key="getParent" class="vo" type="method" value="&amp; getParent()"><![CDATA[
+      if ($this->getOwnerUid()) {
+        $dao =& $this->getDao();
+        return $dao->findByPk($this->getOwnerUid());
+      }
+      $tmp = NULL;
+      return $tmp;
+      ]]></introduction>
+      <introduction key="getParentUserName" class="vo" type="method" value="getParentUserName()"><![CDATA[
+      if ($parent =& $this->getParent()) {
+        return $parent->getUserName();
+      }
+      return "";
+      ]]></introduction>
+      <introduction key="getApplications" class="vo" type="method" value="&amp; getApplications($hideTerminal)"><![CDATA[
+      global $user;
+      if (!$this->recordExists && $user) {
+        return $user->getApplications();
+      }
+      
+      if (!isset($this->__appPermissions)) {
+        if (!$this->isAllApps()) {
+          $permissions = $this->getAppPermissions();
+          // add terminal and core cli applications
+          if (!$hideTerminal && !in_array('core:Terminal', $permissions)) { $permissions[] = 'core:Terminal'; }
+          $core =& SRAOS_PluginManager::getPlugin('core');
+          $apps =& $core->getApplications();
+          $keys = array_keys($apps);
+          foreach($keys as $key) {
+            if ($apps[$key]->isCli()) {
+              $permissions[] = 'core:' . $apps[$key]->getId();
+            }
+          }
+        }
+        else if ($this->isAllApps() && $parent =& $this->getParent()) {
+          return $parent->getApplications();
+        }
+        else {
+          $permissions = array_keys(SRAOS_PluginManager::getApplicationOptions());
+        }
+        $this->__appPermissions = array();
+        foreach($permissions as $key) {
+          $pieces = explode(':', $key);
+          $this->__appPermissions[] =& SRAOS_PluginManager::getApplication($pieces[0], $pieces[1]);
+          // set terminal to hidden state if user does not have access to it
+          if ($key == 'core:Terminal' && !$this->isAllApps() && !in_array('core:Terminal', $this->getAppPermissions())) { $this->__appPermissions[count($this->__appPermissions) - 1]->setHidden(TRUE); }
+        }
+      }
+      return $this->__appPermissions;
+      ]]></introduction>
+      <introduction key="getApplicationOptions" class="vo" type="method" value="getApplicationOptions($dockOptions=FALSE, $includeHidden=TRUE)"><![CDATA[
+      $appMap = array();
+      $apps =& $this->getApplications(TRUE);
+      $keys = array_keys($apps);
+      foreach($keys as $key) {
+        if (($apps[$key]->getPluginId() != 'core' || !$apps[$key]->isCli()) && (($includeHidden || (!$apps[$key]->isHidden() && !$apps[$key]->isService())) && (!$dockOptions || (!$apps[$key]->isPermaDocked() && !$apps[$key]->isHidden() && !$apps[$key]->isService())))) {
+          $appMap[$apps[$key]->_plugin->getId() . ':' . $apps[$key]->getId()] = $apps[$key]->_plugin->resources->getString($apps[$key]->getResource());
+        }
+      }
+      return $appMap;
+      ]]></introduction>
+      <introduction key="getAllUids" class="vo" type="method" value="getAllUids($start = NULL, $includeUids=NULL, $excludeUids=NULL)"><![CDATA[
+      // returns all uids owned by this user (its own uid + children uids)
+      if ($start) {
+        $db =& SRA_Controller::getAppDb();
+        $results =& $db->fetch('SELECT uid FROM os_user WHERE owner_uid=' . $start, array(SRA_DATA_TYPE_INT));
+        $ids = array();
+        while($row =& $results->next()) { 
+          if ($row[0]) {
+            $ids[] = $row[0];
+            $ids = array_merge($ids, $this->getAllUids($row[0])); 
+          } 
+        }
+        if (count($ids) && ($includeUids || $excludeUids)) {
+          $uids = array();
+          foreach($ids as $uid) {
+            if ((!$includeUids || in_array($uid, $includeUids)) && (!$excludeUids || !in_array($uid, $excludeUids))) {
+              $uids[] = $uid;
+            }
+          }
+          return $uids;
+        }
+        else {
+          return $ids;
+        }
+      }
+      else {
+        if (!isset($this->_allUids)) {
+          $this->_allUids = array_merge(array($this->getPrimaryKey()), $this->getAllUids($this->getPrimaryKey()));
+        }
+        if (count($this->_allUids) && ($includeUids || $excludeUids)) {
+          $uids = array();
+          foreach($this->_allUids as $uid) {
+            if ((!$includeUids || in_array($uid, $includeUids)) && (!$excludeUids || !in_array($uid, $excludeUids))) {
+              $uids[] = $uid;
+            }
+          }
+          return $uids;
+        }
+        else {
+          return $this->_allUids;
+        }
+      }
+      ]]></introduction>
+      <introduction key="getAllUidsHash" class="vo" type="method" value="getAllUidsHash($col, $start = NULL, $includeUids=NULL, $excludeUids=NULL)"><![CDATA[
+      // returns a hash indexed by all uids owned by this user (its own uid + children uids)
+      $db =& SRA_Controller::getAppDb();
+      $uids = $this->getAllUids($start, $includeUids, $excludeUids);
+      $hash = array();
+      foreach($uids as $uid) {
+        $results =& $db->fetch('SELECT ' . $col . ' FROM os_user WHERE uid=' . $uid);
+        $row =& $results->next();
+        $hash[$uid] = $row[0];
+      }
+      return $hash;
+      ]]></introduction>
+      <introduction key="getAllGids" class="vo" type="method" value="getAllGids($includeGids=NULL, $excludeGids=NULL)"><![CDATA[
+      
+      // returns all gids owned by this user (its own gids + children gids)
+      if (!isset($this->_allGids)) {
+        $this->_allGids = array();
+        $db =& SRA_Controller::getAppDb();
+        $uids = $this->getAllUids();
+        $keys = array_keys($uids);
+        $query = 'SELECT gid FROM os_group WHERE owner_uid IN (';
+        foreach($keys as $key) {
+          $query .= $key == $keys[0] ? '' : ', ';
+          $query .= $uids[$key];
+        }
+        $query .= ')';
+        $results =& $db->fetch($query, array(SRA_DATA_TYPE_INT));
+        while($row =& $results->next()) {
+          $this->_allGids[] = $row[0]; 
+        }
+        $results =& $db->fetch('SELECT gid FROM user_groups WHERE uid=' . $this->getPrimaryKey(), array(SRA_DATA_TYPE_INT));
+        while($row =& $results->next()) {
+          if (!in_array($row[0], $this->_allGids)) {
+            $this->_allGids[] = $row[0];
+          }
+        }
+      }
+      if ($includeGids || $excludeGids) {
+        $gids = array();
+        foreach($this->_allGids as $gid) {
+          if ((!$includeGids || in_array($gid, $includeGids)) && (!$excludeGids || !in_array($gid, $excludeGids))) {
+            $gids[] = $gid;
+          }
+        }
+        return $gids;
+      }
+      else {
+        return $this->_allGids;
+      }
+      ]]></introduction>
+      <introduction key="getAllGidsHash" class="vo" type="method" value="getAllGidsHash($col, $includeGids=NULL, $excludeGids=NULL)"><![CDATA[
+      // returns a hash indexed by all gids owned by this user (its own gids + children gids)
+      $db =& SRA_Controller::getAppDb();
+      $gids = $this->getAllGids($includeGids, $excludeGids);
+      $hash = array();
+      foreach($gids as $gid) {
+        $results =& $db->fetch('SELECT ' . $col . ' FROM os_group WHERE gid=' . $gid);
+        $row =& $results->next();
+        $hash[$gid] = $row[0];
+      }
+      return $hash;
+      ]]></introduction>
+      <introduction key="getAllGroups" class="vo" type="method" value="&amp; getAllGroups()"><![CDATA[
+      // returns all of the groups this user owns (either directly or indirectly) 
+      // as well as those groups this user is a member of. the index in the 
+      // return value will be the group gids
+      if (!isset($this->_allGroups)) {
+        $groups =& $this->getGroups();
+        $dao =& SRA_DaoFactory::getDao('OsGroup');
+        $ownedGroups =& $dao->findByPks($this->getAllGids());
+        $this->_allGroups = array();
+        $keys = array_keys($groups);
+        foreach($keys as $key) {
+          $this->_allGroups[$groups[$key]->getPrimaryKey()] =& $groups[$key];
+        }
+        if ($ownedGroups) {
+          $keys = array_keys($ownedGroups);
+          foreach($keys as $key) {
+            $this->_allGroups[$ownedGroups[$key]->getPrimaryKey()] =& $ownedGroups[$key];
+          }
+        }
+      }
+      return $this->_allGroups;
+      ]]></introduction>
+      <introduction key="getAllWorkspaces" class="vo" type="method" value="&amp; getAllWorkspaces()"><![CDATA[
+      // returns both user and shared workspaces
+      $workspaces =& $this->getWorkspaces();
+      if (!is_array($workspaces)) { $workspaces = array(); }
+      $dao =& SRA_DaoFactory::getDao('Workspace');
+      $sharedWorkspaces = $this->getSharedWorkspaces(TRUE);
+      foreach($sharedWorkspaces as $id) {
+        if ($workspace =& $dao->findByPk($id)) {
+          $workspaces[$id] =& $workspace;
+        }
+      }
+      if (!count($workspaces) && $this->recordExists) { 
+        $workspace = new WorkspaceVO();
+        $workspace->addUsers($this);
+        $workspace->insert();
+        $this->_workspaces = array($workspace);
+        return $this->_workspaces;
+      }
+      return $workspaces;
+      ]]></introduction>
+      <introduction key="getEmailFromUid" class="vo" type="method" value="&amp; getEmailFromUid($uid)"><![CDATA[
+      // returns the name of a user provided the $uid
+      return SRA_Database::getQueryValue(SRA_Controller::getAppDb(), 'SELECT email FROM os_user WHERE uid=' . $uid);
+      ]]></introduction>
+      <introduction key="getNameFromUid" class="vo" type="method" value="&amp; getNameFromUid($uid)"><![CDATA[
+      // returns the name of a user provided the $uid
+      return SRA_Database::getQueryValue(SRA_Controller::getAppDb(), 'SELECT name FROM os_user WHERE uid=' . $uid);
+      ]]></introduction>
+      <introduction key="getPrimaryGroup" class="vo" type="method" value="&amp; getPrimaryGroup()"><![CDATA[
+      // returns the user's first group
+      $groups =& $this->getGroups();
+      $keys = array_keys($groups);
+      return $groups[$keys[0]];
+      ]]></introduction>
+      <introduction key="getUidFromUserName" class="vo" type="method" value="getUidFromUserName($userName)"><![CDATA[
+      // returns the uid of a user provided the $userName
+      $db =& SRA_Controller::getAppDb();
+      return SRA_Database::getQueryValue($db, 'SELECT uid FROM os_user WHERE user_name=' . $db->convertText($userName));
+      ]]></introduction>
+      <introduction key="getUserThumbnailUri" class="vo" type="method" value="getUserThumbnailUri($uid)"><![CDATA[
+      // static method for accessing a user thumbnail uri based on the $uid specified
+      return ($thumbnail = SRA_Database::getQueryValue(SRA_Controller::getAppDb(), 'SELECT thumbnail_uri FROM os_user WHERE uid=' . $uid)) ? $thumbnail : OS_USER_MISSING_PICTURE_THUMBNAIL;
+      ]]></introduction>
+      <introduction key="getWorkspaceOptions" class="vo" type="method" value="getWorkspaceOptions($excludeShared = FALSE)"><![CDATA[
+      $options = array();
+      if ($excludeShared) {
+        $workspaces =& $this->getWorkspaces();
+      }
+      else {
+        $workspaces =& $this->getAllWorkspaces();
+      }
+      $keys = array_keys($workspaces);
+      foreach($keys as $key) {
+        $options[$workspaces[$key]->getWorkspaceId()] = $workspaces[$key]->getName();
+      }
+      return $options;
+      ]]></introduction>
+      <introduction key="hasAppAccess" class="vo" type="method" value="hasAppAccess($pluginId, $appId)"><![CDATA[
+      // returns TRUE if the user has access to the application specified
+      $apps =& $this->getApplications();
+      $keys = array_keys($apps);
+      foreach($keys as $key) {
+        if ($apps[$key]->getId() == $appId && $apps[$key]->getPluginId() == $pluginId) {
+          return TRUE;
+        }
+      }
+      return FALSE;
+      ]]></introduction>
+      <introduction key="hasChildren" class="vo" type="method" value="hasChildren()"><![CDATA[
+      // returns TRUE if the user has children
+      $db =& SRA_Controller::getAppDb();
+      $results =& $db->fetch('SELECT count(*) FROM os_user WHERE owner_uid=' . $this->getPrimaryKey(), array(SRA_DATA_TYPE_INT));
+      $row =& $results->next();
+      return $row[0] > 0;
+      ]]></introduction>
+      <introduction key="isChild" class="vo" type="method" value="isChild($uid)"><![CDATA[
+      // returns TRUE if the current user is a child of this user. if $uid 
+      // is specified, the user that will be evaluated will be the user 
+      // associated with that $uid. otherwise, the global $user variable will be 
+      // used
+      global $user;
+      if ($uid) {
+        $dao =& SRA_DaoFactory::getDao('OsUser');
+        $user =& $dao->findByPk($uid);
+      }
+      return OsUserVO::isValid($user) && in_array($user->getUid(), $this->getAllUids()) && $user->getUid() != $this->getUid() ? TRUE : FALSE;
+      ]]></introduction>
+      <introduction key="isMemberOfGroup" class="vo" type="method" value="isMemberOfGroup(&amp; $group, $all=FALSE)"><![CDATA[
+      // returns TRUE if the user is a member of the group specified. $group can 
+      // be an OsGroup object, a gid, or a group name. if $all is TRUE, then 
+      // returns TRUE if user is member or owner of the group specified
+      if ($all) {
+        $groups =& $this->getAllGroups();
+      }
+      else {
+        $groups =& $this->getGroups();
+      }
+      
+      $keys = array_keys($groups);
+      foreach($keys as $key) {
+        if ((OsGroupVO::isValid($group) && $groups[$key]->equals($group)) || (is_int($group) && $groups[$key]->getGid() == $group) || (is_string($group) && $groups[$key]->getName() == $group)) {
+          return TRUE;
+        }
+      }
+      return FALSE;
+      ]]></introduction>
+      <introduction key="isParent" class="vo" type="method" value="isParent($uid)"><![CDATA[
+      // returns TRUE if the current user is a parent of this user. if $uid 
+      // is specified, the user that will be evaluated will be the user 
+      // associated with that $uid. otherwise, the global $user variable will be 
+      // used
+      global $user;
+      if ($uid) {
+        $dao =& SRA_DaoFactory::getDao('OsUser');
+        $user =& $dao->findByPk($uid);
+      }
+      return OsUserVO::isValid($user) && in_array($this->getUid(), $user->getAllUids()) && $this->getUid() != $user->getUid() ? TRUE : FALSE;
+      ]]></introduction>
+      <introduction key="updateSystemGroups" class="vo" type="method" value="updateSystemGroups()"><![CDATA[
+      // updates system group membership
+      $dao =& SRA_DaoFactory::getDao('OsGroup');
+      $userAdminGroup =& $dao->getUserAdminGroup();
+      if ($this->isAdminUsers() && !$this->isMemberOfGroup($userAdminGroup)) { 
+        $this->addGroups($userAdminGroup); 
+      }
+      else if (!$this->isAdminUsers() && $this->isMemberOfGroup($userAdminGroup)) {
+        $this->removeGroups($userAdminGroup);
+      }
+      ]]></introduction>
+      <introduction key="validateUid" class="vo" type="method" value="validateUid($uid)"><![CDATA[
+      // returns TRUE if $uid is valid
+      return SRA_Database::getQueryValue(SRA_Controller::getAppDb(), 'SELECT count(*) FROM os_user WHERE uid=' . $uid, SRA_DATA_TYPE_INT);
+      ]]></introduction>
+      <introduction key="OS_USER_MISSING_PICTURE_THUMBNAIL" class="vo" type="constant" value="OS_USER_MISSING_PICTURE_THUMBNAIL='images/no-picture.jpg'" />
+    </aop>
+  </entity>
+</entity-model>
+

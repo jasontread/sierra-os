@@ -1,0 +1,65 @@
+8
+
+dir
+0
+https://sierra-os.googlecode.com/svn/trunk/plugins/productivity/www/drawboard/skin
+https://sierra-os.googlecode.com/svn
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+on.gif
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+default.def
+file
+
+
+
+add
+
+up.gif
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+off.gif
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+

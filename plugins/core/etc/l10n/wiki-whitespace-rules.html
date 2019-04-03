@@ -1,0 +1,19 @@
+<div class="coreWikiHelp">
+<p>Whitespace indentation in lists.  Any line that begins with whitespace <em>and aligns</em> with a previous list item (whether bulleted, numbers or definitional) is considered to be "within" that list item.  Text folds and wraps as normal, and the  directive is honored. 
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre># First-level item\\
+  Whitespace used to to continue item on a new line
+# Another first-level item
+  # Whitespace combined with a single # to create a new item one level
+deeper
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><ol><li>First-level item<br />  Whitespace used to to continue item on a new line
+</li><li>Another first-level item
+<ol><li>Whitespace combined with a single # to create a new item one level deeper
+</li></ol></li></ol>
+</td></tr></table>
+<p class='vspace'>Otherwise, lines that begin with whitespace are treated as <em>preformatted text</em>, using a monospace font and not generating linebreaks except where explicitly indicated in the markup.  (Another way to create preformatted text blocks is by using the [@...@] markup.)
+</p>
+
+</div>

@@ -1,0 +1,20 @@
+<div class="coreWikiHelp">
+The following variables anywhere in your markup to their corresponding values. 
+This substitution occurs every time that the markup is saved. The variable names 
+are case-sensitive.
+<ul>
+<li><code>~~~</code>: the user's name (same as <code>{$name}</code>)</li>
+<li><code>~~~~</code>: the user's name and date (same as <code>{$name} {$date}</code>)</li>
+<li><code>{$name}</code>: the user's name</li>
+<li><code>{$userName}</code>: the user's username</li>
+<li><code>{$email}</code>: the user's email</li>
+<li><code>{$thumbnailUri}</code>: the absolute uri to the user's thumbnail 
+picture (or to the "No Image Available" image if the user does not have a 
+picture). This will result in the Wiki image processing converting the uri to an 
+<code>img</code> element (unless the variable name is enclosed in double 
+brackets - i.e. [[{$thumbnailUri}]])</li>
+<li><code>{$date}</code>: the current date</li>
+<li><code>{$datetime}</code>: the current date and time</li>
+<li><code>{$serverUri}</code>: the uri to the server</li>
+</ul>
+</div>

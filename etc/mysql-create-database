@@ -1,0 +1,3 @@
+create database sraos;
+grant all on sraos.* to 'sraos'@'localhost' identified by 'sraos';
+flush privileges;

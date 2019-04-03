@@ -1,0 +1,232 @@
+<div class="coreWikiHelp">
+<p>Wiki Styles allow authors to modify the color and other styling attributes of a page's contents.  A wikistyle is written using percent-signs, as in <code class='escaped'>%red%</code> or <code class='escaped'>%bgcolor=blue%</code>.
+</p>
+<p class='vspace'>The most basic use of wikistyles is to change text attributes such as color, background color, and font.  <span class='wikiword'>PmWiki</span> defines several wikistyles for changing the text color to %black%, %white%, %red%, %yellow%, %blue%, %gray%, %silver%, %maroon%, %green%, %navy%, and %purple%.
+</p>
+<div class='vspace'></div><table class='markup horiz' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+The basket contains %red% apples,
+%blue% blueberries, %purple% eggplant,
+%green% limes, %% and more.
+</pre></td><td 
+        class='markup2' valign='top'><p>The basket contains <span  style='color: red;'> apples, </span><span  style='color: blue;'> blueberries, </span><span  style='color: purple;'> eggplant, </span><span  style='color: green;'> limes, </span> and more.
+</p>
+</td></tr></table>
+<p class='vspace'>For colors other than the predefined colors, use the <code class='escaped'>%color=...%</code> wikistyle.  (Note: RGB colors (#rrggbb) should always be specified with lowercase letters.)
+</p>
+<div class='vspace'></div><table class='markup horiz' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+I'd like to have some %color=#ff7f00%
+tangerines%%,  too!
+</pre></td><td 
+        class='markup2' valign='top'><p>I'd like to have some <span  style='color: #ff7f00;'> tangerines</span>,  too!
+</p>
+</td></tr></table>
+<p class='vspace'>To change the background color, use <code class='escaped'>%bgcolor=...%</code> as a wikistyle:
+</p>
+<div class='vspace'></div><table class='markup horiz' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+This sentence contains %bgcolor=green
+yellow% yellow text on a green
+background. </pre></td><td 
+        class='markup2' valign='top'><p>This sentence contains <span  style='background-color: green; color: yellow;'> yellow text on a green background. </span>
+</p>
+</td></tr></table>
+<p class='vspace'>See <a class='urllink' href='#' rel='nofollow' onclick="OS.getWindowInstance(this).getManager().displayArticle('wikiStyleColors')">Wiki Style Colors</a> for more color help.
+</p>
+<div class='vspace'></div><h2>Scopes</h2>
+<p>Wikistyles can also specify a <em>scope</em>; with no scope, the style is applied to any text that follows up to the next wikistyle specification or the end of the paragraph, whichever comes first.  Including a scope changes the specification to apply to the whole paragraph (<code class='escaped'>%p ...%</code>), an entire list (<code class='escaped'>%list ...%</code>), an item within a list (<code class='escaped'>%item ...%</code>), or any block (<code class='escaped'>%block ...%</code>).  Those scopes are predefined shortcuts for the "apply=" attribute, which is discussed below.
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+%p bgcolor=#ffeeee% The wikistyle specification at the beginning of this
+line applies to the entire paragraph, even if there are %blue% other
+wikistyle specifications %% in the middle of the paragraph.
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><p  style='background-color: #ffeeee;'> The wikistyle specification at the beginning of this line applies to the entire paragraph, even if there are <span  style='color: blue;'> other wikistyle specifications </span> in the middle of the paragraph.
+</p>
+</td></tr></table>
+<p class='vspace'>The <code class='escaped'>&gt;&gt;style&lt;&lt;</code> block can be used to apply a wikistyle to a large block of items.  The style is applied until the next <code class='escaped'>&gt;&gt;&lt;&lt;</code> is encountered.
+</p>
+<div class='vspace'></div><table class='markup horiz' align='center'>
+      <tr><td class='markup1' valign='top'><pre>&gt;&gt;blue font-style:italic
+bgcolor=#ffffcc&lt;&lt;
+Everything after the above line is
+styled with blue italic text,
+
+This includes
+    preformatted text
+* lists
+-&gt; indented items
+&gt;&gt;&lt;&lt;
+</pre></td><td 
+        class='markup2' valign='top'><div  style='color: blue; font-style: italic; background-color: #ffffcc;' > 
+<p>Everything after the above line is styled with blue italic text,
+</p>
+<p class='vspace'>This includes
+</p><pre>    preformatted text
+</pre><ul><li>lists
+</li></ul><div class='indent'>indented items
+</div></div>
+</td></tr></table>
+<p class='vspace'>Shouldn't <code class='escaped'>(:div style:)</code> work in the same way as <code class='escaped'>&gt;&gt;style&lt;&lt;</code>?
+</p><table class='markup horiz' align='center'>
+      <tr><td class='markup1' valign='top'><pre>(:div green font-style:italic
+bgcolor=#ffffcc:)
+Everything after the above line is
+styled with green italic text,
+
+This includes
+    preformatted text
+* lists
+-&gt; indented items
+(:divend:)
+</pre></td><td 
+        class='markup2' valign='top'><div bgcolor='#ffffcc' >
+<p>Everything after the above line is styled with green italic text,
+</p>
+<p class='vspace'>This includes
+</p><pre>    preformatted text
+</pre><ul><li>lists
+</li></ul><div class='indent'>indented items
+</div></div>
+</td></tr></table>
+<div class='vspace'></div><h2>Wikistyle attributes</h2>
+<p>The style attributes recognized within a wikistyle specification are:
+</p>
+<div class='vspace'></div><pre>    ------------ CSS -------------          --HTML--
+    color               bgcolor             class 
+    background-color    margin              id
+    text-align          padding             hspace
+    text-decoration     border              vspace
+    font-size           float               target
+    font-family         list-style          rel
+    font-weight         width*              accesskey
+    font-style          height*             value
+    display
+
+    Special: define, apply
+</pre><p class='vspace'>The attributes in the first two columns correspond to the <em><a class='urllink' href='http://www.blooberry.com/indexdot/css/propindex/all.htm' rel='nofollow' target='newWindow'>cascading style sheet</a></em> (CSS) properties of the same name.  The attributes in the last column apply only to specific items:
+</p>
+<div class='vspace'></div><ul><li><code class='escaped'>class=</code> and <code class='escaped'>id=</code> assign a CSS class or identifier to an HTML element
+</li><li><code class='escaped'>target=name</code> opens links that follow in a browser window called "name"
+</li><li><code class='escaped'>rel=name</code> in a link identifies the relationship of a target page
+</li><li><code class='escaped'>accesskey=x</code> uses 'x' as a shortcut key for the link that follows
+</li><li><code class='escaped'>value=9</code> sets the number of the current ordered list item
+</li></ul><p class='vspace'>* The width and height attributes have asterisks because they are handled specially for &lt;img .../&gt; tags.  If used by themselves (i.e., without anything providing an "apply=" parameter to the wikistyle), then they set the 'width=' and 'height=' attributes of any &lt;img ... /&gt; tags that follow. Otherwise, they set the 'width:' and 'height:' properties of the element being styled.
+</p>
+<div class='vspace'></div><h2>Applying wikistyles to blocks <a name='apply_to_blocks' id='apply_to_blocks'></a></h2>
+<p>Normally a wikistyle applies to a span of (inline) text, but
+the apply= attribute allows a style to be applied to something
+else.  The predefined apply= values are:
+</p>
+<div class='vspace'></div>
+<table border='1' cellpadding='3' cellspacing='0' ><tr ><td  align='left'>apply=img</td><td >apply the style to any image that follows</td><td >&nbsp;</td></tr>
+<tr ><td  align='left'>apply=p</td><td >apply the style to the current paragraph</td><td  align='left'>*</td></tr>
+<tr ><td  align='left'>apply=pre</td><td >apply the style to the current preformatted text</td><td >&nbsp;</td></tr>
+<tr ><td  align='left'>apply=list</td><td >apply the style to the current list</td><td  align='left'>*</td></tr>
+<tr ><td  align='left'>apply=item</td><td >apply the style to the current list item</td><td  align='left'>*</td></tr>
+<tr ><td  align='left'>apply=div</td><td >apply the style to the current div</td><td >&nbsp;</td></tr>
+<tr ><td  align='left'>apply=block</td><td >apply the style to the current block,<br />whether it's a paragraph, list, list item,<br />heading, or division.</td><td  align='left'>*</td></tr>
+</table>
+<p class='vspace'>The starred items also have wikistyle shortcuts already defined,
+thus <code class='escaped'>%p color=blue%</code> is the same as <code class='escaped'>%apply=p color=blue%</code>, and
+<code class='escaped'>%list ROMAN%</code> is the same as <code class='escaped'>%apply=list list-style=upper-roman%</code>.
+</p>
+<p class='vspace'>Some wikistyle shortcuts also make use of apply, thus <code class='escaped'>%right%</code>
+is a shortcut for <code class='escaped'>%text-align=right apply=block%</code>.
+</p>
+<p class='vspace'>An applied wikistyle will only take effect if it's on the
+line that starts the thing it's supposed to modify.  In other
+words, a wikistyle in the third markup line of a paragraph
+can't change the attributes of the paragraph:
+</p>
+<div class='vspace'></div><table class='markup horiz' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+here is some text in
+a paragraph and if
+we try to %apply=p color=blue% change
+the color of the paragraph in the
+middle
+it won't work because the style comes
+after the paragraph has already been
+started.</pre></td><td 
+        class='markup2' valign='top'><p>here is some text in
+a paragraph and if
+we try to  change
+the color of the paragraph in the middle
+it won't work because the style comes
+after the paragraph has already been started.
+</p>
+</td></tr></table>
+<div class='vspace'></div><table class='markup horiz' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+However, this %p color=red% paragraph
+''will'' be in red because its block
+style does
+occur in the first line of its text.</pre></td><td 
+        class='markup2' valign='top'><p  style='color: red;'>However, this  paragraph
+<em>will</em> be in red because its block style does
+occur in the first line of its text.
+</p>
+</td></tr></table>
+<div class='vspace'></div><table class='markup horiz' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+* Here's a list item
+* %list red% Oops, too late to affect
+the list!</pre></td><td 
+        class='markup2' valign='top'><ul><li>Here's a list item
+</li><li> Oops, too late to affect the list!
+</li></ul>
+</td></tr></table>
+<div class='vspace'></div><pre>    &#36;WikiStyleCSS[] = 'line-height';
+</pre><p class='vspace'>to the local/config.php file.
+</p>
+<div class='vspace'></div><h2>Custom style shortcuts</h2>
+<p>The <code class='escaped'>define=</code> attribute can be used to assign a shorthand name to any wikistyle specification.  This shorthand name can then be reused in later wikistyle specifications.
+</p>
+<div class='vspace'></div><table class='markup horiz' align='center'>
+      <tr><td class='markup1' valign='top'><pre>%define=box block bgcolor=#ddddff
+border="2px dotted blue"%
+
+%box% [@
+$ echo "Hello world"
+Hello World
+$ exit
+@]
+
+%box font-weight=bold color=green% [@
+$ echo "I said, HELLO"
+@]
+</pre></td><td 
+        class='markup2' valign='top'><div class='vspace'></div> <pre  style='background-color: #ddddff; border: 2px dotted blue;' class='escaped'>
+$ echo "Hello world"
+Hello World
+$ exit
+</pre>
+<div class='vspace'></div> <pre  style='background-color: #ddddff; border: 2px dotted blue; font-weight: bold; color: green;' class='escaped'>
+$ echo "I said, HELLO"
+</pre>
+</td></tr></table>
+<p class='vspace'><strong>Tip:</strong> Use custom style definitions to associate meanings with text instead of just colors.  For example, if warnings are to be displayed as green text, set <code class='escaped'>%define=warn green%</code> and then use <code class='escaped'>%warn%</code> instead of <code class='escaped'>%green%</code> in the document.  Then, if you later decide that warnings should be styled differently, it's much easier to change the (one) definition than many occurrences of <code class='escaped'>%green%</code> in the text.
+</p>
+<p class='vspace'><strong>Tip:</strong> Any undefined <span class='wikiword'>WikiStyle</span> is automatically treated as a request for a class, thus <code class='escaped'>%pre%</code> is the same as saying <code class='escaped'>%class=pre%</code>.
+</p>
+<div class='vspace'></div><h2><a name='predefined' id='predefined'></a> Predefined style shortcuts</h2>
+<p><span class='wikiword'>PmWiki</span> defines a number of style shortcuts.
+</p>
+<div class='vspace'></div><ul><li>Text colors: <span  style='color: black;'>black</span>, <span  style='color: white; background-color: black;'>white</span>, <span  style='color: red;'>red</span>, <span  style='color: yellow;'>yellow</span>, <span  style='color: blue;'>blue</span>, <span  style='color: gray;'>gray</span>, <span  style='color: silver;'>silver</span>, <span  style='color: maroon;'>maroon</span>, <span  style='color: green;'>green</span>, <span  style='color: navy;'>navy</span>, <span  style='color: purple;'>purple</span>  (shortcut for <code class='escaped'>%color=...%</code>)
+</li><li>Justification: <code class='escaped'>%center%</code> and <code class='escaped'>%right%</code>
+</li><li>Images and boxes
+<ul><li>Floating left or right: <code class='escaped'>%rfloat%</code> and <code class='escaped'>%lfloat%</code>
+</li><li>Framed items: <code class='escaped'>%frame%</code>, <code class='escaped'>%rframe%</code>, and <code class='escaped'>%lframe%</code>
+</li><li>Thumbnail sizing: <code class='escaped'>%thumb%</code>
+</li></ul></li><li>Open link in new window: <code class='escaped'>%newwin%</code>  (shortcut for <code class='escaped'>%target=_blank%</code>)
+</li><li>Comments: <code class='escaped'>%comment%</code> (shortcut for <code class='escaped'>%display=none%</code>)
+</li></ul><div class='vspace'></div><h2>Examples</h2>
+<p><a class='wikilink' href='#' onclick="OS.getWindowInstance(this).getManager().displayArticle('wikiStyleExamples')">WikiStyleExamples</a> contains a number of examples of ways to use wikistyles in pages.
+</p>
+<div class='vspace'></div><h2>Known Issues</h2>
+<ul><li>Percents in style definitions (like: <code class='escaped'>%block width=50% %</code>) require the use of "pct" instead of "%".
+</li></ul><div class='vspace'></div>
+</div>

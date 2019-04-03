@@ -1,0 +1,97 @@
+.calendar *
+{
+	margin: 0px;
+	padding: 0px;
+	border: 0px;
+}
+
+.calendar
+{
+	padding-bottom: 2px;
+	border: 1px solid #aaa;
+
+	font-size: small;
+	background: #fff;
+}
+
+.calendar table
+{
+	border-collapse: collapse;
+	font-size: 90%;
+}
+
+.calendar thead
+{
+	border-bottom: 1px solid #aaa;
+}
+
+.calendar thead th
+{
+	padding: 2px 0px;
+	vertical-align: middle;
+	background: #ddd;
+}
+
+.calendar thead th a
+{
+	font-size: 95%;
+	font-weight: bold;
+}
+
+.calendar a
+{
+	padding: 0px 2px;
+	color: #333;
+	text-decoration: none;
+}
+
+.calendar a:hover
+{
+	font-weight: bold;
+}
+
+.calendar thead td
+{
+	font-weight: bold;
+}
+
+.calendar td, .calendar th
+{
+	padding: 1px;
+	text-align: center;
+}
+
+.calendar tbody td
+{
+	width: 18px;
+}
+
+.calendar .selectedday
+{
+	background: #ddd;
+}
+
+.calendar .today
+{
+  color: #000;
+	font-weight: bold;
+}
+
+.calendarlink, .calendaricon
+{
+	margin: 0px 3px;
+}
+
+.calendaricon
+{
+	cursor: pointer;
+}
+
+.dateChooserField {
+  border: 1px solid #8c8c8c;
+  padding: 2px;
+  width: 80px;
+}
+.dateChooserField:focus {
+  border: 1px solid #333;
+}

@@ -1,0 +1,3 @@
+Each contact is represented by a card displayed in the middle of the MyContacts 
+window. Clicking on the card loads it in the card view to the right. To edit the 
+card, click on the 'edit' link in the upper right corner of the card view. 

@@ -1,0 +1,1123 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE entity-model PUBLIC "-//SIERRA//DTD ENTITY MODEL//EN" 
+  "http://sierra-php.googlecode.com/svn/trunk/lib/model/entity-model.dtd">
+<entity-model file-icon-dir="plugins/core/www/icons/mimetypes/16">
+  <!-- append the message center preferences attributes to the base OsUser entity -->
+  <entity key="OsUser">
+    <aop>
+      <aspect key="addCoreTermHistory" pointcut="vo.addCoreTermHistory"><![CDATA[
+      if ($this->getPrimaryKey()) {
+        $db =& SRA_Controller::getAppDb();
+        $results =& $db->fetch('SELECT count(*) FROM core_term_history WHERE uid=' . $this->getAttrDbValue());
+        $row =& $results->next();
+        $row[0]++;
+        if ($row[0] > $this->getCoreTermHistoryBuffer()) {
+          $db->execute('DELETE FROM core_term_history WHERE uid=' . $this->getAttrDbValue() . ' ORDER BY reported ASC LIMIT ' . ($row[0] - $this->getCoreTermHistoryBuffer()));
+        }
+      }
+      ]]></aspect>
+      <aspect key="addUserDirs" pointcut="dao.insert" when="after"><![CDATA[
+      if ($record->getPrimaryKey()) {
+        $dao =& SRA_DaoFactory::getDao('CoreVfsNode');
+      
+        // get reference to base home directory
+        $baseHomeDir =& CoreVfsNodeVO::getHomeRootNode();
+        
+        // create home directory
+        $homeDir = new CoreVfsNodeVO(array('name' => $record->getUserName(), 'type' => CORE_VFS_NODE_TYPE_FOLDER_HOME));
+        $homeDir->setNodeGroup($record->getPrimaryGroup());
+        $homeDir->setNodeOwner($record);
+        $homeDir->setParent($baseHomeDir);
+        $dao->insert($homeDir);
+        
+        // create trash directory
+        $trashDir = new CoreVfsNodeVO(array('name' => CORE_VFS_NODE_NAME_TRASH, 'type' => CORE_VFS_NODE_TYPE_FOLDER_TRASH));
+        $trashDir->setNodeGroup($record->getPrimaryGroup());
+        $trashDir->setNodeOwner($record);
+        $trashDir->setParent($homeDir);
+        $dao->insert($trashDir);
+        
+        // create workspaces directory
+        $workspacesDir = new CoreVfsNodeVO(array('name' => CORE_VFS_NODE_NAME_WORKSPACES, 'type' => CORE_VFS_NODE_TYPE_FOLDER_SYSTEM));
+        $workspacesDir->setNodeGroup($record->getPrimaryGroup());
+        $workspacesDir->setNodeOwner($record);
+        $workspacesDir->setParent($homeDir);
+        $dao->insert($workspacesDir);
+        
+        // create individual workspace directories
+        $workspaces = $record->getSharedWorkspaces();
+        if (count($workspaces)) {
+          $workspacesDao =& SRA_DaoFactory::getDao('Workspace');
+          foreach($workspaces as $id) {
+            $workspace =& $workspacesDao->findByPk($id);
+            $workspaceDir = new CoreVfsNodeVO(array('name' => $workspace->getName(), 'type' => CORE_VFS_NODE_TYPE_FOLDER_DESKTOP));
+            $workspaceDir->setNodeGroup($record->getPrimaryGroup());
+            $workspaceDir->setNodeOwner($record);
+            $workspaceDir->setParent($workspacesDir);
+            $dao->insert($workspaceDir);
+          }
+        }
+        else {
+          $record->getAllWorkspaces();
+        }
+      }
+      ]]></aspect>
+      <aspect key="coreVfsNodeUserValidation" pointcut="vo.validate" when="after"><![CDATA[
+      // validate that home directory does not already exist and user has permission 
+      // to create it
+      if (!$this->recordExists && !$id) {
+        require_once('plugins/core/Core_Vfs.php');
+        
+        global $user;
+        $coreResources =& SRA_ResourceBundle::getBundle('plugins/core/etc/l10n/core');
+        $node =& Core_Vfs::getNodes(array('ids' => $this->getVfsHomeDirPath()));
+        if (CoreVfsNodeVO::isValid($node)) {
+          $this->validateErrors['userName'] = $coreResources->getString('VFS.error.pathAlreadyExists', array('path' => $this->getVfsHomeDirPath()));
+        }
+        else if (!($home =& CoreVfsNodeVO::getHomeRootNode()) || !$home->hasPermission(CORE_VFS_NODE_PBIT_WRITE, TRUE, FALSE)) {
+          $this->validateErrors['userName'] = $coreResources->getString('VFS.error.invalidPermissions', array('access' => CoreVfsNodeVO::getPermissionsString(CORE_VFS_NODE_PBIT_WRITE), 'path' => '/' . CORE_VFS_NODE_NAME_HOME));
+        }
+      }
+      else if ($added =& $this->getAddedVals('commonPlaces')) {
+        $keys = array_keys($added);
+        foreach($keys as $key) {
+          // only folders can be added to common places
+          if (!$added[$key]->isFolder()) {
+            $coreResources =& SRA_ResourceBundle::getBundle('plugins/core/etc/l10n/core');
+            $this->validateErrors['commonPlaces'] = $coreResources->getString('Browser.error.onlyFoldersInCommonPlacess');
+            break;
+          }
+        }
+      }
+      ]]></aspect>
+      <aspect key="deleteUserDirs1" pointcut="dao.delete"><![CDATA[
+      if ($record->getPrimaryKey()) {
+        $homeDir =& $record->getVfsHomeDir();
+        $primaryGroup =& $record->getPrimaryGroup();
+        $results =& $this->_db->fetch('SELECT gid FROM os_group WHERE owner_uid=' . $record->getPrimaryKey(), array(SRA_DATA_TYPE_INT));
+        $ownedGids = array($primaryGroup->getPrimaryKey());
+        while($row =& $results->next()) {
+          $ownedGids[] = $row[0];
+        }
+      }
+      ]]></aspect>
+      <aspect key="deleteUserDirs2" pointcut="dao.delete" when="after"><![CDATA[
+      if (!$record->recordExists) {
+        // delete the user's home directory and any sub-directories
+        // then change the user and group ownership of any remaining nodes 
+        // owned by this user
+        $homeDir->delete();
+        if ($record->getOwnerUid() && OsUserVO::isValid($parent =& $this->findByPk($record->getOwnerUid()))) {
+          $parentGroup =& $parent->getPrimaryGroup();
+          $this->_db->execute('UPDATE core_vfs_node SET node_owner=' . $parent->getPrimaryKey() . ' WHERE node_owner=' . $record->getPrimaryKey());
+          $this->_db->execute('UPDATE core_vfs_node SET node_group=' . $parentGroup->getPrimaryKey() . ' WHERE node_group IN (' . implode(', ', $ownedGids) . ')');
+        }
+      }
+      ]]></aspect>
+      <aspect key="updateWorkspaceDirs" pointcut="dao.update"><![CDATA[
+      if ($record->getPrimaryKey() && $record->isDirty(array('sharedWorkspaces', 'workspaces'))) {
+        require_once('plugins/core/Core_Vfs.php');
+        $dao =& SRA_DaoFactory::getDao('CoreVfsNode');
+        
+        // get reference to base workspaces directory
+        $workspacesDir =& $record->getVfsWorkspacesDir();
+        $workspacesDao =& SRA_DaoFactory::getDao('Workspace');
+        
+        // added workspaces
+        $workspaces =& $record->getAddedVals('workspaces');
+        $sharedAdded = $record->getAddedVals('sharedWorkspaces');
+        foreach($sharedAdded as $id) {
+          $workspaces[] =& $workspacesDao->findByPk($id);
+        }
+        $keys = array_keys($workspaces);
+        foreach($keys as $key) {
+          if ($workspaces[$key]->recordExists) {
+            $node =& Core_Vfs::getNodes(array('ids' => CORE_VFS_NODE_TYPE_FOLDER_DESKTOP, 'workspaceId' => $workspaces[$key]->getPrimaryKey()), $record->getPrimaryKey());
+            if (!CoreVfsNodeVO::isValid($node)) {
+              $workspaceDir = new CoreVfsNodeVO(array('name' => $workspaces[$key]->getName(), 'type' => CORE_VFS_NODE_TYPE_FOLDER_DESKTOP));
+              $workspaceDir->setNodeGroup($record->getPrimaryGroup());
+              $workspaceDir->setNodeOwner($record);
+              $workspaceDir->setParent($workspacesDir);
+              $dao->insert($workspaceDir);
+            }
+          }
+        }
+        
+        // removed workspaces
+        $workspaces = array();
+        $sharedRemoved = $record->getRemovedVals('sharedWorkspaces');
+        foreach($sharedRemoved as $id) {
+          $workspaces[] =& $workspacesDao->findByPk($id);
+        }
+        $keys = array_keys($workspaces);
+        foreach($keys as $key) {
+          $node =& Core_Vfs::getNodes(array('ids' => CORE_VFS_NODE_TYPE_FOLDER_DESKTOP, 'workspaceId' => $workspaces[$key]->getPrimaryKey()), $record->getPrimaryKey());
+          if (CoreVfsNodeVO::isValid($node)) {
+            $node->delete();
+          }
+        }
+      }
+      ]]></aspect>
+      
+      <introduction key="canUseSearch" class="vo" type="method" value="canUseSearch()"><![CDATA[
+      // returns TRUE if the user is able to search
+      return $this->hasAppAccess('core', 'Search') && count($this->getEntityPermissions()) > 0;
+      ]]></introduction>
+      <introduction key="getBaseNodes" class="vo" type="method" value="&amp;getBaseNodes($workspaceId)"><![CDATA[
+      // returns the user's base nodes including 1) the user's home directory, 
+      // 2) the user's trash directory, and 3) the workspace directory identified 
+      // by $workspaceId. if $workspaceId is not specified, the directory for 
+      // the getActiveWorkspace will be used
+      $nodes = array();
+      $nodes[] =& $this->getVfsHomeDir();
+      $nodes[] =& $this->getVfsTrashDir();
+      if (!$workspaceId) {
+        $active =& $this->getActiveWorkspace();
+        $workspaceId = $active->getPrimaryKey();
+      }
+      $nodes[] =& $this->getVfsWorkspaceDir($workspaceId);
+      return $nodes;
+      ]]></introduction>
+      <introduction key="getCoreDictionaryOptions" class="vo" type="method" value="&amp;getCoreDictionaryOptions()"><![CDATA[
+      $resources =& $this->getEntityResources();
+      $all =& SRA_Util::getSpellCheckLanguages();
+      return array_merge(array('auto' => $resources->getString('SpellChecker.text.browserDetected') . ' (' . $all[SRA_Util::getDefaultSpellCheckLanguage()] . ')'), $all);
+      ]]></introduction>
+      <introduction key="getEntityPermissionOptions" class="vo" type="method" value="&amp;getEntityPermissionOptions()"><![CDATA[
+      $permissions =& $this->getEntityPermissions();
+      $options = array();
+      $keys = array_keys($permissions);
+      foreach($keys as $key) {
+        $options[$key] =& $permissions[$key]->getLabel();
+      }
+      return $options;
+      ]]></introduction>
+      <introduction key="getEntityPermissions" class="vo" type="method" value="&amp;getEntityPermissions()"><![CDATA[
+      // returns a hash where the key is the plugin id followed by ':' and an entity id, and the value is 
+      // the entity label. the user should only be able to utilize the entities returned by this method
+      global $user;
+      $apps =& $user->getApplications();
+      $akeys = array_keys($apps);
+      $plugins =& SRAOS_PluginManager::getPlugins();
+      $permissions = array();
+      $keys = array_keys($plugins);
+      foreach($keys as $key) {
+        $entities =& $plugins[$key]->getEntities();
+        $ekeys = array_keys($entities);
+        foreach($ekeys as $ekey) {
+          $found = FALSE;
+          foreach($akeys as $akey) {
+            if ($entities[$ekey]->getViewer() == $apps[$akey]->getId() && $apps[$akey]->getPluginId() == $plugins[$key]->getId()) {
+              $found = TRUE;
+              break;
+            }
+          }
+          if ($found) {
+            $permissions[$plugins[$key]->getId() . ':' . $entities[$ekey]->getId()] =& $entities[$ekey];
+          }
+        }
+      }
+      return $permissions;
+      ]]></introduction>
+      <introduction key="getVfsHomeDir" class="vo" type="method" value="&amp;getVfsHomeDir()"><![CDATA[
+      // uses Core_Vfs::getNodes to return a reference to the user's home directory
+      if ($this->getPrimaryKey()) {
+        require_once('plugins/core/Core_Vfs.php');
+        $node =& Core_Vfs::getNodes(array('ids' => CORE_VFS_NODE_TYPE_FOLDER_HOME), $this->getPrimaryKey());
+        if (!CoreVfsNodeVO::isValid($node)) {
+          $msg = 'OsUserVO::getVfsHomeDir: Failed - ' . $node;
+          return SRA_Error::logError($msg, __FILE__, __LINE__, SRA_ERROR_PROBLEM, SRA_Controller::isAppInDebug());
+        }
+        return $node;
+      }
+      ]]></introduction>
+      <introduction key="getVfsHomeDirPath" class="vo" type="method" value="getVfsHomeDirPath()"><![CDATA[
+      // returns the string path to the user's home directory
+      return '/' . CORE_VFS_NODE_NAME_HOME . '/' . $this->getUserName();
+      ]]></introduction>
+      <introduction key="getVfsTrashDir" class="vo" type="method" value="&amp;getVfsTrashDir()"><![CDATA[
+      // uses Core_Vfs::getNodes to return a reference to the user's home directory
+      if ($this->getPrimaryKey()) {
+        require_once('plugins/core/Core_Vfs.php');
+        $node =& Core_Vfs::getNodes(array('ids' => CORE_VFS_NODE_TYPE_FOLDER_TRASH), $this->getPrimaryKey());
+        if (!CoreVfsNodeVO::isValid($node)) {
+          $msg = 'OsUserVO::getVfsTrashDir: Failed - ' . $node;
+          return SRA_Error::logError($msg, __FILE__, __LINE__, SRA_ERROR_PROBLEM, SRA_Controller::isAppInDebug());
+        }
+        return $node;
+      }
+      ]]></introduction>
+      <introduction key="getVfsTrashDirPath" class="vo" type="method" value="getVfsTrashDirPath()"><![CDATA[
+      // returns the string path to the user's workspaces directory
+      return '/' . CORE_VFS_NODE_NAME_HOME . '/' . $this->getUserName() . '/' . CORE_VFS_NODE_NAME_TRASH;
+      ]]></introduction>
+      <introduction key="getVfsWorkspaceDir" class="vo" type="method" value="&amp;getVfsWorkspaceDir($id)"><![CDATA[
+      // returns the directory for a specified workspace. $id is either the name or the id 
+      // of the workspace to return the directory node for
+      if ($this->getPrimaryKey() && ($path = $this->getVfsWorkspaceDirPath($id))) {
+        $node =& Core_Vfs::getNodes(array('ids' => $path), $this->getPrimaryKey());
+        if (!CoreVfsNodeVO::isValid($node)) {
+          $msg = 'OsUserVO::getVfsWorkspaceDir: Failed - ' . $node;
+          return SRA_Error::logError($msg, __FILE__, __LINE__, SRA_ERROR_PROBLEM, SRA_Controller::isAppInDebug());
+        }
+        return $node;
+      }
+      ]]></introduction>
+      <introduction key="getVfsWorkspaceDirPath" class="vo" type="method" value="getVfsWorkspaceDirPath($id)"><![CDATA[
+      // returns the string path to a specific user workspace directory
+      if ($this->getPrimaryKey()) {
+        $name = $id;
+        require_once('plugins/core/Core_Vfs.php');
+        $workspaces =& $this->getAllWorkspaces();
+        $keys = array_keys($workspaces);
+        foreach($keys as $key) {
+          if ($workspaces[$key]->getPrimaryKey() == $id) {
+            $name = $workspaces[$key]->getName();
+            break;
+          }
+        }
+        return $this->getVfsWorkspacesDirPath() . '/' . $name;
+      }
+      ]]></introduction>
+      <introduction key="getVfsWorkspacesDir" class="vo" type="method" value="&amp;getVfsWorkspacesDir()"><![CDATA[
+      // uses Core_Vfs::getNodes to return a reference to the user's home directory
+      if ($this->getPrimaryKey()) {
+        require_once('plugins/core/Core_Vfs.php');
+        $path = $this->getVfsWorkspacesDirPath();
+        $node =& Core_Vfs::getNodes(array('ids' => $path), $this->getPrimaryKey());
+        if (!CoreVfsNodeVO::isValid($node)) {
+          $msg = 'OsUserVO::getVfsWorkspacesDir: Failed - ' . $node;
+          return SRA_Error::logError($msg, __FILE__, __LINE__, SRA_ERROR_PROBLEM, SRA_Controller::isAppInDebug());
+        }
+        return $node;
+      }
+      ]]></introduction>
+      <introduction key="getVfsWorkspacesDirPath" class="vo" type="method" value="getVfsWorkspacesDirPath()"><![CDATA[
+      // returns the string path to the user's workspaces directory
+      return '/' . CORE_VFS_NODE_NAME_HOME . '/' . $this->getUserName() . '/' . CORE_VFS_NODE_NAME_WORKSPACES;
+      ]]></introduction>
+    </aop>
+    <attribute key="coreCommonPlaces" cardinality="0..*" table="core_common_places" type="CoreVfsNode" />
+    <attribute key="coreDictionary" default="'auto'" depends="option required" max-length="5">
+      <var key="code" value="$options =&amp;$this->getCoreDictionaryOptions();" />
+      <view key="input" extends="input-select-required" />
+    </attribute>
+    <attribute key="coreSearchExclude" cardinality="0..*" max-length="128" table="core_preferences_search_exclude" type="text">
+      <var key="code" value='$options =&amp;$this->getEntityPermissionOptions();' />
+    </attribute>
+    <attribute key="coreTermAliases" cardinality="0..*" on-delete-cascade="1" type="CoreTermAlias" />
+    <attribute key="coreTermEnv" cardinality="0..*" on-delete-cascade="1" type="CoreTermEnv" />
+    <attribute key="coreTermHistory" cardinality="0..*" render-include="histId cmd" on-delete-cascade="1" order-by="reported ASC" type="CoreTermHistory" />
+    <attribute key="coreTermHistoryBuffer" default="100" depends="min max" type="int">
+      <var key="min" value="10" />
+      <var key="max" value="1000" />
+    </attribute>
+    <attribute key="customDictionary" cardinality="0..*" max-length="128" table="custom_dictionary" />
+    <attribute key="umask" default="18" type="int" />
+    <view key="coreProfile" template="plugins/core/tpl/user-profile.tpl" />
+    
+    <ws key="core_updateUser" include-attrs="coreDictionary customDictionary coreSearchExclude coreCommonPlaces coreTermHistory uid" update="1">
+      <ws-constraint-group>
+        <ws-constraint attr="uid" value="user_uid" value-type="global" />
+      </ws-constraint-group>
+    </ws>
+    <ws key="core_getProfile" include-attrs="uid" view="coreProfile" />
+  </entity>
+  <entity key="Workspace">
+    <aop>
+      <aspect key="deleteWorkspaceDirs" pointcut="dao.delete" when="after"><![CDATA[
+      if (!$record->recordExists) {
+        $users =& $record->getUsers();
+        $keys = array_keys($users);
+        foreach($keys as $key) {
+          if (CoreVfsNodeVO::isValid($workspaceDir =& $users[$key]->getVfsWorkspaceDir($record->getName()))) {
+            $workspaceDir->delete();
+          }
+        }
+      }
+      ]]></aspect>
+      <aspect key="addWorkspaceDirs" pointcut="dao.insert" when="after"><![CDATA[
+      if ($record->getPrimaryKey()) {
+        $dao =& SRA_DaoFactory::getDao('CoreVfsNode');
+        $users =& $record->getUsers();
+        $keys = array_keys($users);
+        foreach($keys as $key) {
+          $workspacesDir =& $users[$key]->getVfsWorkspacesDir();
+          $workspaceDir = new CoreVfsNodeVO(array('name' => $record->getName(), 'type' => CORE_VFS_NODE_TYPE_FOLDER_DESKTOP));
+          $workspaceDir->setNodeGroup($users[$key]->getPrimaryGroup());
+          $workspaceDir->setNodeOwner($users[$key]);
+          $workspaceDir->setParent($workspacesDir);
+          $dao->insert($workspaceDir);
+        }
+      }
+      ]]></aspect>
+      <aspect key="updateWorkspaceDirs" pointcut="dao.update"><![CDATA[
+      if ($record->getPrimaryKey() && $record->isDirty('name')) {
+        $users =& $record->getAllUsers();
+        $keys = array_keys($users);
+        foreach($keys as $key) {
+          if (CoreVfsNodeVO::isValid($workspaceDir =& $users[$key]->getVfsWorkspaceDir($record->getName(TRUE)))) {
+            $workspaceDir->setName($record->getName());
+            $workspaceDir->update();
+          }
+        }
+      }
+      ]]></aspect>
+      <aspect key="validateDirPermissions" pointcut="vo.validate" when="after"><![CDATA[
+      if (!$this->validateErrors && !$id) {
+        $users =& $this->getUsers();
+        $keys = array_keys($users);
+        foreach($keys as $key) {
+          $workspacesDir =& $users[$key]->getVfsWorkspacesDir();
+          // workspace directory path already exists
+          if (!$this->recordExists && ($node =& $workspacesDir->getChildNode($this->getName()))) {
+            $coreResources =& SRA_ResourceBundle::getBundle('plugins/core/etc/l10n/core');
+            $this->validateErrors['name'] = $coreResources->getString('VFS.error.pathAlreadyExists', array('path' => $node->getPathString()));
+          }
+          // check for write access to user's workspaces directory
+          else if ($workspacesDir && !$this->recordExists && !$workspacesDir->hasPermission(CORE_VFS_NODE_PBIT_WRITE, TRUE, FALSE)) {
+            $coreResources =& SRA_ResourceBundle::getBundle('plugins/core/etc/l10n/core');
+            $this->validateErrors['name'] = $coreResources->getString('VFS.error.invalidPermissions', array('access' => CoreVfsNodeVO::getPermissionsString(CORE_VFS_NODE_PBIT_WRITE), 'path' => $workspacesDir->getPathString()));
+          }
+        }
+      }
+      ]]></aspect>
+    </aop>
+  </entity>
+  <entity key="CoreVfsNode" render-append="getGroupHash getNumChildren getOwnerHash getParentHash getPathString getUserPermissions" render-exclude="nodeGroup nodeOwner parent" primary-key="nodeId">
+    <aop>
+      <advice key="loadDirtyAttrsArr"><![CDATA[
+      // determine what attributes are dirty
+      $entity =& $record->getEntity();
+      if (!$record->isFolder() && $entity->getPropertySetter()) {
+        $_setProperties = array();
+        if (!$record->recordExists) { $_setProperties['nodeId'] = TRUE; }
+        if ($record->isDirty('dateCreated')) { $_setProperties['dateCreated'] = $record->getDateCreated(); }
+        if ($record->isDirty('dateModified')) { $_setProperties['dateModified'] = $record->getDateModified(); }
+        if ($record->isDirty('name')) { $_setProperties['name'] = $record->getName(); }
+        if ($record->isDirty('nodeGroup')) { $_setProperties['nodeGroup'] = $record->getNodeGroup(); }
+        if ($record->isDirty('nodeOwner')) { $_setProperties['nodeOwner'] = $record->getNodeOwner(); }
+        if ($record->isDirty('parent')) { $_setProperties['parent'] = $record->getParent(); }
+        if ($record->isDirty('permissions')) { $_setProperties['permissions'] = $record->getPermissions(); }
+        if ($record->isDirty('size')) { $_setProperties['size'] = $record->getSize(); }
+        if ($record->isDirty('linkedTo')) { $_setProperties['linkedTo'] = $record->getLinkedTo(); }
+      }
+      ]]></advice>
+      <advice key="setDirtyAttrs"><![CDATA[
+      // update entity instance with dirty attributes if applicable
+      if ($record->recordExists && !$record->isFolder() && ($setter = $entity->getPropertySetter()) && ($instance =& $record->getEntityInstance())) {
+        $keys = array_keys($_setProperties);
+        foreach($keys as $key) {
+          if ($key == 'nodeId') { $_setProperties[$key] = $record->getPrimaryKey(); }
+          $instance->${setter}($key, $record->getAttribute($key));
+        }
+        if ($instance->isDirty()) { $instance->update(); }
+      }
+      ]]></advice>
+      <advice key="checkForDuplicateName"><![CDATA[
+      if ($this->isDirty('parent') && $this->_name && $this->_parent->getChildNode($this->_name)) {
+        $this->_setIncrementedName();
+      }
+      ]]></advice>
+      
+      <aspect key="addGlobalUser" pointcut="vo.CoreVfsNodeVO"><![CDATA[ global $user; ]]></aspect>
+      <aspect key="checkForDuplicateName1" advice="checkForDuplicateName" pointcut="vo.setParent" when="after" />
+      <aspect key="checkForDuplicateName2" advice="checkForDuplicateName" pointcut="vo.setName" when="after" />
+      <aspect key="checkEntityCopyPermissions" pointcut="vo.copy"><![CDATA[
+      // check if entity allows copying
+      $entity =& $this->getEntity();
+      if (!$record->isFolder() && !$entity->isCanCopy()) {
+        $msg = 'CoreVfsNodeDAO::copy: Failed - entity ' . $record->getType() . '/' . $record->getEntityId() . ' cannot be copied';
+        return SRA_Error::logError($msg, __FILE__, __LINE__, SRA_ERROR_PROBLEM, SRA_Controller::isAppInDebug());
+      }
+      ]]></aspect>
+      <aspect key="copyEntity" pointcut="vo.copy" when="after"><![CDATA[
+      // check if entity allows copying
+      $entity =& $this->getEntity();
+      if (!$record->isFolder()) {
+        if (!($instance =& $entity->getInstance())) {
+          $msg = 'CoreVfsNodeDAO::copy: Failed - unable to get current entity instance';
+          return SRA_Error::logError($msg, __FILE__, __LINE__, SRA_ERROR_PROBLEM, SRA_Controller::isAppInDebug());
+        } 
+        if (!($copy =& $instance->copy())) {
+          $msg = 'CoreVfsNodeDAO::copy: Failed - unable to make copy of current entity instance';
+          return SRA_Error::logError($msg, __FILE__, __LINE__, SRA_ERROR_PROBLEM, SRA_Controller::isAppInDebug());
+        }
+        if (SRA_Error::isError($copy->insert())) {
+          $msg = 'CoreVfsNodeDAO::copy: Failed - unable to insert copy of current entity instance';
+          return SRA_Error::logError($msg, __FILE__, __LINE__, SRA_ERROR_PROBLEM, SRA_Controller::isAppInDebug());
+        }
+        $initVals['entityId'] = $copy->getPrimaryKey();
+      }
+      ]]></aspect>
+      <aspect key="getParent" pointcut="vo.getParent" when="after"><![CDATA[
+      // return virtual root node if no parent is set
+      if ($this->recordExists && !$this->_parent) {
+        return CoreVfsNodeVO::getVirtualRootNode();
+      }
+      ]]></aspect>
+      <aspect key="integrityAndPermissionsValidation" pointcut="dao.insert"><![CDATA[
+      if (!$record->recordExists) {
+        // check if the parent of this node already contains a node with the same 
+        // name
+        if (($parent =& $record->getParent()) && $parent->getChildNode($record->getName())) {
+          if ($completeTransaction) { $this->_db->rollback(); }
+          $msg = 'CoreVfsNodeDAO::insert: Failed - path ' . $record->getPathString() . ' already exists';
+          return SRA_Error::logError($msg, __FILE__, __LINE__, SRA_ERROR_PROBLEM, SRA_Controller::isAppInDebug());
+        }
+        // no additional root nodes may be added
+        if (!CoreVfsNodeVO::isValid($parent)) {
+          if ($completeTransaction) { $this->_db->rollback(); }
+          $msg = 'CoreVfsNodeDAO::insert: Failed - node with no parent cannot be created';
+          return SRA_Error::logError($msg, __FILE__, __LINE__, SRA_ERROR_PROBLEM, SRA_Controller::isAppInDebug());
+        }
+        // root node cannot be saved
+        if ($record->isRootNode()) {
+          if ($completeTransaction) { $this->_db->rollback(); }
+          $msg = 'CoreVfsNodeDAO::insert: Failed - root node cannot be saved to the database';
+          return SRA_Error::logError($msg, __FILE__, __LINE__, SRA_ERROR_PROBLEM, SRA_Controller::isAppInDebug());
+        }
+        if (!$parent->hasPermission(CORE_VFS_NODE_PBIT_WRITE, TRUE, FALSE)) {
+          if ($completeTransaction) { $this->_db->rollback(); }
+          $msg = 'CoreVfsNodeDAO::insert: Failed - user does not have permission to create node ' . $record->getPathString();
+          return SRA_Error::logError($msg, __FILE__, __LINE__, SRA_ERROR_PROBLEM, SRA_Controller::isAppInDebug());
+        }
+        // check for inherit bit in parent
+        if ($parent->getPermissions() & CORE_VFS_NODE_PBIT_INHERIT) {
+          $record->setPermissions($parent->getPermissions());
+        }
+        // check for set user id bit
+        if ($parent->getPermissions() & CORE_VFS_NODE_PBIT_USERID) {
+          $record->setNodeOwner($parent->getNodeOwner());
+        }
+        // check for set group id bit
+        if ($parent->getPermissions() & CORE_VFS_NODE_PBIT_GROUPID) {
+          $record->setNodeGroup($parent->getNodeGroup());
+        }
+        // system directories - set default permissions
+        if ($record->isSystemNode()) {
+          $record->setPermissions($record->getType() == CORE_VFS_NODE_TYPE_FOLDER_TRASH ? CORE_VFS_NODE_SYS_DIR_PERMISSIONS | CORE_VFS_NODE_PBIT_HIDDEN : ($record->getType() == CORE_VFS_NODE_TYPE_FOLDER_HOME ? CORE_VFS_NODE_HOME_DIR_PERMISSIONS : CORE_VFS_NODE_SYS_DIR_PERMISSIONS));
+        }
+      }
+      ]]></aspect>
+      <aspect key="insertLoadDirtyProperties" advice="loadDirtyAttrsArr" pointcut="dao.insert" />
+      <aspect key="insertSetDirtyProperties" advice="setDirtyAttrs" pointcut="dao.insert" when="after" />
+      <aspect key="setNewNodeDefaultValues" pointcut="vo.CoreVfsNodeVO"  when="after"><![CDATA[
+      // if node does not exist, set owner, group and permissions to default 
+      // values (global $user, $user->getPrimaryGroup() and $user->getUmask())
+      // if the umask contains the execute bits set, they will be cleared for 
+      // non-folder nodes
+      if ($user && !$this->getPrimaryKey()) {
+        // set node owner
+        if ($user && !isset($this->_nodeOwner)) {
+          $this->setNodeOwner($user);
+        }
+        // set node group
+        if ($user && !isset($this->_nodeGroup)) {
+          $this->setNodeGroup($user->getPrimaryGroup());
+        }
+        // set permissions
+        if (!isset($this->_permission)) {
+          $this->setPermissions(($this->isFolder() ? CORE_VFS_NODE_DEFAULT_PERMISSIONS_EXEC : CORE_VFS_NODE_DEFAULT_PERMISSIONS) ^ $user->getUmask());
+        }
+      }
+      ]]></aspect>
+      <aspect key="recursiveDelete" pointcut="dao.delete"><![CDATA[
+      static $_coreVfsNodeDeleted = array();
+      
+      // if already deleted, exit
+      if (isset($_coreVfsNodeDeleted[$record->getPrimaryKey()])) { return; }
+      
+      // check entity permissions
+      $entity =& $record->getEntity();
+      if (!$record->isFolder() && !$entity->isCanDelete()) {
+        if ($completeTransaction) { $this->_db->rollback(); }
+        $msg = 'CoreVfsNodeDAO::delete: Failed - entity ' . $record->getType() . '/' . $record->getEntityId() . ' cannot be deleted';
+        return SRA_Error::logError($msg, __FILE__, __LINE__, SRA_ERROR_PROBLEM, SRA_Controller::isAppInDebug());
+      }
+      
+      // check permissions
+      if (!$record->hasPermission(CORE_VFS_NODE_PBIT_WRITE, TRUE, FALSE)) {
+        if ($completeTransaction) { $this->_db->rollback(); }
+        $msg = 'CoreVfsNodeDAO::delete: Failed - user does not have permission to delete this node: ' . $record->getPathString() . ' (' . $record->getPrimaryKey() . ')';
+        return SRA_Error::logError($msg, __FILE__, __LINE__, SRA_ERROR_PROBLEM, SRA_Controller::isAppInDebug());
+      }
+      // delete child nodes
+      if ($record->getPrimaryKey()) {
+        $childNodes =& $record->getChildNodes();
+        $keys = array_keys($childNodes);
+        foreach($keys as $key) {
+          if (SRA_Error::isError($childNodes[$key]->delete())) {
+            if ($completeTransaction) { $this->_db->rollback(); }
+            $msg = 'CoreVfsNodeDAO::delete: Failed - unable to delete child node: ' . $childNodes[$key]->getPathString() . ' (' . $childNodes[$key]->getPrimaryKey() . ')';
+            return SRA_Error::logError($msg, __FILE__, __LINE__, SRA_ERROR_PROBLEM, SRA_Controller::isAppInDebug());
+          }
+        }
+      }
+      // delete linked nodes
+      $this->_db->execute('DELETE FROM core_vfs_node WHERE linked_to=' . $record->getAttrDbValue());
+      
+      // delete common places references
+      $this->_db->execute('DELETE FROM core_common_places WHERE node_id=' . $record->getAttrDbValue());
+      
+      $_coreVfsNodeDeleted[$record->getPrimaryKey()] = TRUE;
+      ]]></aspect>
+      <aspect key="deleteReferencedEntity" pointcut="dao.delete" when="after"><![CDATA[
+      if (!$record->recordExists && !$record->isFolder() && $record->getEntityId()) {
+        $instance =& $entity->getInstance($record->getEntityId());
+        if (SRA_Error::isError($err =& $instance->delete())) {
+          if ($completeTransaction) { $this->_db->rollback(); }
+          return $err;
+        }
+      }
+      ]]></aspect>
+      <aspect key="checkAccessPermissions" pointcut="dao._find" when="after"><![CDATA[
+      // check if user has read access to these nodes (must have execute access 
+      // to all of the directories above them). if not, set the value in that 
+      // index to a 'Permission denied' error message
+      if (is_array($results)) {
+        $keys = array_keys($results);
+        foreach($keys as $key) {
+          if (!($parent =& $results[$key]->getParent())  || (!$parent->hasPermission(CORE_VFS_NODE_PBIT_EXECUTE, TRUE))) {
+            $coreResources =& SRA_ResourceBundle::getBundle('plugins/core/etc/l10n/core');
+            $results[$key] = $results[$key]->getPathString() . ': ' . $coreResources->getString('VFS.error.permissionDenied');
+          }
+        }
+      }
+      ]]></aspect>
+      <aspect key="setEntityId" pointcut="vo.setEntityId"><![CDATA[
+      if (is_object($entityId) && method_exists($entityId, 'getPrimaryKey')) {
+        $entityId = $entityId->getPrimaryKey();
+      }
+      ]]></aspect>
+      <aspect key="updateName" pointcut="vo.setParent" when="after"><![CDATA[
+      if ($this->isDirty('parent') && $this->_name && $this->_parent->getChildNode($this->_name)) {
+        $this->_setIncrementedName();
+      }
+      ]]></aspect>
+      <aspect key="updateModifiedTime" pointcut="dao.update"><![CDATA[
+      $record->setDateModified(new SRA_GregorianDate());
+      ]]></aspect>
+      <aspect key="validateUpdatePermissions" pointcut="dao.update"><![CDATA[
+      global $user;
+      if ($record->recordExists && $record->isDirty() && !$record->hasPermission(CORE_VFS_NODE_PBIT_WRITE, TRUE, FALSE)) {
+        if ($completeTransaction) { $this->_db->rollback(); }
+        $msg = 'CoreVfsNodeDAO::update: Failed - user does not have permission to update this node: ' . $record->getPathString() . ' - ' . ($user ? $user->getUserName() : '');
+        return SRA_Error::logError($msg, __FILE__, __LINE__, SRA_ERROR_PROBLEM, SRA_Controller::isAppInDebug());
+      }
+      ]]></aspect>
+      <aspect key="updateLoadDirtyProperties" advice="loadDirtyAttrsArr" pointcut="dao.update" />
+      <aspect key="updateSetDirtyProperties" advice="setDirtyAttrs" pointcut="dao.update" when="after" />
+      <aspect key="extraValidation" pointcut="vo.validate" when="after"><![CDATA[
+      global $user;
+      $coreResources =& SRA_ResourceBundle::getBundle('plugins/core/etc/l10n/core');
+      // validate that user has write access to the parent directory
+      if ($parent =& $this->getParent() && !$parent->hasPermission(CORE_VFS_NODE_PBIT_WRITE, TRUE, FALSE)) {
+        $this->validateErrors['parent'] = $coreResources->getString('VFS.error.invalidPermissions', array('access' => CoreVfsNodeVO::getPermissionsString(CORE_VFS_NODE_PBIT_WRITE), 'path' => $parent->getPathString()));
+      }
+      // validate that a node with the same name does not already exist in the parent directory
+      if (!$this->recordExists && ($parent =& $this->getParent()) && $parent->getChildNode($this->getName())) {
+        $this->validateErrors['name'] = $coreResources->getString('VFS.error.pathAlreadyExists', array('path' => $this->getPathString()));
+      }
+      // validate that a system node is not being renamed or moved
+      if ($this->recordExists && $this->isSystemNode() && $this->getType() != CORE_VFS_NODE_TYPE_FOLDER_DESKTOP && ($this->isDirty(array('name', 'parent')))) {
+        $this->validateErrors[] = $coreResources->getString('VFS.error.cannotRenameOrMoveSystemFolder');
+      }
+      // check if this action can be performed for entities
+      $entity =& $this->getEntity();
+      // renaming not allowed
+      if ($this->recordExists && !$this->isFolder() && $this->recordExists && $this->isDirty('name') && !$entity->isCanRename()) {
+        $this->validateErrors['name'] = $coreResources->getString('VFS.error.renamingNotAllowed');
+      }
+      // moving not allowed
+      if ($this->recordExists && !$this->isFolder() && $this->recordExists && $this->isDirty('parent') && !$entity->isCanMove()) {
+        $this->validateErrors['name'] = $coreResources->getString('VFS.error.movingNotAllowed');
+      }
+      // parent cannot be the same as this node
+      if ($this->_parent && $this->_parent->getPrimaryKey() == $this->getPrimaryKey()) {
+        $this->validateErrors['parent'] = $coreResources->getString('VFS.error.nodeCannotBeParentToItself');
+      }
+      // only node owner can change group ownership and if changed, user must be member of owner of new group
+      if ($this->isDirty('nodeGroup') && (!$this->isOwner() || (!$this->_nodeGroup->isOwner() && !$this->_nodeGroup->isMember()))) {
+        $this->validateErrors['nodeGroup'] = $coreResources->getString(!$this->isOwner() ? 'VFS.error.notOwner' : 'VFS.error.notMemberOrOwnerOfGroup', array('path' => $this->getPathString(), 'name' => $this->_nodeGroup->getName()));
+      }
+      // only node owner can change ownership and if changed, user must be parent of the new owner 
+      if ($this->isDirty('nodeOwner') && (!$this->isOwner() || (!$this->_nodeOwner->isParent() && !$this->_nodeOwner->equals($user)))) {
+        $this->validateErrors['nodeOwner'] = $coreResources->getString(!$this->isOwner() ? 'VFS.error.notOwner' : 'VFS.error.notParentOfUser', array('path' => $this->getPathString(), 'name' => $this->_nodeOwner->getUserName()));
+      }
+      // only node owner change change node permissions
+      if ($this->isDirty('permissions') && !$this->isOwner()) {
+        $this->validateErrors['permissions'] = $coreResources->getString('VFS.error.notOwner', array('path' => $this->getPathString()));
+      }
+      // only core:CoreFile text mime-type entities can be executable
+      if ($this->isDirty('permissions') && !$this->isFolder() && ($this->_permissions & CORE_VFS_NODE_PBIT_EXECUTE || $this->_permissions & CORE_VFS_NODE_PBIT_GEXECUTE || $this->_permissions & CORE_VFS_NODE_PBIT_OEXECUTE) && ($this->getType() != 'core:CoreFile' || (($entity =& $this->getEntityInstance()) && ($file =& $entity->getData()) && !$file->isText()))) {
+        $this->validateErrors['permissions'] = $coreResources->getString('VFS.error.entityNotExecutable', array('name' => $this->getName()));
+      }
+      ]]></aspect>
+      
+      <introduction key="getChildNode" class="vo" type="method" value="&amp;getChildNode($name, $prefix=FALSE)"><![CDATA[
+      // returns the child node with the $name specified. if $prefix is true, 
+      // then the return value will be an array containing all children whose 
+      // name begins with $name. NULL will be returned if no matches are found
+      if ($this->isFolder()) {
+        $db =& SRA_Controller::getAppDb();
+        $dao =& SRA_DaoFactory::getDao('CoreVfsNode');
+        $nodes =& $dao->findByQuery('SELECT node_id FROM core_vfs_node WHERE parent ' . ($this->recordExists ? '=' . ($this->_linkedTo ? $this->_linkedTo : $this->getAttrDbValue()) : ' IS NULL') . ' AND name LIKE ' . ($db->isType(SRA_DB_TYPE_MYSQL) ? 'BINARY ' : '') . $db->convertText($name . ($prefix ? '%' : '')));
+        if (count($nodes)) {
+          return $prefix ? $nodes : $nodes[0];
+        }
+      }
+      return NULL;
+      ]]></introduction>
+      <introduction key="getChildNodes" class="vo" type="method" value="&amp;getChildNodes($recursive=FALSE, $preserveRoot=FALSE, $traverseLinks=FALSE, $linkStopDir=FALSE, $maxRecursion=NULL)"><![CDATA[
+      static $_recursionStack = array();
+      if ($this->isFolder()) {
+        $dao =& SRA_DaoFactory::getDao('CoreVfsNode');
+        $nodes =& $dao->findByQuery('SELECT node_id FROM core_vfs_node WHERE parent ' . ($this->recordExists ? '=' . ($this->_linkedTo ? $this->_linkedTo : $this->getAttrDbValue()) : ' IS NULL'));
+        if ($recursive && !in_array($this->getPrimaryKey(), $_recursionStack) && ($maxRecursion === NULL || $maxRecursion > 0)) {
+          array_push($_recursionStack, $this->getPrimaryKey());
+          $keys = array_keys($nodes);
+          foreach($keys as $key) {
+            if (CoreVfsNodeVO::isValid($nodes[$key]) && $nodes[$key]->isFolder() && (!$nodes[$key]->getLinkedTo() || $traverseLinks) && (!$preserveRoot || !$nodes[$key]->isRootNode()) && ($childNodes =& $nodes[$key]->getChildNodes($linkStopDir && $nodes[$key]->getLinkedTo() ? FALSE : TRUE, $preserveRoot, $traverseLinks, $linkStopDir, $maxRecursion !== NULL ? $maxRecursion - 1 : NULL))) {
+              $ckeys = array_keys($childNodes);
+              foreach($ckeys as $ckey) {
+                $nodes[] =& $childNodes[$ckey];
+              }
+            }
+          }
+          array_pop($_recursionStack);
+        }
+        return $nodes;
+      }
+      return NULL;
+      ]]></introduction>
+      <introduction key="getEntity" class="vo" type="method" value="&amp;getEntity()"><![CDATA[
+      // returns a reference to the SRAOS_Entity object that this node represents 
+      // if it is not a folder
+      $nl = NULL;
+      return !$this->isFolder() ? SRAOS_Entity::getEntity($this->_type) : $nl;
+      ]]></introduction>
+      <introduction key="getEntityInstance" class="vo" type="method" value="&amp;getEntityInstance()"><![CDATA[
+      // returns a reference to the entity object that this node represents 
+      // if it is not a folder
+      $nl = NULL;
+      return !$this->isFolder() && ($entity =& $this->getEntity()) && $this->_entityId ? $entity->getInstance($this->_entityId) : $nl;
+      ]]></introduction>
+      <introduction key="getGroupHash" class="vo" type="method" value="getGroupHash()"><![CDATA[
+      // for performance reasons the group gid and name (included for javascript 
+      // representation of this node) are retrieved directly using an sql query
+      if (!isset($this->_nodeGroup)) {
+        $db =& SRA_Controller::getAppDb();
+        $results =& $db->fetch('SELECT gid, name FROM os_group WHERE gid=' . $this->_lazyLoadPks['nodeGroup']);
+        $row =& $results->next();
+        return array('gid' => $row[0], 'name' => $row[1]);
+      }
+      else {
+        return array('gid' => $this->_nodeGroup->getPrimaryKey(), 'name' => $this->_nodeGroup->getName());
+      }
+      ]]></introduction>
+      <introduction key="getHomeRootNode" class="vo" type="method" value="&amp;getHomeRootNode()"><![CDATA[
+      // static method that returns a reference to the root home node (/home)
+      $db =& SRA_Controller::getAppDb();
+      $dao =& SRA_DaoFactory::getDao('CoreVfsNode');
+      $records =& $dao->findByQuery('SELECT node_id FROM core_vfs_node WHERE name=' . $db->convertText(CORE_VFS_NODE_NAME_HOME) . ' AND parent IS NULL');
+      $nl = NULL;
+      return count($records) == 1 ? $records[0] : $nl;
+      ]]></introduction>
+      <introduction key="getLinkedToNode" class="vo" type="method" value="&amp;getLinkedToNode()"><![CDATA[
+      // returns a reference to the node this node is linked to
+      if ($this->_linkedTo) {
+        $dao =& SRA_DaoFactory::getDao('CoreVfsNode');
+        return $dao->findByPk($this->_linkedTo);
+      }
+      $nl = NULL;
+      return $nl;
+      ]]></introduction>
+      <introduction key="getNetworkRootNode" class="vo" type="method" value="&amp;getNetworkRootNode()"><![CDATA[
+      // static method that returns a reference to the root network node (/network)
+      $db =& SRA_Controller::getAppDb();
+      $dao =& SRA_DaoFactory::getDao('CoreVfsNode');
+      $records =& $dao->findByQuery('SELECT node_id FROM core_vfs_node WHERE type=' . $db->convertText(CORE_VFS_NODE_TYPE_FOLDER_NETWORK) . ' AND parent IS NULL');
+      $nl = NULL;
+      return count($records) == 1 ? $records[0] : $nl;
+      ]]></introduction>
+      <introduction key="getNumChildren" class="vo" type="method" value="getNumChildren()"><![CDATA[
+      // returns the number of direct children contained by this node (if applicable)
+      if ($this->isFolder()) {
+        $db =& SRA_Controller::getAppDb();
+        $results =& $db->fetch('SELECT count(*) FROM core_vfs_node WHERE parent' . ($this->getPrimaryKey() ? '=' . $this->getAttrDbValue() : ' IS NULL'), array(SRA_DATA_TYPE_INT));
+        $row =& $results->next();
+        return $row[0];
+      }
+      return 0;
+      ]]></introduction>
+      <introduction key="getOwnerHash" class="vo" type="method" value="getOwnerHash()"><![CDATA[
+      // for performance reasons the owner uid and name (included for javascript 
+      // representation of this node) are retrieved directly using an sql query
+      if (!isset($this->_nodeOwner)) {
+        $db =& SRA_Controller::getAppDb();
+        $results =& $db->fetch('SELECT uid, name FROM os_user WHERE uid=' . $this->_lazyLoadPks['nodeOwner']);
+        $row =& $results->next();
+        return array('uid' => $row[0], 'name' => $row[1]);
+      }
+      else {
+        return array('uid' => $this->_nodeOwner->getPrimaryKey(), 'name' => $this->_nodeOwner->getName());
+      }
+      ]]></introduction>
+      <introduction key="getParentHash" class="vo" type="method" value="getParentHash()"><![CDATA[
+      // for performance reasons the parent id and name (included for javascript 
+      // representation of this node) are retrieved directly using an sql query
+      if ($this->_lazyLoadPks['parent']) {
+        $db =& SRA_Controller::getAppDb();
+        $results =& $db->fetch('SELECT node_id, name FROM core_vfs_node WHERE node_id=' . $this->_lazyLoadPks['parent']);
+        $row =& $results->next();
+        return array('id' => $row[0], 'name' => $row[1]);
+      }
+      // virtual root
+      return array('id' => NULL, 'name' => '/');
+      ]]></introduction>
+      <introduction key="getPathString" class="vo" type="method" value="getPathString()"><![CDATA[
+      // uses sql to increase performance
+      if (!$this->_pathString) {
+        $this->_pathString = $this->_name;
+        if ($this->_parent || $this->_lazyLoadPks['parent']) {
+          $parent = $this->_parent ? $this->_parent->getPrimaryKey() : $this->_lazyLoadPks['parent'];
+          $db =& SRA_Controller::getAppDb();
+          while($parent) {
+            $results =& $db->fetch('SELECT name, parent FROM core_vfs_node WHERE node_id=' . $parent);
+            $row =& $results->next();
+            $this->_pathString = $row[0] . '/' . $this->_pathString;
+            $parent = $row[1];
+          }
+        }
+        $this->_pathString = $this->_pathString != '/' ? '/' . $this->_pathString : $this->_pathString;
+      }
+      return $this->_pathString;
+      ]]></introduction>
+      <introduction key="getPermissionsString" class="vo" type="method" value="getPermissionsString($permissions)"><![CDATA[
+      // returns localize string to use to describe the $permissions level specified
+      $coreResources =& SRA_ResourceBundle::getBundle('plugins/core/etc/l10n/core');
+      $str = '';
+      if ($permissions & CORE_VFS_NODE_PBIT_READ) {
+        $str = $coreResources->getString('VFS.text.readPermission');
+      }
+      if ($permissions & CORE_VFS_NODE_PBIT_WRITE) {
+        $str = ($str ? $str . '/' : '') . $coreResources->getString('VFS.text.writePermission');
+      }
+      if ($permissions & CORE_VFS_NODE_PBIT_EXECUTE) {
+        $str = ($str ? $str . '/' : '') . $coreResources->getString('VFS.text.executePermission');
+      }
+      return $str;
+      ]]></introduction>
+      <introduction key="getUserPermissions" class="vo" type="method" value="getUserPermissions()"><![CDATA[
+      // returns the user's permission level to this node as a bit mask containing 
+      // CORE_VFS_NODE_PBIT_READ, CORE_VFS_NODE_PBIT_WRITE (one, both, or neither)
+      return ($this->hasPermission(CORE_VFS_NODE_PBIT_READ) ? CORE_VFS_NODE_PBIT_READ : 0) | ($this->hasPermission(CORE_VFS_NODE_PBIT_WRITE) ? CORE_VFS_NODE_PBIT_WRITE : 0) | ($this->hasPermission(CORE_VFS_NODE_PBIT_EXECUTE) ? CORE_VFS_NODE_PBIT_EXECUTE : 0);
+      ]]></introduction>
+      <introduction key="getVirtualRootNode" class="vo" type="method" value="&amp;getVirtualRootNode()"><![CDATA[
+      // static method that returns a virtual node representing the root of the file system
+      $dao =& SRA_DaoFactory::getDao('OsUser');
+      $rootUser =& $dao->getRootUser();
+      $root = new CoreVfsNodeVO(array('name' => '/', 'type' => CORE_VFS_NODE_TYPE_FOLDER_SYSTEM));
+      $root->setNodeGroup($rootUser->getPrimaryGroup());
+      $root->setNodeOwner($rootUser);
+      $root->setPermissions(CORE_VFS_NODE_ROOT_PERMISSIONS);
+      return $root;
+      ]]></introduction>
+      <introduction key="hasPermission" class="vo" type="method" value="hasPermission($permissions, $recursive=FALSE, $recursiveAnd = TRUE, $startWithParent = FALSE, $recursionLimit = NULL)"><![CDATA[
+      // checks if the current user has the permission to this node. 
+      // $permissions are the permission bits to check 
+      // (CORE_VFS_NODE_PBIT_READ|CORE_VFS_NODE_PBIT_WRITE|CORE_VFS_NODE_PBIT_EXECUTE). 
+      // if $recursive is true, this method will be invoked recursively for all 
+      // parent directories all the way to the root directory if $recursiveAnd 
+      // is TRUE (default), OR just until 1 matching case is found if 
+      // $recursiveAnd is FALSE. $recursionLimit defines the # of levels to 
+      // recursively ascend if $recursive is TRUE. If NULL (default) recursion 
+      // will ascend all the way to the root node. otherwise, it will stop after 
+      // $recursionLimit movements. so, for example, to just include the node 
+      // itself and its parent, $recursive would be TRUE and $recusionLimit 
+      // would be 1. 
+      // if $startWithParent is TRUE, the permissions check will begin with the 
+      // parent node
+      static $permissionCache = array();
+      $cacheKey = $this->getPrimaryKey() . '-' . $permissions . '-' . $recursive . '-' . $recursiveAnd . '-' . $startWithParent . '-' . $recursionLimit;
+      
+      global $user;
+      if (!isset($permissionCache[$cacheKey]) && $user) {
+        // determine which permissions bit set to use
+        $db =& SRA_Controller::getAppDb();
+        $counter = 1;
+        
+        $allUids = $user->getAllUids();
+        $allGids = $user->getAllGids();
+        $nodeId = $this->getPrimaryKey();
+        
+        while(TRUE) {
+          if ($counter == 1 && $startWithParent) {
+            $nodeId = $this->_parent ? $this->_parent->getPrimaryKey() : $this->_lazyLoadPks['parent'];
+            $counter++;
+          }
+          if ($counter == 1) {
+            $nodeGroup = $this->_nodeGroup ? $this->_nodeGroup->getPrimaryKey() : $this->_lazyLoadPks['nodeGroup'];
+            $nodeOwner = $this->_nodeOwner ? $this->_nodeOwner->getPrimaryKey() : $this->_lazyLoadPks['nodeOwner'];
+            $parent = $this->_parent ? $this->_parent->getPrimaryKey() : $this->_lazyLoadPks['parent'];
+            $perms = $this->_permissions;
+          }
+          else if (!$nodeId) {
+            $rootNode =& CoreVfsNodeVO::getVirtualRootNode();
+            $rootGroup = $rootNode->getNodeGroup();
+            $rootOwner = $rootNode->getNodeOwner();
+            $nodeGroup = $rootGroup->getPrimaryKey();
+            $nodeOwner = $rootOwner->getPrimaryKey();
+            $parent = NULL;
+            $perms = $rootNode->getPermissions();
+          }
+          else {
+            $permissionsBits = NULL;
+            $results =& $db->fetch('SELECT node_group, node_owner, parent, permissions FROM core_vfs_node WHERE node_id=' . $nodeId, array(SRA_DATA_TYPE_INT));
+            $row =& $results->next();
+            $nodeGroup = $row[0];
+            $nodeOwner = $row[1];
+            $parent = $row[2];
+            $perms = $row[3];
+          }
+          
+          // owner
+          if ($user->getPrimaryKey() == $nodeOwner || in_array($nodeOwner, $allUids)) {
+            $permissionsBits = CORE_VFS_NODE_PBIT_UALL & $perms;
+          }
+          
+          // group
+          if ($permissionsBits === NULL && in_array($nodeGroup, $allGids)) {
+            $permissionsBits = (CORE_VFS_NODE_PBIT_GALL & $perms) << 3;
+          }
+          
+          // world
+          if ($permissionsBits === NULL) {
+            $permissionsBits = (CORE_VFS_NODE_PBIT_OALL & $perms) << 6;
+          }
+          
+          
+          if (($permissionsBits & $permissions) != $permissions || (($perms & CORE_VFS_NODE_PBIT_STICKY) && ($permissions & CORE_VFS_NODE_PBIT_WRITE) && $counter == 2 && !$lastIterPassed)) {
+            if (!$recursive || $recursiveAnd) {  
+              $permissionCache[$cacheKey] = FALSE;
+              break;
+            }
+            $lastIterPassed = FALSE;
+          }
+          else {
+            if (!$recursive || !$recursiveAnd) {  
+              $permissionCache[$cacheKey] = TRUE;
+              break;
+            }
+            $lastIterPassed = TRUE;
+          }
+          
+          if (($recursionLimit !== NULL && $recursionLimit+1 == $counter) || !$nodeId) { 
+            break; 
+          }
+          else {
+            $nodeId = $parent;
+          }
+          $counter++;
+        }
+        $permissionCache[$cacheKey] = isset($permissionCache[$cacheKey]) ? $permissionCache[$cacheKey] : ($recursiveAnd ? TRUE : FALSE);
+      }
+      else if (!isset($permissionCache[$cacheKey])) {
+        $permissionCache[$cacheKey] = FALSE;
+      }
+      
+      return $permissionCache[$cacheKey];
+      ]]></introduction>
+      <introduction key="isFolder" class="vo" type="method" value="isFolder()"><![CDATA[
+      // returns TRUE if this node is a folder 
+      return SRA_Util::beginsWith($this->getType(), 'folder');
+      ]]></introduction>
+      <introduction key="isOwner" class="vo" type="method" value="isOwner()"><![CDATA[
+      // returns TRUE if the current user is an owner of this node
+      global $user;
+      if ($user) {
+        $nodeOwner = $this->_nodeOwner ? $this->_nodeOwner->getPrimaryKey() : $this->_lazyLoadPks['nodeOwner'];
+        return $user->getPrimaryKey() == $nodeOwner || in_array($nodeOwner, $user->getAllUids());
+      }
+      return FALSE;
+      ]]></introduction>
+      <introduction key="isRootNode" class="vo" type="method" value="isRootNode()"><![CDATA[
+      // returns TRUE if this node is the root node
+      return $this->getPathString() == '/';
+      ]]></introduction>
+      <introduction key="isSystemNode" class="vo" type="method" value="isSystemNode($type)"><![CDATA[
+      // returns TRUE if this node is a system node. this method can be invoked 
+      // statically by specifying the $type parameter
+      $type = $type ? $type : $this->getType();
+      return SRA_Util::beginsWith($type, 'folder_');
+      ]]></introduction>
+      <introduction key="_setIncrementedName" class="vo" type="method" value="_setIncrementedName()"><![CDATA[
+        $baseName = $this->isHideExtension() && ($ext = SRA_Util::getFileExtension($this->_name)) ? SRA_Util::getFileNameWOExtension($this->_name) : $this->_name;
+        
+        $counter = 1;
+        do {
+          $name = $baseName . $counter . ($ext ? '.' . $ext : '');
+          $counter++;
+        } while($this->_parent->getChildNode($name));
+        $this->setName($name);
+      ]]></introduction>
+      <introduction key="CORE_VFS_NODE_PERMISSION_DENIED" class="vo" type="constant" value="CORE_VFS_NODE_PERMISSION_DENIED=1" />
+      <introduction key="CORE_VFS_NODE_PBIT_ALL" class="vo" type="constant" value="CORE_VFS_NODE_PBIT_XALL=16383" />
+      <introduction key="CORE_VFS_NODE_PBIT_XALL" class="vo" type="constant" value="CORE_VFS_NODE_PBIT_XALL=15872" />
+      <introduction key="CORE_VFS_NODE_PBIT_HIDDEN" class="vo" type="constant" value="CORE_VFS_NODE_PBIT_HIDDEN=8192" />
+      <introduction key="CORE_VFS_NODE_PBIT_INHERIT" class="vo" type="constant" value="CORE_VFS_NODE_PBIT_INHERIT=4096" />
+      <introduction key="CORE_VFS_NODE_PBIT_USERID" class="vo" type="constant" value="CORE_VFS_NODE_PBIT_USERID=2048" />
+      <introduction key="CORE_VFS_NODE_PBIT_GROUPID" class="vo" type="constant" value="CORE_VFS_NODE_PBIT_GROUPID=1024" />
+      <introduction key="CORE_VFS_NODE_PBIT_STICKY" class="vo" type="constant" value="CORE_VFS_NODE_PBIT_STICKY=512" />
+      <introduction key="CORE_VFS_NODE_PBIT_UALL" class="vo" type="constant" value="CORE_VFS_NODE_PBIT_UALL=448" />
+      <introduction key="CORE_VFS_NODE_PBIT_READ" class="vo" type="constant" value="CORE_VFS_NODE_PBIT_READ=256" />
+      <introduction key="CORE_VFS_NODE_PBIT_WRITE" class="vo" type="constant" value="CORE_VFS_NODE_PBIT_WRITE=128" />
+      <introduction key="CORE_VFS_NODE_PBIT_EXECUTE" class="vo" type="constant" value="CORE_VFS_NODE_PBIT_EXECUTE=64" />
+      <introduction key="CORE_VFS_NODE_PBIT_GALL" class="vo" type="constant" value="CORE_VFS_NODE_PBIT_GALL=56" />
+      <introduction key="CORE_VFS_NODE_PBIT_GREAD" class="vo" type="constant" value="CORE_VFS_NODE_PBIT_GREAD=32" />
+      <introduction key="CORE_VFS_NODE_PBIT_GWRITE" class="vo" type="constant" value="CORE_VFS_NODE_PBIT_GWRITE=16" />
+      <introduction key="CORE_VFS_NODE_PBIT_GEXECUTE" class="vo" type="constant" value="CORE_VFS_NODE_PBIT_GEXECUTE=8" />
+      <introduction key="CORE_VFS_NODE_PBIT_OALL" class="vo" type="constant" value="CORE_VFS_NODE_PBIT_OALL=7" />
+      <introduction key="CORE_VFS_NODE_PBIT_OREAD" class="vo" type="constant" value="CORE_VFS_NODE_PBIT_OREAD=4" />
+      <introduction key="CORE_VFS_NODE_PBIT_OWRITE" class="vo" type="constant" value="CORE_VFS_NODE_PBIT_OWRITE=2" />
+      <introduction key="CORE_VFS_NODE_PBIT_OEXECUTE" class="vo" type="constant" value="CORE_VFS_NODE_PBIT_OEXECUTE=1" />
+      <introduction key="CORE_VFS_NODE_ROOT_PERMISSIONS" class="vo" type="constant" value="CORE_VFS_NODE_ROOT_PERMISSIONS=493" />
+      <introduction key="CORE_VFS_NODE_DEFAULT_PERMISSIONS_EXEC" class="vo" type="constant" value="CORE_VFS_NODE_DEFAULT_PERMISSIONS_EXEC=511" />
+      <introduction key="CORE_VFS_NODE_DEFAULT_PERMISSIONS" class="vo" type="constant" value="CORE_VFS_NODE_DEFAULT_PERMISSIONS=438" />
+      <introduction key="CORE_VFS_NODE_TYPE_FOLDER" class="vo" type="constant" value="CORE_VFS_NODE_TYPE_FOLDER='folder'" />
+      <introduction key="CORE_VFS_NODE_TYPE_FOLDER_DESKTOP" class="vo" type="constant" value="CORE_VFS_NODE_TYPE_FOLDER_DESKTOP='folder_desktop'" />
+      <introduction key="CORE_VFS_NODE_TYPE_FOLDER_HOME" class="vo" type="constant" value="CORE_VFS_NODE_TYPE_FOLDER_HOME='folder_home'" />
+      <introduction key="CORE_VFS_NODE_TYPE_FOLDER_NETWORK" class="vo" type="constant" value="CORE_VFS_NODE_TYPE_FOLDER_NETWORK='folder_network'" />
+      <introduction key="CORE_VFS_NODE_TYPE_FOLDER_SYSTEM" class="vo" type="constant" value="CORE_VFS_NODE_TYPE_FOLDER_SYSTEM='folder_system'" />
+      <introduction key="CORE_VFS_NODE_TYPE_FOLDER_TRASH" class="vo" type="constant" value="CORE_VFS_NODE_TYPE_FOLDER_TRASH='folder_trash'" />
+      <introduction key="CORE_VFS_NODE_NAME_HOME" class="vo" type="constant" value="CORE_VFS_NODE_NAME_HOME='home'" />
+      <introduction key="CORE_VFS_NODE_NAME_NETWORK" class="vo" type="constant" value="CORE_VFS_NODE_NAME_NETWORK='network'" />
+      <introduction key="CORE_VFS_NODE_NAME_TRASH" class="vo" type="constant" value="CORE_VFS_NODE_NAME_TRASH='trash'" />
+      <introduction key="CORE_VFS_NODE_NAME_WORKSPACES" class="vo" type="constant" value="CORE_VFS_NODE_NAME_WORKSPACES='workspaces'" />
+      <introduction key="CORE_VFS_NODE_HOME_DIR_PERMISSIONS" class="vo" type="constant" value="CORE_VFS_NODE_HOME_DIR_PERMISSIONS=448" />
+      <introduction key="CORE_VFS_NODE_SYS_DIR_PERMISSIONS" class="vo" type="constant" value="CORE_VFS_NODE_SYS_DIR_PERMISSIONS=493" />
+    </aop>
+    <attribute key="nodeId" sequence="1" />
+    <attribute key="dateCreated" depends="required" default="new SRA_GregorianDate()" type="time" />
+    <attribute key="dateModified" depends="required" default="new SRA_GregorianDate()" type="time" />
+    <attribute key="entityId" type="int" />
+    <attribute key="hideExtension" default="FALSE" type="boolean" />
+    <attribute key="icon" />
+    <attribute key="linkedTo" type="int" />
+    <attribute key="name" depends="required" max-length="255" />
+    <attribute key="nodeGroup" depends="required" lazy-load="1" type="OsGroup" />
+    <attribute key="nodeOwner" depends="required" lazy-load="1" type="OsUser" />
+    <attribute key="parent" lazy-load="1" type="CoreVfsNode" />
+    <attribute key="permissions" depends="required" type="int" />
+    <attribute key="size" default="0" depends="required" type="int" />
+    <attribute key="type" default="CORE_VFS_NODE_TYPE_FOLDER" depends="required" max-length="128" />
+  </entity>
+  <entity key="CoreFile" primary-key="fileId">
+    <aop>
+      <aspect key="validateReadPermissions" pointcut="vo.getData"><![CDATA[
+      // user does not have read permissions
+      if ($this->recordExists && !$this->getNode()) {
+        global $user;
+        $msg = 'CoreFile::getData: Failed - user does not have access to this file: ' . $this->getPrimaryKey() . '/' . ($user ? $user->getUserName() : 'unknown');
+        SRA_Error::logError($msg, __FILE__, __LINE__, SRA_ERROR_PROBLEM, SRAOS_PLUGIN_DEBUG);
+        return NULL;
+      }
+      ]]></aspect>
+      <aspect key="updateFulltextIndex" pointcut="vo.setData"><![CDATA[
+      if (is_array($data) && isset($data['size']) && $data['size'] > 0 && isset($data['tmp_name']) && file_exists($data['tmp_name'])) {
+        $this->setDataTxt(SRA_File::toString($data['tmp_name']));
+      }
+      ]]></aspect>
+      <aspect key="updateNodeValues" pointcut="vo.setNode"><![CDATA[
+      if (!$this->recordExists && $node) {
+        $node->setType('core:CoreFile');
+      }
+      ]]></aspect>
+      <aspect key="updateNodeOnInsert" pointcut="dao.insert"><![CDATA[
+      $this->updateNodeProperties($record);
+      ]]></aspect>
+      <aspect key="updateNodeOnUpdate" pointcut="dao.update"><![CDATA[
+      $this->updateNodeProperties($record);
+      ]]></aspect>
+      
+      <introduction key="nodePropertySetter" class="vo" type="method" value="nodePropertySetter($property, &amp;$value)"><![CDATA[
+      // nothing for now
+      ]]></introduction>
+      <introduction key="updateNodeProperties" class="dao" type="method" value="updateNodeProperties(&amp;$record)"><![CDATA[
+      // updates the node properties for this file
+      if (($node =& $record->getNode()) && SRA_FileAttribute::isValid($data =& $record->getData()) && $record->isDirty('data')) {
+        // set size
+        $node->setSize($data->getSize());
+        
+        // apply custom icon based on mime-type
+        if ($record->isDirty('data') && ($icon = $data->getIcon(SRA_Controller::getAppDir() . '/plugins/core/www/icons/mimetypes/16'))) {
+          $node->setIcon('/plugins/core/icons/mimetypes/#size#/' . basename($icon));
+          $node->setHideExtension(TRUE);
+        }
+        // set name
+        if (!$node->getName()) {
+          $node->setName($data->getName());
+        }
+        if ($node->recordExists) {
+          $node->update();
+        }
+      }
+      ]]></introduction>
+    </aop>
+    <attribute key="fileId" sequence="1" />
+    <attribute key="data" depends="maxFileSize required" is-file="1" lazy-load-exclusive="1">
+      <msg key="maxFileSize" resource="Browser.error.maxFileSize" />
+      <var key="maxFileSize" value="5242880" />
+      <view key="input" template="model/sra-form-file.tpl" />
+    </attribute>
+    <attribute key="dataTxt" depends="required" max-length="5242880" set-only="1">
+      <msg key="maxLength" resource="text.null" />
+    </attribute>
+    <attribute key="node" constraint="type='core:CoreFile'" depends="required" table-pk-column="entity_id" type="CoreVfsNode" />
+  </entity>
+  <entity key="CoreTermAlias" primary-key="aliasId">
+    <attribute key="aliasId" sequence="1" />
+    <attribute key="alias" depends="required" max-length="255" />
+    <attribute key="value" depends="required" max-length="255" />
+  </entity>
+  <entity key="CoreTermEnv" primary-key="envId">
+    <attribute key="envId" sequence="1" />
+    <attribute key="name" depends="required" max-length="255" />
+    <attribute key="value" depends="required" max-length="255" />
+  </entity>
+  <entity key="CoreTermHistory" primary-key="histId">
+    <attribute key="histId" sequence="1" />
+    <attribute key="reported" default="new SRA_GregorianDate()" type="time" />
+    <attribute key="cmd" depends="required" max-length="255" />
+  </entity>
+  
+  <index key="core_vfs_node_name_idx" columns="name" table="core_vfs_node" />
+  <index key="core_vfs_node_parent_idx" columns="parent" table="core_vfs_node" />
+  <index key="core_vfs_node_type_idx" columns="type" table="core_vfs_node" />
+  <index key="core_vfs_node_date_modified_idx" columns="date_modified" table="core_vfs_node" />
+  <index key="core_vfs_node_size_idx" columns="size" table="core_vfs_node" />
+  <index key="core_vfs_node_entity_idx" columns="entity_id" table="core_vfs_node" />
+  <index key="core_vfs_node_owner_idx" columns="node_owner" table="core_vfs_node" />
+  <index key="core_vfs_node_group_idx" columns="node_group" table="core_vfs_node" />
+  <index key="core_file_idx" columns="data_txt" modifier="fulltext" table="core_file" />
+  <index key="core_term_alias_idx" columns="uid, alias" modifier="unique" table="core_term_alias" />
+  <index key="core_term_env_idx" columns="uid, name" modifier="unique" table="core_term_env" />
+  
+  <ws-global key="core_getHelp" identifier="plugins/core/Core_HelpManager::getHelpContent" />
+  <ws-global key="core_printHelp" format="raw" identifier="plugins/core/Core_HelpManager::printHelpArticle" />
+  <ws-global key="core_spellcheck" identifier="plugins/core/Core_SpellCheckManager::spellcheck" />
+  <ws-global key="core_addTermEnv" identifier="plugins/core/Core_Terminal::addTermEnv" />
+  <ws-global key="core_clearTermEnv" identifier="plugins/core/Core_Terminal::clearTermEnv" />
+  <ws-global key="core_removeTermEnv" identifier="plugins/core/Core_Terminal::removeTermEnv" />
+  <ws-global key="core_updateTermUserAttr" identifier="plugins/core/Core_Terminal::updateTermUserAttr" />
+  <ws-global key="core_chgrp" identifier="plugins/core/Core_Vfs::vfs_chgrp" />
+  <ws-global key="core_chmod" identifier="plugins/core/Core_Vfs::vfs_chmod" />
+  <ws-global key="core_chown" identifier="plugins/core/Core_Vfs::vfs_chown" />
+  <ws-global key="core_cp" identifier="plugins/core/Core_Vfs::vfs_cp" />
+  <ws-global key="core_getExecutableSource" identifier="plugins/core/Core_Vfs::getExecutableSource" />
+  <ws-global key="core_getNodes" identifier="plugins/core/Core_Vfs::getNodes" />
+  <ws-global key="core_userGroupSelector" identifier="plugins/core/Core_Services::userGroupSelector" />
+  <ws-global key="core_wikiToHtml" identifier="plugins/core/Core_Services::wikiToHtml" />
+</entity-model>
+

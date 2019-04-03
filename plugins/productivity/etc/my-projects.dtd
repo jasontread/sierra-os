@@ -1,0 +1,713 @@
+<!--
+ +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+
+ | SIERRA::OS : PHP RIA Framework      http://code.google.com/p/sierra-os  |
+ +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+
+ | Copyright 2005 Jason Read                                               |
+ |                                                                         |
+ | Licensed under the Apache License, Version 2.0 (the "License");         |
+ | you may not use this file except in compliance with the License.        |
+ | You may obtain a copy of the License at                                 |
+ |                                                                         |
+ |     http://www.apache.org/licenses/LICENSE-2.0                          |
+ |                                                                         |
+ | Unless required by applicable law or agreed to in writing, software     |
+ | distributed under the License is distributed on an "AS IS" BASIS,       |
+ | WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.|
+ | See the License for the specific language governing permissions and     |
+ | limitations under the License.                                          |
+ +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+
+-->
+
+
+<!--
+XML DTD for the SIERRA::OS "productivity" plugin MyProjects application, v1.0
+
+This DTD allows users of the productivity plugin to define project templates 
+available from within the MyProjects application it provides. Each xml file 
+must be declared in app-config using the "param" element where the type is 
+"my-projects" and the id is the app "/etc" relative path to the xml file (or 
+absolute path)
+
+To support validation of your plugin xml file, include the following DOCTYPE 
+element at the beginning (after the "xml" declaration):
+
+<!DOCTYPE my-projects PUBLIC "-//SIERRA//DTD SRAOS Productivity::MyProjects//EN" 
+  "http://sierra-os.googlecode.com/svn/trunk/etc/plugins/productivity/etc/my-projects.dtd">
+-->
+
+
+<!--
+The "my-projects" element is the root element. it defines 1 or more project 
+templates
+                  
+resources         the app relative or fixed path to the resource bundle to use 
+                  for project templates defined in the xml document. if not 
+                  specified, the app resources will be used
+
+
+Used in:	NA
+-->
+<!ELEMENT my-projects (template+)>
+<!ATTLIST my-projects resources      CDATA       #IMPLIED>
+
+
+<!--
+The "template" element is used to define a single project template
+                  
+key               the identifier for this project template. this value will be 
+                  stored in the "type" attribute for projects created based on 
+                  this template. it MUST be unique globally
+                  
+complete-confirm  the resource identifier for an optional completion confirm 
+                  message. the user will be required to read this message and 
+                  click 'OK' before projects based on this template can be 
+                  completed
+                  
+due-date          a relative date expression defining the the default due-date 
+                  for projects based on this template. for more information, see 
+                  the SRA_GregorianDate::fromRelativeStr() api. if a "wf" is 
+                  defined for the template, and that workflow has a due date, 
+                  that due date will take precedence over the template due date
+                  
+due-date-fixed    whether or not the template due-date specified should be fixed. 
+                  if true, the user will not be able to change that value. 
+                  workflow due dates are always fixed
+                  
+help-topic        if a help menu entry should be added to MyProjects for this 
+                  project template, this attribute should reference the id of 
+                  that help topic in "plugin-for-help-topic"
+
+help-topic-resource if "help-topic" is specified, this attribute may be used to 
+                  also specify a resource to use for the help topic label. if 
+                  not specified, a default label "[project template name] Help" 
+                  will be used
+                  
+icon              the uri to the icon to use to represent this project template. 
+                  this icon must be available in 16, 32, and 64 pixel sizes. 
+                  this value MUST contain the substring "${size}" which will be 
+                  replaced with the correct icon size. if not specified, the 
+                  default MyProjects icon will be used
+
+include-new-menu  whether or not this project template should be included in the 
+                  MyProjects "File -> New" menu
+                  
+name              the resource identifier for the default name to assign 
+                  projects based on this template. this resource value may 
+                  reference params from "wf-tpl" using the format "{$param}"
+                  
+notify            whether or not to notify users whenever they are assigned to 
+                  a task. this includes both the creator of the task (when 
+                  'strict-permissions' is not true) as well as the user(s) 
+                  specific through the 'change-restriction'. these users will 
+                  only be notified once when the task is created, or whenever 
+                  re-assignment of the change-restriction occurs. the email 
+                  settings that will be used for the from address are the same 
+                  documented in the MyProjectsManager::retrievePopMessages api.
+                  all tasks within this template will automatically inherit this 
+                  template configuration unless they specify another value
+                  
+notify-subject    if 'notify' is true, this attribute can be used to define a 
+                  custom notification subject resource identifier in 
+                  'resources'. if not specified, the default 
+                  'MyProjectTask.notify.subject' (in the productivity resources 
+                  files) will be used. all tasks within this template will 
+                  automatically inherit this template configuration unless they 
+                  specify another value
+                  
+notify-tpl        if 'notify' is true, this attribute can be used to define a 
+                  custom notification template. this template will have access 
+                  to the follow smarty variables:
+                    email:        the email address
+                    name:         the name of the person the email is being sent 
+                                  to
+                    project:      a reference to the task project
+                    projectAdmin: a reference to the project administrator user 
+                                  object
+                    resources:    a reference to the template resource bundle
+                    task:         a reference to the MyProjectTask object
+                    uid:          if the email is for an actual user of the 
+                                  system, this value will be the uid of the 
+                                  user. otherwise (for an email participant), 
+                                  this value will be NULL
+                  if not specified, the default 
+                  'productivity/tpl/my-projects-task-notification.tpl' template 
+                  will be used. all tasks within this template will 
+                  automatically inherit this template configuration unless they 
+                  specify another value
+                  
+notify-tpl-html   if 'notify' is true, this attribute can be used to define a 
+                  custom html notification template. this template will have 
+                  access to the same smarty variable as 'notify-tpl'. if not 
+                  specified, the default 
+                  'productivity/tpl/my-projects-task-notification-html.tpl' 
+                  template will be used. if both 'notify-tpl' and 
+                  'notify-tpl-html' are specified, most users will only see the 
+                  html version of the notification unless they do not have a 
+                  multipart/html email client. all tasks within this template 
+                  will automatically inherit this template configuration unless 
+                  they specify another value
+                  
+plugin-for-help-topic the id of the plugin containing "help-topic" and 
+                  whose resources should be used for "help-topic-resource"
+                  
+plugin-for-labels the id of the plugin whose resources should be used for the 
+                  project labels. these labels are displayed on the new project 
+                  wizard and edit project popup window and include the following 
+                  (default values below will be used if resource key is not 
+                  defined):
+                  
+                    MyProjects.newProject.whatName=What would you like to name this project?
+                    MyProjects.newProject.whatNameHelp=e.g. "Dissertation", "Website Redesign"
+                    
+                    MyProjects.newProject.whichParticipants=Who will participate in this project?
+                    MyProjects.newProject.whichParticipantsHelp=Check this box if you want to give other users of INDI the ability to participate in this project. If you don't check this box, only you will have access.
+                    MyProjects.newProject.addParticipants=Give other users/groups access to this project
+                    MyProjects.newProject.selectParticipantsHelp=Use this section to give other users of INDI the ability to participate in this project and to specify the permissions they should be granted. You may select either individual users or entire groups of users. You only have access to add groups that you are a member of yourself, as well as other members of those groups.
+                    
+                    MyProjects.newProject.otherInfo=Would you like to specify other project information?
+                    MyProjects.newProject.otherInfoHelp=Check this box if you would like to specify additional information such as a project due date and/or summary.
+                    MyProjects.newProject.specifyOtherInfo=Yes, I would like to specify additional project information
+                    
+                    MyProjects.newProject.projectSummary=How would you summarize this project?
+                    MyProjects.newProject.projectSummaryHelp=Use this field to provide a more descriptive project summary. Users will be able to view this summary when working with this project.
+                    
+                    MyProjects.newProject.projectDueDate=Would you like to specify a project due date?
+                    MyProjects.newProject.projectDueDateHelp=Use this field to specify a specific date by which this project should be completed. If the project is not completed by this date, it will appear highlighted in the MyProjects Dashboard.
+                    
+                    MyProjects.viewProject.archived=Is this project archived?
+                    MyProjects.viewProject.archivedHelp=Archived projects are not included in your default project list
+                    
+                    MyProjects.viewProject.status=What is the status of this project?
+                    MyProjects.viewProject.statusHelp=Only active projects are included in your default project list
+                    
+                    MyProject.fileCategories=File Categories
+                    MyProject.fileCategoriesHelp=What categories would you like to be able to classify files to in this project (for example, "Contracts", "Correspondence")?
+                    
+                    MyProject.messageCategories=Message Categories
+                    MyProject.messageCategoriesHelp=What categories would you like to be able to classify messages to in this project (for example, "General Discussion", "Manager Comments")?
+                  
+                  Only use this attribute IF you want to override 1 or more of 
+                  the default values
+                  
+plugin-labels-prefix an optional prefix to use for the label keys above
+                  
+resources         the path to the resource bundle to use for this project 
+                  template. this value will override the enclosing "my-projects"
+                  "resources"
+                  
+summary           the resource identifier for the default summary to assign 
+                  projects based on this template. this resource value may 
+                  reference params from "wf-tpl" using the format "{$param}"
+                  
+type              the resource identifier for this template. this value will 
+                  be used to allow users to filter search results based on 
+                  project type, as an option in the new projects menu, and 
+                  within the project summary
+                  
+wf                if this project template should be based on an application 
+                  workflow, this value should be the identifier for that 
+                  workflow as specified in app-config (the "use-workflow" 
+                  element). when a project is based on a workflow, tasks will 
+                  automatically be created based on the workflow definition and 
+                  progress
+
+wf-ajax-validator if "wf-tpl" is used, this attribute may be used to specify a 
+                  global ajax service that should be used to validate the data 
+                  that was provided by the user and return the data that should 
+                  be included as the workflow initiation parameters. this method 
+                  should return either an error message (this message will be 
+                  displayed to the user and they will not be allowed to 
+                  continue), or TRUE if the validation was successful and the 
+                  workflow should be initialized with the same values from the 
+                  form, or an array representing the values that should be used 
+                  to initialize the workflow
+
+wf-notify-step    whether or not to send standard MyProjects task notifications 
+                  for workflow step generated tasks
+                  
+wf-notify-task    whether or not to send standard MyProjects task notifications 
+                  for workflow task generated tasks
+                  
+wf-tpl            a form template that should be displayed in the first step of 
+                  the project creation prompting the user to enter data that 
+                  will be used by the workflow. this data will be extracted from 
+                  the form and used as the initiation params for the workflow
+                  
+wf-tpl-init       an initialization function for wf-tpl. this function should be 
+                  global with the following signature: "(divId : String) : void"
+                  where divId is the base window div id enclosing wf-tpl (any 
+                  nested elements in this page will have their id prefixed with 
+                  this value)
+
+wf-validator      if "wf-tpl" is used, this attribute may be used to specify a
+                  javascript function that should be invoked to validate the 
+                  data. this method should return true if the data validates 
+                  successfully, an error message otherwise. if both 
+                  "wf-validator" and "wf-ajax-validator" are specified, this 
+                  validator will be invoked first. this function should have the 
+                  following signature: "(params : hash) : mixed"
+                  
+wf-view-tpl       template that should be used to display the wf initialization 
+                  parameters from wf-tpl in a read-only format. when this 
+                  template is rendered, the values for each of the wf-tpl values 
+                  will be set as template variables. once a project is created, 
+                  the wf-tpl form values cannot be changed. this attribute is 
+                  required if wf-tpl is specified
+
+
+Used in:	my-projects
+-->
+<!ELEMENT template (email-participant*, file*, file-category*, message*, message-category*, participant*, task*, whiteboard*)>
+<!ATTLIST template key               ID          #REQUIRED>
+<!ATTLIST template complete-confirm  CDATA       #IMPLIED>
+<!ATTLIST template due-date          CDATA       #IMPLIED>
+<!ATTLIST template due-date-fixed    (0|1)       "0">
+<!ATTLIST template help-topic        CDATA       #IMPLIED>
+<!ATTLIST template help-topic-resource CDATA     #IMPLIED>
+<!ATTLIST template icon              CDATA       #IMPLIED>
+<!ATTLIST template include-new-menu  (0|1)       "1">
+<!ATTLIST template name              CDATA       #IMPLIED>
+<!ATTLIST template notify            (0|1)       "0">
+<!ATTLIST template notify-subject    CDATA       #IMPLIED>
+<!ATTLIST template notify-tpl        CDATA       #IMPLIED>
+<!ATTLIST template notify-tpl-html   CDATA       #IMPLIED>
+<!ATTLIST template plugin-for-help-topic CDATA   #IMPLIED>
+<!ATTLIST template plugin-for-labels CDATA       #IMPLIED>
+<!ATTLIST template plugin-labels-prefix CDATA    #IMPLIED>
+<!ATTLIST template resources         CDATA       #IMPLIED>
+<!ATTLIST template summary           CDATA       #IMPLIED>
+<!ATTLIST template type              CDATA       #REQUIRED>
+<!ATTLIST template wf                CDATA       #IMPLIED>
+<!ATTLIST template wf-ajax-validator CDATA       #IMPLIED>
+<!ATTLIST template wf-notify-step    (0|1)       "0">
+<!ATTLIST template wf-notify-task    (0|1)       "0">
+<!ATTLIST template wf-strict-permissions CDATA   #IMPLIED>
+<!ATTLIST template wf-tpl            CDATA       #IMPLIED>
+<!ATTLIST template wf-tpl-init       CDATA       #IMPLIED>
+<!ATTLIST template wf-validator      CDATA       #IMPLIED>
+<!ATTLIST template wf-view-tpl       CDATA       #IMPLIED>
+
+
+<!--
+The "email-participant" element is used to define a user that may participate in 
+project messaging via email. in order to utilize email participants the server 
+must be capable of sending email using the standard PHP mail function. for more 
+information, see MyProjectsManager::retrievePopMessages api
+                  
+key               the unique identifier for this participant
+
+email             the email address of the participant. this will also be the 
+                  participant's login
+                  
+name              the full name of this participant (optional)
+
+password          the password for this email participant
+
+permissions       bitmask representing the project permissions for this 
+                  email participant. this must include at least 1 of the 
+                  following permission bits set:
+                   4:   Receive messages by email
+                   12:  Receive messages by email and add comments by replying
+                   48:  Be assigned to and able to complete tasks (using link 
+                        from email)
+                   60:  All list access above
+                   
+send-intro-email  whether or not to send a project introduction email to this 
+                  participant
+
+
+Used in:	template
+-->
+<!ELEMENT email-participant EMPTY>
+<!ATTLIST email-participant key         CDATA       #REQUIRED>
+<!ATTLIST email-participant email       CDATA       #REQUIRED>
+<!ATTLIST email-participant name        CDATA       #IMPLIED>
+<!ATTLIST email-participant password    CDATA       #REQUIRED>
+<!ATTLIST email-participant permissions CDATA       "12">
+<!ATTLIST email-participant send-intro-email (0|1)  "0">
+
+
+<!--
+The "file" element is used to define a single file that should be automatically 
+added to a project based on the enclosing template
+                  
+key               the unique identifier for this file
+
+category          optional reference to a file-category that this file should be 
+                  classified to
+
+change-restriction optional reference to a participant that will have sole 
+                  change permissions to this file. if specified, the file will 
+                  be implicitely "read-only"
+
+mime-type         if the "uri" specified does not contain a valid file extension 
+                  this attribute may be used to specify the mime-type of the 
+                  file. mime-type and file extension are used to determine which
+                  icon to use for this file
+
+name              the resource identifier for the file name. if "wf-step" is 
+                  specified, this value will passed through the associated step 
+                  entity "parseString" method (if "wf-entity" is specified, 
+                  that entity will be used instead)
+
+path              the path to the file. this may be an app relative path or an 
+                  absolute path. if "wf-view" is specified, this attribute 
+                  should be the name to use for the generated file (will also be 
+                  passed through the associated step entity "parseString" 
+                  method)
+
+read-only         whether or not this file is read-only. read-only files can 
+                  only be changed by the creator or project administrator(s)
+                  
+wf-entity         if "wf-view" should be generated from an entity other than the 
+                  default step entity, this attribute may be used to specify the 
+                  id for that entity in the workflow
+                  
+wf-step           if this file should ONLY be added if/when a specific 
+                  workflow step is triggered, this attribute may be used to 
+                  specify the identfier of that workflow step. multiple step 
+                  identifiers may be specified each separated by a space
+                  
+wf-step-assoc     if "wf-step" is specified and the step that the file should be 
+                  associated to is different, this attribute should specify the 
+                  identifier of the step to use
+
+wf-view           if the file should be generated using a workflow entity view, 
+                  this attribute may be used to specify the id of that view. if 
+                  "wf-entity" is not specified, the view will be generated from 
+                  the default step entity. when used, "path" may specify the 
+                  name to use for the generated file
+
+
+Used in:	template
+-->
+<!ELEMENT file EMPTY>
+<!ATTLIST file key                   CDATA       #REQUIRED>
+<!ATTLIST file category              CDATA       #IMPLIED>
+<!ATTLIST file change-restriction    CDATA       #IMPLIED>
+<!ATTLIST file mime-type             CDATA       #IMPLIED>
+<!ATTLIST file name                  CDATA       #REQUIRED>
+<!ATTLIST file path                  CDATA       #IMPLIED>
+<!ATTLIST file read-only             (0|1)       "0">
+<!ATTLIST file wf-entity             CDATA       #IMPLIED>
+<!ATTLIST file wf-step               CDATA       #IMPLIED>
+<!ATTLIST file wf-step-assoc         CDATA       #IMPLIED>
+<!ATTLIST file wf-view               CDATA       #IMPLIED>
+
+
+<!--
+The "file-category" element is used to define a file category that should be set 
+up automatically for projects based on the enclosing template
+                  
+key               the unique identifier for this category
+
+name              the resource identifier for the category
+
+
+Used in:	template
+-->
+<!ELEMENT file-category EMPTY>
+<!ATTLIST file-category key          CDATA       #REQUIRED>
+<!ATTLIST file-category name         CDATA       #REQUIRED>
+
+
+<!--
+The "message" element is used to define a single message that should be 
+automatically added to a project based on the enclosing template
+                  
+key               the unique identifier for this message
+
+category          optional reference to a message-category that this message 
+                  should be classified to
+                  
+files             an optional space separate list of "file" element references 
+                  (using the "key" attribute) that should be associated to this 
+                  message
+                  
+message           the resource identifier for the message text. if "wf-step" is 
+                  specified, this value will passed through the associated step 
+                  entity "parseString" method
+                  
+title             the resource identifier for the message title. if "wf-step" is 
+                  specified, this value will passed through the associated step 
+                  entity "parseString" method
+
+wf-step           if this message should ONLY be added if/when a specific 
+                  workflow step is triggered, this attribute may be used to 
+                  specify the identfier of that workflow step. multiple step 
+                  identifiers may be specified each separated by a space
+                  
+wf-step-assoc     if "wf-step" is specified and the step that the message should 
+                  be associated to is different, this attribute should specify  
+                  the identifier of the step to use
+
+
+Used in:	template
+-->
+<!ELEMENT message EMPTY>
+<!ATTLIST message key                CDATA       #REQUIRED>
+<!ATTLIST message category           CDATA       #IMPLIED>
+<!ATTLIST message files              CDATA       #IMPLIED>
+<!ATTLIST message message            CDATA       #REQUIRED>
+<!ATTLIST message title              CDATA       #REQUIRED>
+<!ATTLIST message wf-step            CDATA       #IMPLIED>
+<!ATTLIST message wf-step-assoc      CDATA       #IMPLIED>
+
+
+<!--
+The "message-category" element is used to define a message category that should 
+be set up automatically for projects based on the enclosing template
+                  
+key               the unique identifier for this category
+
+name              the resource identifier for the category
+
+
+Used in:	template
+-->
+<!ELEMENT message-category EMPTY>
+<!ATTLIST message-category key       CDATA       #REQUIRED>
+<!ATTLIST message-category name      CDATA       #REQUIRED>
+
+
+<!--
+The "participant" element is used to define a user or users that will 
+participate in the project other than the creator 
+                  
+key               the unique identifier for this participant
+
+id                the participant identifier. this is the the uid, gid, or 0 to 
+                  specify all users that the creator manages. if id is a uid, it 
+                  MUST be the uid of a user that the creator manages or it will 
+                  be skipped. if id is a gid, it MUST be the gid of a group that 
+                  the creator is a member of or it will be skipped
+                  
+group             whether or not "id" is the gid of a group
+
+permissions       bitmask representing the project permissions for this 
+                  participant. this must include at least 1 of the following 
+                  permission bits set:
+                   1:   View files
+                   3:   View and update files
+                   4:   View messages
+                   12:   View and update messages
+                   16:  View tasks
+                   48:  View and update tasks
+                   64:  View whiteboards
+                   192: View and update whiteboards
+                   255: Everything listed above (default)
+                   511: Everything listed above + change project participants, summary, etc.
+                   
+send-intro-email  whether or not to send a project introduction email to this 
+                  participant
+
+
+Used in:	template
+-->
+<!ELEMENT participant EMPTY>
+<!ATTLIST participant key            CDATA       #REQUIRED>
+<!ATTLIST participant id             CDATA       #REQUIRED>
+<!ATTLIST participant group          (0|1)       "0">
+<!ATTLIST participant permissions    CDATA       "255">
+<!ATTLIST participant send-intro-email (0|1)     "0">
+
+
+<!--
+The "task" element is used to define a single task or group of tasks that should 
+be automatically added to a project based on the enclosing template. nesting 
+tasks within a task create a "Summary Task" which itself is not completed until 
+all of it's sub-tasks are completed (no manual completion is required for 
+summary tasks)
+                  
+key               the unique identifier for this task
+
+change-restriction optional reference to a participant that will have sole 
+                  change permissions to this task. if specified, the task 
+                  will be implicitely "read-only". either a 'participant' or 
+                  'email-participant' may be referenced. in the case of the 
+                  latter, 'change-restriction-email' must also be true
+                  
+change-restriction-email if 'change-restriction' references an email-participant
+                  this attribute should be set to true
+                  
+complete-confirm  the resource identifier for an optional completion confirm 
+                  message. the user will be required to read this message and 
+                  click 'OK' before this task can be completed
+                  
+description       the resource identifier for the task description
+
+due-date          a relative date expression defining the the default due-date 
+                  for this task (the date that work will end on the task). for 
+                  more information, see the SRA_GregorianDate::fromRelativeStr() 
+                  api
+                  
+duration-planned  the planed duration for this task. Durations are assumed to be 
+                  specified in hours ('h') unless they end in 'd' for days, 'w' 
+                  for weeks, 'm' for months, or 'y' for years
+                  
+files             an optional space separate list of "file" element references 
+                  (using the "key" attribute) that should be associated to this 
+                  task
+                  
+list              a list task is a task that contains sub-tasks but does not 
+                  require any effort outside of those sub-tasks to complete. it 
+                  will be automatically transitioned between active and 
+                  completed status based on the status of its sub tasks
+                  
+messages          an optional space separate list of "message" element 
+                  references (using the "key" attribute) that should be 
+                  associated to this task
+                  
+notify            whether or not to notify users whenever they are assigned to 
+                  this task. this includes both the creator of the task (when 
+                  'strict-permissions' is not true) as well as the user(s) 
+                  specific through the 'change-restriction'. these users will 
+                  only be notified once when the task is created, or whenever 
+                  re-assignment of the change-restriction occurs. the email 
+                  settings that will be used for the from address are the same 
+                  documented in the MyProjectsManager::retrievePopMessages api. 
+                  if specified, this value will override the value specified in 
+                  the 'template' configuration
+                  
+notify-subject    if 'notify' is true, this attribute can be used to define a 
+                  custom notification subject resource identifier in 
+                  'resources'. if not specified, the default 
+                  'MyProjectTask.notify.subject' (in the productivity resources 
+                  files) will be used. if specified, this value will override 
+                  the value specified in the 'template' configuration
+                  
+notify-tpl        if 'notify' is true, this attribute can be used to define a 
+                  custom notification template. this template will have access 
+                  to the follow smarty variables:
+                    email:        the email address
+                    name:         the name of the person the email is being sent 
+                                  to
+                    project:      a reference to the task project
+                    projectAdmin: a reference to the project administrator user 
+                                  object
+                    resources:    a reference to the template resource bundle
+                    task:         a reference to the MyProjectTask object
+                    uid:          if the email is for an actual user of the 
+                                  system, this value will be the uid of the 
+                                  user. otherwise (for an email participant), 
+                                  this value will be NULL
+                  if not specified, the default 
+                  'productivity/tpl/my-projects-task-notification.tpl' template 
+                  will be used. if specified, this value will override the value 
+                  specified in the 'template' configuration
+                  
+notify-tpl-html   if 'notify' is true, this attribute can be used to define a 
+                  custom html notification template. this template will have 
+                  access to the same smarty variable as 'notify-tpl'. if not 
+                  specified, the default 
+                  'productivity/tpl/my-projects-task-notification-html.tpl' 
+                  template will be used. if both 'notify-tpl' and 
+                  'notify-tpl-html' are specified, most users will only see the 
+                  html version of the notification unless they do not have a 
+                  multipart/html email client. if specified, this value will 
+                  override the value specified in the 'template' configuration
+                  
+predecessor       the "key" of a predecessor task. this task cannot be completed 
+                  until the predecessor task has been completed
+                  
+read-only         whether or not this task is read-only. read-only task can 
+                  only be changed by the creator, change restriction user/group 
+                  or project administrator(s)
+                  
+show-percentage   when true, the task will automatically be set to 0% complete 
+                  when it is created and this percentage will be reflected in 
+                  the task tree display. otherwise, no percentage will be 
+                  displayed there
+                  
+start-date        a relative date expression defining the the default start-date 
+                  for this task (the date that work will begin on the task). for 
+                  more information, see the SRA_GregorianDate::fromRelativeStr() 
+                  api
+                  
+strict-permissions whether or not the "change-restriction" specified should be 
+                  strictly enforced, meaning only that participant may make 
+                  changes to the task. otherwise, the project administrator(s) 
+                  and task creator may also make changes. unlike 'read-only', 
+                  this value cannot be changed in the task edit form
+                  
+title             the resource identifier for the task title
+
+whiteboards       an optional space separate list of "whiteboard" element 
+                  references (using the "key" attribute) that should be 
+                  associated to this task
+
+
+Used in:	template
+-->
+<!ELEMENT task (task*)>
+<!ATTLIST task key                   CDATA       #REQUIRED>
+<!ATTLIST task change-restriction    CDATA       #IMPLIED>
+<!ATTLIST task change-restriction-email (0|1)    "0">
+<!ATTLIST task complete-confirm		   CDATA       #IMPLIED>
+<!ATTLIST task description           CDATA       #IMPLIED>
+<!ATTLIST task due-date              CDATA       #IMPLIED>
+<!ATTLIST task duration-planned      CDATA       #IMPLIED>
+<!ATTLIST task files                 CDATA       #IMPLIED>
+<!ATTLIST task list                  (0|1)       "0">
+<!ATTLIST task messages              CDATA       #IMPLIED>
+<!ATTLIST task notify                (0|1)       "0">
+<!ATTLIST task notify-subject        CDATA       #IMPLIED>
+<!ATTLIST task notify-tpl            CDATA       #IMPLIED>
+<!ATTLIST task notify-tpl-html       CDATA       #IMPLIED>
+<!ATTLIST task predecessor           CDATA       #IMPLIED>
+<!ATTLIST task read-only             (0|1)       "0">
+<!ATTLIST task show-percentage       (0|1)       "0">
+<!ATTLIST task start-date            CDATA       #IMPLIED>
+<!ATTLIST task strict-permissions    (0|1)       "0">
+<!ATTLIST task title                 CDATA       #REQUIRED>
+<!ATTLIST task whiteboards           CDATA       #IMPLIED>
+
+
+<!--
+The "whiteboard" element is used to define a single whiteboard that should be 
+automatically added to a project based on the enclosing template
+                  
+key               the unique identifier for this whiteboard
+
+change-restriction optional reference to a participant that will have sole 
+                  change permissions to this whiteboard. if specified, the 
+                  whiteboard will be implicitely "read-only"
+                  
+height            the height for this whiteboard
+
+init-bg-path      the app relative or absolute path to the initial background 
+                  image to use for this whiteboard. this image must be PNG 
+                  formatted and should be the same dimensions as the height and 
+                  width specified
+
+read-only         whether or not this whiteboard is read-only. read-only files can 
+                  only be changed by the creator or project administrator(s)
+                  
+title             the resource identifier for the whiteboard title. if "wf-step" 
+                  is specified, this value will passed through the associated 
+                  step entity "parseString" method
+
+width             the width for this whiteboard
+
+wf-step           if this whiteboard should ONLY be added if/when a specific 
+                  workflow step is triggered, this attribute may be used to 
+                  specify the identfier of that workflow step. multiple step 
+                  identifiers may be specified each separated by a space
+                  
+wf-step-assoc     if "wf-step" is specified and the step that the whiteboard 
+                  should be associated to is different, this attribute should 
+                  specify the identifier of the step to use
+
+
+Used in:	template
+-->
+<!ELEMENT whiteboard EMPTY>
+<!ATTLIST whiteboard key             CDATA       #REQUIRED>
+<!ATTLIST whiteboard change-restriction CDATA    #IMPLIED>
+<!ATTLIST whiteboard height          CDATA       "480">
+<!ATTLIST whiteboard init-bg-path    CDATA       #IMPLIED>
+<!ATTLIST whiteboard read-only       (0|1)       "0">
+<!ATTLIST whiteboard title           CDATA       #REQUIRED>
+<!ATTLIST whiteboard width           CDATA       "640">
+<!ATTLIST whiteboard wf-step         CDATA       #IMPLIED>
+<!ATTLIST whiteboard wf-step-assoc   CDATA       #IMPLIED>

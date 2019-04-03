@@ -1,0 +1,23 @@
+/* use this file (custom.css) to override existing or define new styles. if this 
+   file exists, it will be the final style sheet loaded. thus, any styles 
+   defined here will override the values of styles previously defined. modify 
+   this file instead of the these specific css files */
+
+#header {
+  background: #405679;
+  background-image: url(http://www.lib.byu.edu/images/framework/department_logo_small.gif);
+  background-repeat: no-repeat;
+  padding-top: 31px;
+}
+
+#header span {
+  color: #fff;
+  font-family: arial, helvetica, sans-serif;
+  font-size: 11pt;
+  font-weight: bold;
+  padding-right: 5px;
+  position: absolute;
+  right: 5px;
+  top: 8px;
+  vertical-align: middle;
+}

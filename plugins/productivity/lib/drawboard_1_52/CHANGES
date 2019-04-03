@@ -1,0 +1,7 @@
+Server.java: removed repaint using bg image on line 418-420
+Menu.java: removed port suffix (so default 80/443 will be used instead)
+To re-compile:
+cd drawboard_1_52/drawboard
+javac ../source/*.java -d drawboard
+jar cf ../drawboard.jar drawboard/*.class ../about.gif
+# copy ../drawboard.jar to www directory

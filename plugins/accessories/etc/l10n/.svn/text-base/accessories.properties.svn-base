@@ -1,0 +1,246 @@
+accessories=Accessories Plugin
+
+# User
+OsUser.addressBook=Address Book
+
+# Address Book
+AddressBook.groups=Groups
+AddressBook.cards=Cards
+AddressBook.myCard=My Card
+AddressBook.subscriptions=Subscriptions
+
+AddressBook.error.cannotSubscribeToOwnGroup=You cannot subscribe to a group that you own
+AddressBook.error.cannotSubscribeToUgSubscription=You cannot subscribe to this user group
+AddressBook.error.noPermission=You do not have permission to edit this address book
+AddressBook.error.noPermissionToSubscribe=You do not have permission to subscribe to this group
+
+
+# Contact
+Contact=Card
+Contact.addresses=Addresses
+Contact.company=Company?
+Contact.companyName=Company Name
+Contact.dates=Dates
+Contact.emails=Emails
+Contact.gender=Gender
+Contact.gender.f=Female
+Contact.gender.m=Male
+Contact.groups=groups
+Contact.imIds=Instant Message Ids
+Contact.lastUpdated=Updated
+Contact.name=Name
+Contact.note=Note
+Contact.otherNames=Other Names
+Contact.phones=Phone Numbers
+Contact.picture=Picture
+Contact.relations=Relations
+Contact.uid=UID
+Contact.urls=URLs
+
+Contact.error.companyNameRequired=Company Name is required
+Contact.error.lastNameRequired=Last Name is required
+Contact.error.noPermission=You do not have permission to edit this contact
+
+# Contact Address
+ContactAddress=Card Address
+ContactAddress.street=Street
+ContactAddress.locality=Locality
+ContactAddress.region=Region
+ContactAddress.postalCode=Postal Code
+ContactAddress.country=Country
+
+# Contact Date
+ContactDate=Card Date
+ContactDate.date=Date
+ContactDate.location=Location
+
+# Contact Email
+ContactEmail=Card Email
+ContactEmail.email=Email
+
+# Contact Group
+ContactGroup=Card Group
+ContactGroup.name=Group Name
+ContactGroup.public=Public?
+ContactGroup.publicGids=Public Group Restrictions
+ContactGroup.publicUids=Public User Restrictions
+
+ContactGroup.error.noPermission=You do not have permission to edit this contact group
+
+# Contact Instant Message Id
+ContactImId=Card Instant Message Id
+ContactImId.id=User Name
+ContactImId.protocol=Protocol
+    
+# Contact Name
+ContactName=Card Name
+ContactName.company=Company?
+ContactName.companyName=Company
+ContactName.dateEnd=To
+ContactName.dateStart=From
+ContactName.department=Department
+ContactName.first=First
+ContactName.jobTitle=Job Title
+ContactName.last=Last
+ContactName.maiden=Maiden
+ContactName.middle=Middle
+ContactName.nameNote=Note
+ContactName.nickname=Nickname
+ContactName.occupation=Occupation?
+ContactName.phoneticFirst=Phonetic First
+ContactName.phoneticLast=Phonetic Last
+ContactName.phoneticMiddle=Phonetic Middle
+ContactName.prefix=Prefix
+ContactName.suffix=Suffix
+
+# Contact Phone
+ContactPhone=Card Phone
+ContactPhone.number=Phone
+
+# Contact Relation
+ContactRelation=Related Contact
+ContactRelation.dateEnd=Ended
+ContactRelation.dateStart=Started
+ContactRelation.source=Source
+ContactRelation.target=Target
+
+# Contact URL
+ContactUrl=Card Website
+ContactUrl.url=Website
+
+# Guess My Number cli game
+guess-my-number=Guess My Number
+guessMyNumber.about=Guess My Number picks a random number between a designated range and provides hints until you are able to successfully guess the number that was picked
+guessMyNumber.attempts=The max # of attempts that a user has to guess the random number selected
+guessMyNumber.intro1=Hi There! I've picked a number between
+guessMyNumber.intro2=and
+guessMyNumber.intro3=. I'll give you 
+guessMyNumber.intro4=tries to guess it. Go for it!
+guessMyNumber.invalidRange=That's not a valid range!
+guessMyNumber.maxAttempts1=Sorry, you have tried to guess my number
+guessMyNumber.maxAttempts2=times and you still didn't get it. The number I picked was
+guessMyNumber.min=The minimum number in the range
+guessMyNumber.max=The maximum number in the range
+guessMyNumber.success1=Great! You guessed my number correctly in 
+guessMyNumber.success2=tries
+guessMyNumber.tryAgain1=That's not it! My number is
+guessMyNumber.tryAgain2-1=<b>larger</b>
+guessMyNumber.tryAgain2-2=<b>smaller</b>
+guessMyNumber.tryAgain3=than that. Try picking another number. You have 
+guessMyNumber.tryAgain4=tries left
+
+# Imbedded Contact window
+ImbeddedContact=Imbedded Contact
+
+# MyContacts
+MyContacts=MyContacts
+MyContacts.about=<i>MyContacts v1.0</i><p>MyContacts is a collaborative and extensible contact manager. It can be used to manage contact information and share this information with other users. It can also be extended to store additional contact related information</p>
+MyContacts.addingContactToGroup=Adding card to group...
+MyContacts.allGroups=All
+MyContacts.cancelEditConfirm=Are you sure you want to cancel this edit? Any changes you have made will be lost.
+MyContacts.card=Card
+MyContacts.cardAndColumns=View Card and Columns
+MyContacts.cardOnly=View Card Only
+MyContacts.deleteConfirm=Are you sure you want to delete this card? This action is permanent and irreversible.
+MyContacts.deleteContact=Delete Selected Card
+MyContacts.deleteContactGroup=Delete Selected Group
+MyContacts.deletingContact=Deleting card...
+MyContacts.editContact=Edit Selected Card
+MyContacts.editContactGroup=Edit Selected Group
+MyContacts.group=Group
+MyContacts.loadingContact=Loading card...
+MyContacts.loadingContactName=Loading card for <i>{$name}</i>...
+MyContacts.loadingContacts=Loading cards...
+MyContacts.loadingGroups=Loading groups...
+MyContacts.loadingTab=Loading tab <i>{$tab}</i>...
+MyContacts.loadingNewContact=Loading new card...
+MyContacts.name=Name
+MyContacts.newContact=New Card
+MyContacts.newContactGroup=New Group
+MyContacts.noCardSelected=No Card Selected
+MyContacts.preferences=MyContacts Preferences
+MyContacts.print=Print Card
+MyContacts.reload=Reload MyContacts
+MyContacts.removeContactFromGroup=Remove Card From Group
+MyContacts.removingContactFromGroup=Removing card from group...
+MyContacts.saving=Please wait, saving card...
+MyContacts.search=search...
+MyContacts.showSearch=Show Search Field
+MyContacts.subscribeToContactGroup=Subscribe to Group
+MyContacts.unsubscribeFromGroup=Unsubscribe from Selected Group
+MyContacts.unsubscribing=Unsubscribing from selected group...
+MyContacts.updatingAddress=Updating address format...
+MyContacts.updatingName=Updating name format...
+MyContacts.viewMyCard=View My Card
+
+MyContacts.error.noEditPermissions=You do not have access to edit this card
+MyContacts.error.unableToAddContactToGroup=Unable to add card to group
+MyContacts.error.unableToDeleteContact=Unable to delete card. You probably do not have permission to delete this card
+MyContacts.error.unableToLoadContact=Unable to load contact
+MyContacts.error.unableToLoadContactAttributeView=Unable to update view
+MyContacts.error.unableToLoadGroups=Unable to load groups
+MyContacts.error.unableToLoadTab=Unable to load tab
+MyContacts.error.unableToRemoveContactFromGroup=Unable to remove card from group
+MyContacts.error.unableToSave=Unable to save card
+
+# MyContacts Add Subscription window
+MyContactsAddSubscription=Subscribe to Group
+MyContactsAddSubscription.createdBy=created by
+MyContactsAddSubscription.groups=Select the group you would like to subscribe to
+MyContactsAddSubscription.loading=Loading available groups...
+MyContactsAddSubscription.readOnly=* read-only group
+MyContactsAddSubscription.select=Subscribe
+MyContactsAddSubscription.subscribing=Subscribing to selected group
+
+MyContactsAddSubscription.error.init=Unable to load available groups
+MyContactsAddSubscription.error.noMatches=There are no groups available currently for you to subscribe to. Please try again later
+MyContactsAddSubscription.error.nothingSelected=You must select 1 or more groups to subscribe to
+MyContactsAddSubscription.error.unableToSelect=Unable to subscribe to the selected groups. Please try again.
+
+# MyContacts Group Window
+MyContactsGroup.addRestriction=Add another user or group
+MyContactsGroup.addRestrictionRequired=Add a user or group (<strong>required</strong>)
+MyContactsGroup.closeDirty=The changes you have made will be lost. Are you sure you want to close this window?
+MyContactsGroup.creatingGroup=Creating group...
+MyContactsGroup.deleteConfirm=Are you sure you want to delete this group? This action is permanent and irreversible.
+MyContactsGroup.deletingGroup=Deleting group...
+MyContactsGroup.edit=Edit Group
+MyContactsGroup.name=What name do you want to use for this group?
+MyContactsGroup.public=Would you like to share this group with other users?
+MyContactsGroup.publicReadOnly=Can other users edit cards in this group?
+MyContactsGroup.restrictAccess=Limit access to specific users or groups?
+MyContactsGroup.updatingGroup=Updating group...
+
+MyContactsGroup.error.accessRestriction=If you want to limit access to specific users or groups you MUST specify at least 1 user or group to limit access to
+MyContactsGroup.error.unableToCreateGroup=Unable to create group
+MyContactsGroup.error.unableToDeleteGroup=Unable to delete group
+MyContactsGroup.error.unableToLoadGroup=Unable to load group
+MyContactsGroup.error.unableToUnsubscribe=Unable to unsubscribe from the selected group
+MyContactsGroup.error.unableToUpdateGroup=Unable to update group
+
+# MyContacts Help
+MyContactsHelp=MyContacts Help
+MyContactsHelp.overview=MyContacts Overview
+MyContactsHelp.contacts=Managing Cards
+MyContactsHelp.contactGroups=Managing Groups
+MyContactsHelp.contactGroupSubscriptions=Managing Group Subscriptions
+
+# MyContacts Preferences
+MyContactsPreferences=MyContacts Preferences
+MyContactsPreferences.nameFormat=Display names in this format
+MyContactsPreferences.fields=Display these fields
+MyContactsPreferences.formatPhoneNumbers=Automatically format phone numbers
+MyContactsPreferences.loadingPreferences=Loading current preferences...
+MyContactsPreferences.phoneFormat=Phone number format
+MyContactsPreferences.phoneFormat.otherLabel=Custom Format
+MyContactsPreferences.phoneFormat.otherPrompt=Please enter the phone number format you would like to use. To do so, use the # symbol to specify the numbers. For example, the format for "1 (123) 456-7890" would be "# (###) ###-####" 
+MyContactsPreferences.sortBy=Sort cards by
+
+MyContactsPreferences.error.permissions=You do not have permissions to update these MyContacts preferences
+MyContactsPreferences.error.unableToLoadPreferences=Unable to load MyContacts preferences
+
+
+# Text Editor
+TextEditor=Text Editor
+TextEditor.about=v0.01<br /><br />A simple text editor
+

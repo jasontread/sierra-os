@@ -1,0 +1,5 @@
+# sierra-os - MyProjects
+MyProjects is a multi-user, multi-project, collaborative, configurable, workflow-capable project management application. The core functionality it provides includes management of communication (messages and digital whiteboards), tasks and files within the context of a project, where each of these items can be interrelated with each other. It also provides a dashboard view providing a birds-eye-view of a user's projects
+
+## Extensibility
+MyProjects allows administrators and developers to create custom project templates. These templates can be used to define default structure of projects including default tasks, due dates, files, participants, etc. Additionally, these templates can incorporate workflow and data-entry functionality utilizing the sierra-php workflow package and your plugin's entity model. An example project template is provided with the plugin: `productivity/etc/wash-the-car.xml`. For more information on creating project templates, review the documentation provided in the `my-projects.dtd`

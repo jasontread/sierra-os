@@ -1,0 +1,159 @@
+<div class="coreWikiHelp">
+<p class='vspace'><span class='wikiword'>PmWiki</span> uses <a class='wikilink' href='#' onclick="OS.getWindowInstance(this).getManager().displayArticle('wikiStyles')">WikiStyles</a> for styling text with color and other attributes.
+</p>
+<p class='vspace'>A  style is specified within a pair of %-signs and styles the text that follows, as in:
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+This text is %color=red% red, %color=blue% blue, %% and normal (black).
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><p>This text is <span  style='color: red;'> red, </span><span  style='color: blue;'> blue, </span> and normal (black).
+</p>
+</td></tr></table>
+<p class='vspace'>There are a wide number of available style properties, borrowed primarily from HTML and CSS.  In addition, an author can define a style "shortcut" by using the <code class='escaped'>define=</code> property.  For example, to define a style of <code class='escaped'>%red%</code>, one can use:
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+%color=red define=mystyle%
+Here is some %mystyle% red text created using a style shortcut.
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><p>
+Here is some <span  style='color: red;'> red text created using a style shortcut.</span>
+</p>
+</td></tr></table>
+<p class='vspace'>Shortcuts can be combined with other styles, including other shortcuts:
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+%color=red define=lovelyred%
+%bgcolor=yellow define=likegrapefruit%
+
+%red% This text is red, %red bgcolor=#ccc% red on a grey background, and
+%lovelyred likegrapefruit% red on a yellow background.  
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><p>
+</p>
+<p class='vspace'><span  style='color: red;'> This text is red, </span><span  style='color: red; background-color: #ccc;'> red on a grey background, and </span><span  style='color: red; background-color: yellow;'> red on a yellow background.  </span>
+</p>
+</td></tr></table>
+<p class='vspace'>Specifying <code class='escaped'>apply=block</code> in a WikiStyle will cause that style to be applied to the entire block, instead of just the text that follows:
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+This entire block %apply=block bgcolor=yellow% has a yellow background,
+even though the `WikiStyle appears in the middle of the line. 
+%bgcolor=pink% Other inline (non-block) WikiStyles can appear in the
+middle of the line,%% as before.
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><p  style='background-color: yellow;'>This entire block  has a yellow background, even though the WikiStyle appears in the middle of the line.  <span  style='background-color: pink;'> Other inline (non-block) <span class='wikiword'>WikiStyles</span> can appear in the middle of the line,</span> as before.
+</p>
+</td></tr></table>
+<p class='vspace'>This means it's possible to do right-aligned and centered text:
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+%block text-align=right% The text of this paragraph is right-aligned. 
+
+%block text-align=center% The text of this paragraph is centered.  
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><p  style='text-align: right;'> The text of this paragraph is right-aligned. 
+</p>
+<p class='vspace'  style='text-align: center;'> The text of this paragraph is centered.  
+</p>
+</td></tr></table>
+<p class='vspace'>In fact, <span class='wikiword'>PmWiki</span> predefines <code class='escaped'>%right%</code> and <code class='escaped'>%center%</code> style shortcuts so that you can do this more simply:
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+%right% This is right-aligned.
+
+%center% This is centered.
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><p  style='text-align: right;'> This is right-aligned.
+</p>
+<p class='vspace'  style='text-align: center;'> This is centered.
+</p>
+</td></tr></table>
+<p class='vspace'>Authors can define their own custom styles:
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+%block bgcolor=#fdf define=Pm%
+%center bgcolor=#dfd border='3px dotted green' define=goofy%
+%right bgcolor=#ffffcc border='1px dotted red' padding=5px
+define=rediguana%
+%define=strike text-decoration=line-through%
+
+%Pm% Any text that is on a light purple background is a comment from "Pm".
+
+%goofy% Here's some text from Goofy.
+
+%rediguana% bla bla by rediguana!
+
+%goofy%Hello, I am %strike%upset%% %strike%disheartened%% happy to meet
+you.
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><p>
+</p>
+<p class='vspace'  style='background-color: #fdf;'> Any text that is on a light purple background is a comment from "Pm".
+</p>
+<p class='vspace'  style='text-align: center; background-color: #dfd; border: 3px dotted green;'> Here's some text from Goofy.
+</p>
+<p class='vspace'  style='text-align: right; background-color: #ffffcc; border: 1px dotted red; padding: 5px;'> bla bla by rediguana!
+</p>
+<p class='vspace'  style='text-align: center; background-color: #dfd; border: 3px dotted green;'>Hello, I am <span  style='text-decoration: line-through;'>upset</span> <span  style='text-decoration: line-through;'>disheartened</span> happy to meet you.
+</p>
+</td></tr></table>
+<p class='vspace'>Styles can be applied to almost any kind of block:
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+* %block bgcolor=yellow% Here is a list item
+* Here's another list item
+
+* Here's more of a list
+
+# A new list
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><ul  style='background-color: yellow;'><li  style='background-color: yellow;'> Here is a list item
+</li><li>Here's another list item
+<div class='vspace'></div></li><li>Here's more of a list
+</li></ul><div class='vspace'></div><ol><li>A new list
+</li></ol>
+</td></tr></table>
+<p class='vspace'>In particular, this means that outlines are now possible using the predefined <code class='escaped'>%ROMAN%</code>, <code class='escaped'>%roman%</code>, <code class='escaped'>%ALPHA%</code>, and <code class='escaped'>%alpha%</code> list-block styles.  The style has to be specified on the first item in the list (and we may develop an alternate syntax for this sort of ordered list):
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+# %ROMAN% Top level
+## %ALPHA% second-level
+## second-level
+## second-level
+### third-level
+### third-level
+## second-level
+### third-level
+#### %alpha% fourth-level
+##### %roman% fifth-level
+##### fifth-level
+#### fourth-level
+# top-level
+# top-level
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><ol  style='list-style: upper-roman;'><li> Top level
+<ol  style='list-style: upper-alpha;'><li> second-level
+</li><li>second-level
+</li><li>second-level
+<ol><li>third-level
+</li><li>third-level
+</li></ol></li><li>second-level
+<ol><li>third-level
+<ol  style='list-style: lower-alpha;'><li> fourth-level
+<ol  style='list-style: lower-roman;'><li> fifth-level
+</li><li>fifth-level
+</li></ol></li><li>fourth-level
+</li></ol></li></ol></li></ol></li><li>top-level
+</li><li>top-level
+</li></ol>
+</td></tr></table>
+</div>

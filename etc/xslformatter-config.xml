@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- this xml file is used to configure  XSLFormatter (if used) as defined by 
+     the XSLFormatter view-processor in app-model.xml -->
+<formatter-config>
+  <xslt-settings command="xsltproc --output %3 %param %2 %1" param-option="%p %v" />
+</formatter-config>

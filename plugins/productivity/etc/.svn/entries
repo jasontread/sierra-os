@@ -1,0 +1,135 @@
+8
+
+dir
+0
+https://sierra-os.googlecode.com/svn/trunk/plugins/productivity/etc
+https://sierra-os.googlecode.com/svn
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+blank-whiteboard.png
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+sierra-os-productivity.spec
+file
+
+
+
+add
+
+clean-car-picture.png
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+wash-the-car.txt
+file
+
+
+
+add
+
+productivity-model.xml
+file
+
+
+
+add
+
+wash-the-car.xml
+file
+
+
+
+add
+
+drawboard.ini
+file
+
+
+
+add
+
+my-toolbox.dtd
+file
+
+
+
+add
+
+wash-the-car.html
+file
+
+
+
+add
+
+my-projects.dtd
+file
+
+
+
+add
+
+wash-the-car.doc
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+l10n
+dir
+
+
+
+add
+
+wash-the-car.pdf
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+

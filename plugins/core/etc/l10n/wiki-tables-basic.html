@@ -1,0 +1,24 @@
+<div class="coreWikiHelp">
+<p>Tables are defined by enclosing cells with '||'.  A cell with leading and trailing spaces is centered; a cell with leading spaces is right-aligned; all other cells are left-aligned.  An empty cell will cause the previous cell to span multiple columns.  (There is currently no mechanism for spanning multiple rows.)  A line beginning with '||' specifies the table attributes for subsequent tables. A '!' as the first character in a cell provides emphasis that can be used to provide headings. This is interesting stuff.
+</p>
+<div class='vspace'></div><table class='markup vert' align='center'>
+      <tr><td class='markup1' valign='top'><pre>
+||border=1 width=50%
+||!Table||!Heading||!Example||
+||!Left   || Center || Right||
+||A       ||!  a B   ||     C||
+||        || single ||      ||
+||        || multi span   ||||
+</pre></td></tr><tr><td 
+        class='markup2' valign='top'><div class='vspace'></div>
+<table border='1' width='50%' ><tr ><th >Table</th><th >Heading</th><th >Example</th></tr>
+<tr ><th  align='left'>Left</th><td  align='center'>Center</td><td  align='right'>Right</td></tr>
+<tr ><td  align='left'>A</td><th  align='center'>a B</th><td  align='right'>C</td></tr>
+<tr ><td >&nbsp;</td><td  align='center'>single</td><td >&nbsp;</td></tr>
+<tr ><td >&nbsp;</td><td  align='center' colspan='2'>multi span</td></tr>
+</table>
+</td></tr></table>
+<p>Also see: <a class='wikilink' href='#' onclick="OS.getWindowInstance(this).getManager().displayArticle('tables')">Intermediate Topics: Tables</a> and 
+<a class='urllink' href='#' onclick="OS.getWindowInstance(this).getManager().displayArticle('tableDirectives')">Intermediate Topics: Table Directives</a>
+</p>
+</div>
