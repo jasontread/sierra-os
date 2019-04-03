@@ -206,7 +206,6 @@
       ]]></advice>
       <advice key="updateSystemGroups"><![CDATA[ $record->updateSystemGroups(); ]]></advice>
       
-      <aspect key="addSharedWorkspaces" advice="sharedWorkspaces" pointcut="vo.addSharedWorkspaces" />
       <aspect key="deleteWorkspaceCache" pointcut="dao.update"><![CDATA[
       global $user;
       if ($record->isDirty() && $record->equals($user)) {
