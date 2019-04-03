@@ -790,8 +790,6 @@
         SRA_Error::logError('MyProjectFileDAO::delete: Error - Invalid attempt to delete ' . ($record->getMessageId() ? 'message' : 'whiteboard') . ' comment ' . $record->getPrimaryKey() . ' in project ' . $record->getProjectId() . ' was attempted by user ' . ($user ? $user->getUid() : '') . ' at IP ' . $_SERVER['REMOTE_ADDR'], __FILE__, __LINE__);
       }
       ]]></aspect>
-      <aspect key="verifyReadPermissionsComment" advice="verifyReadPermissions" pointcut="vo.getComment" />
-      <aspect key="verifyReadPermissionsCommentHtml" advice="verifyReadPermissions" pointcut="vo.getCommentHtml" />
       <aspect key="verifyWritePermissions" pointcut="vo.validate" when="after"><![CDATA[
       if (!$this->validateErrors && $this->recordExists && $this->isDirty()) {
         $resources =& $this->getEntityResources();
