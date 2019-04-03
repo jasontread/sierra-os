@@ -602,8 +602,6 @@
         return SRA_Error::logError($msg, __FILE__, __LINE__, SRA_ERROR_PROBLEM, SRA_Controller::isAppInDebug());
       }
       ]]></aspect>
-      <aspect key="updateLoadDirtyProperties" advice="loadDirtyAttrsArr" pointcut="dao.update" />
-      <aspect key="updateSetDirtyProperties" advice="setDirtyAttrs" pointcut="dao.update" when="after" />
       <aspect key="extraValidation" pointcut="vo.validate" when="after"><![CDATA[
       global $user;
       $coreResources =& SRA_ResourceBundle::getBundle('plugins/core/etc/l10n/core');
