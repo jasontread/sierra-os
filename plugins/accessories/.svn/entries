@@ -1,76 +1,0 @@
-8
-
-dir
-49
-https://sierra-os.googlecode.com/svn/trunk/plugins/accessories
-https://sierra-os.googlecode.com/svn
-
-
-
-2008-01-11T11:32:18.695086Z
-49
-jason.t.read
-
-
-svn:special svn:externals svn:needs-lock
-
-
-
-
-
-
-
-
-
-
-
-0389a993-1a3a-0410-8417-2d91e4bb4074
-
-tpl
-dir
-
-www
-dir
-
-lib
-dir
-
-INSTALL
-file
-
-
-
-
-2008-01-04T10:20:28.000000Z
-d42c44c56f772bfab62115c5dfc37b7a
-2008-01-11T05:03:53.906973Z
-38
-jason.t.read
-
-etc
-dir
-
-plugin.xml
-file
-
-
-
-
-2008-01-04T08:24:22.000000Z
-e33f84abc9104408598e15ae49547352
-2008-01-11T05:03:53.906973Z
-38
-jason.t.read
-
-Makefile
-file
-
-
-
-
-2008-01-04T12:23:04.000000Z
-fea5a91a3df9a99254a1fe36175ed71b
-2008-01-11T11:32:18.695086Z
-49
-jason.t.read
-

@@ -1,128 +1,0 @@
-8
-
-dir
-0
-https://sierra-os.googlecode.com/svn/trunk/plugins/productivity/etc/l10n
-https://sierra-os.googlecode.com/svn
-add
-
-
-
-
-
-
-
-svn:special svn:externals svn:needs-lock
-
-help-dashboard.html
-file
-
-
-
-add
-
-myprojects-files-format.properties
-file
-
-
-
-add
-
-help-edit-project.html
-file
-
-
-
-add
-
-help-color-designators.html
-file
-
-
-
-add
-
-help-filter-project-list.html
-file
-
-
-
-add
-
-help-files.html
-file
-
-
-
-add
-
-help-overview.html
-file
-
-
-
-add
-
-productivity.properties
-file
-
-
-
-add
-
-help-create-project.html
-file
-
-
-
-add
-
-help-advanced-search.html
-file
-
-
-
-add
-
-help-project-list.html
-file
-
-
-
-add
-
-myprojects-files-sortby.properties
-file
-
-
-
-add
-
-help-discussion.html
-file
-
-
-
-add
-
-help-basic-search.html
-file
-
-
-
-add
-
-wash-the-car.properties
-file
-
-
-
-add
-
-help-tasks.html
-file
-
-
-
-add
-

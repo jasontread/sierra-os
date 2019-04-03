@@ -326,9 +326,6 @@
       </ajax-constraint-group>
     </ajax-service>
     <aop>
-      <advice key="updateSearchIndex"><![CDATA[
-      if ($updated || $inserted) { ContactVO::rebuildSearchIndex($record->getContactId(), $updated); }
-      ]]></advice>
       
       <aspect key="deleteRelations" pointcut="dao.delete" when="after"><![CDATA[
       // remove relations where this contact is the target
@@ -368,8 +365,6 @@
       // set note to null if default string is set
       if ($note == $this->getEntityResourcesString('text.notSpecified')) { $note = NULL; }
       ]]></aspect>
-      <aspect key="updateSearchIndexInsert" advice="updateSearchIndex" pointcut="dao.insert" when="after" />
-      <aspect key="updateSearchIndexUpdate" advice="updateSearchIndex" pointcut="dao.update" when="after" />
       <aspect key="verifyDeletePermissions" pointcut="dao.delete"><![CDATA[
       if ($record && $record->recordExists && !$record->canUpdate()) {
         global $user;
@@ -788,8 +783,6 @@
       // convert region name to region code
       if ($code = SRA_Country::getProvinceCode($region, $this->_country)) { $region = $code; }
       ]]></aspect>
-      <aspect key="updateSearchIndexInsert" advice="updateSearchIndex" pointcut="dao.insert" when="after" />
-      <aspect key="updateSearchIndexUpdate" advice="updateSearchIndex" pointcut="dao.update" when="after" />
       
       <introduction key="getAddressFormatObject" class="vo" type="method" value="&amp;getAddressFormatObject()"><![CDATA[
       // returns the SRA_AddressFormat object for this address
@@ -874,9 +867,6 @@
       if (($updated || $inserted) && (isset($oldDirtyFlags['date']) || isset($oldDirtyFlags['location']))) { ContactVO::rebuildSearchIndex($record->getContactId()); }
       ]]></advice>
       
-      <aspect key="updateSearchIndexInsert" advice="updateSearchIndex" pointcut="dao.insert" when="after" />
-      <aspect key="updateSearchIndexUpdate" advice="updateSearchIndex" pointcut="dao.update" when="after" />
-      
       <introduction key="getContact" class="vo" type="method" value="&amp;getContact()"><![CDATA[
       // returns a reference to the contact associated with this date
       $contact = NULL;
@@ -921,9 +911,6 @@
       <advice key="updateSearchIndex"><![CDATA[
       if (($updated || $inserted) && (isset($oldDirtyFlags['email']))) { ContactVO::rebuildSearchIndex($record->getContactId()); }
       ]]></advice>
-      
-      <aspect key="updateSearchIndexInsert" advice="updateSearchIndex" pointcut="dao.insert" when="after" />
-      <aspect key="updateSearchIndexUpdate" advice="updateSearchIndex" pointcut="dao.update" when="after" />
       
       <introduction key="getContact" class="vo" type="method" value="&amp;getContact()"><![CDATA[
       // returns a reference to the contact associated with this email
@@ -1180,9 +1167,6 @@
       if (($updated || $inserted) && (isset($oldDirtyFlags['id']))) { ContactVO::rebuildSearchIndex($record->getContactId()); }
       ]]></advice>
       
-      <aspect key="updateSearchIndexInsert" advice="updateSearchIndex" pointcut="dao.insert" when="after" />
-      <aspect key="updateSearchIndexUpdate" advice="updateSearchIndex" pointcut="dao.update" when="after" />
-      
       <introduction key="getContact" class="vo" type="method" value="&amp;getContact()"><![CDATA[
       // returns a reference to the contact associated with this im id
       $contact = NULL;
@@ -1233,9 +1217,6 @@
       <advice key="updateSearchIndex"><![CDATA[
       if (($updated || $inserted) && (isset($oldDirtyFlags['companyName']) || isset($oldDirtyFlags['department']) || isset($oldDirtyFlags['first']) || isset($oldDirtyFlags['jobTitle']) || isset($oldDirtyFlags['last']) || isset($oldDirtyFlags['maiden']) || isset($oldDirtyFlags['middle']) || isset($oldDirtyFlags['nameNote']) || isset($oldDirtyFlags['nickname']) || isset($oldDirtyFlags['phoneticFirst']) || isset($oldDirtyFlags['phoneticLast']) || isset($oldDirtyFlags['phoneticMiddle']))) { ContactVO::rebuildSearchIndex($record->getContactId()); }
       ]]></advice>
-      
-      <aspect key="updateSearchIndexInsert" advice="updateSearchIndex" pointcut="dao.insert" when="after" />
-      <aspect key="updateSearchIndexUpdate" advice="updateSearchIndex" pointcut="dao.update" when="after" />
       
       <introduction key="getContact" class="vo" type="method" value="&amp;getContact()"><![CDATA[
       // returns a reference to the contact associated with this name
@@ -1358,8 +1339,6 @@
         if (!$number) { $number = NULL; }
       }
       ]]></aspect>
-      <aspect key="updateSearchIndexInsert" advice="updateSearchIndex" pointcut="dao.insert" when="after" />
-      <aspect key="updateSearchIndexUpdate" advice="updateSearchIndex" pointcut="dao.update" when="after" />
       
       <introduction key="getContact" class="vo" type="method" value="&amp;getContact()"><![CDATA[
       // returns a reference to the contact associated with this phone
@@ -1514,9 +1493,6 @@
       <advice key="updateSearchIndex"><![CDATA[
       if (($updated || $inserted) && (isset($oldDirtyFlags['url']))) { ContactVO::rebuildSearchIndex($record->getContactId()); }
       ]]></advice>
-      
-      <aspect key="updateSearchIndexInsert" advice="updateSearchIndex" pointcut="dao.insert" when="after" />
-      <aspect key="updateSearchIndexUpdate" advice="updateSearchIndex" pointcut="dao.update" when="after" />
       
       <introduction key="getContact" class="vo" type="method" value="&amp;getContact()"><![CDATA[
       // returns a reference to the contact associated with this url

@@ -1,212 +1,0 @@
-8
-
-dir
-0
-https://sierra-os.googlecode.com/svn/trunk/plugins/productivity/lib/drawboard_1_52
-https://sierra-os.googlecode.com/svn
-add
-
-
-
-
-
-
-
-svn:special svn:externals svn:needs-lock
-
-onlyview.html
-file
-
-
-
-add
-
-drawboard.jar
-file
-
-
-
-add
-
-
-
-
-
-has-props
-has-prop-mods
-
-LICENSE
-file
-
-
-
-add
-
-test.html
-file
-
-
-
-add
-
-background.gif
-file
-
-
-
-add
-
-
-
-
-
-has-props
-has-prop-mods
-
-drawboard_jre14.jar
-file
-
-
-
-add
-
-
-
-
-
-has-props
-has-prop-mods
-
-CHANGELOG
-file
-
-
-
-add
-
-README
-file
-
-
-
-add
-
-source
-dir
-
-
-
-add
-
-BUGS
-file
-
-
-
-add
-
-HISTORY
-file
-
-
-
-add
-
-skin
-dir
-
-
-
-add
-
-TODO
-file
-
-
-
-add
-
-doc
-dir
-
-
-
-add
-
-drawboard
-dir
-
-
-
-add
-
-INSTALL
-file
-
-
-
-add
-
-CHANGES
-file
-
-
-
-add
-
-bin
-dir
-
-
-
-add
-
-drawboard.jar.bak
-file
-
-
-
-add
-
-
-
-
-
-has-props
-has-prop-mods
-
-screenshot
-dir
-
-
-
-add
-
-about.gif
-file
-
-
-
-add
-
-
-
-
-
-has-props
-has-prop-mods
-
-bgimage.png
-file
-
-
-
-add
-
-
-
-
-
-has-props
-has-prop-mods
-
