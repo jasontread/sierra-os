@@ -193,6 +193,8 @@
         $whiteboards->setProjectId($this->getProjectId());
       }
       ]]></aspect>
+      <aspect key="updateSearchIndexInsert" advice="updateSearchIndex" pointcut="dao.insert" when="after" />
+      <aspect key="updateSearchIndexUpdate" advice="updateSearchIndex" pointcut="dao.update" when="after" />
       <aspect key="updateWorkflowStatus" pointcut="dao.update" when="after"><![CDATA[
       if ($updated && isset($oldDirtyFlags['status']) && ($wf =& $record->getWf()) && (($record->getStatus() == MY_PROJECT_STATUS_CANCELLED && $wf->getStatus() == 'in-progress') || ($record->getStatus() == MY_PROJECT_STATUS_ACTIVE && $wf->getStatus() == MY_PROJECT_STATUS_CANCELLED))) {
         $wf->setStatus($record->getStatus() == MY_PROJECT_STATUS_CANCELLED ? MY_PROJECT_STATUS_CANCELLED : 'in-progress');
@@ -211,6 +213,12 @@
       // get workflow for later deletion
       $projectWorkflow =& $record->getWf();
       ]]></aspect>
+      <aspect key="verifyReadPermissionsFiles" advice="verifyReadPermissions" pointcut="vo.getFiles" />
+      <aspect key="verifyReadPermissionsMessages" advice="verifyReadPermissions" pointcut="vo.getMessages" />
+      <aspect key="verifyReadPermissionsName" advice="verifyReadPermissions" pointcut="vo.getName" />
+      <aspect key="verifyReadPermissionsSummary" advice="verifyReadPermissions" pointcut="vo.getSummary" />
+      <aspect key="verifyReadPermissionsTasks" advice="verifyReadPermissions" pointcut="vo.getTasks" />
+      <aspect key="verifyReadPermissionsWhiteboards" advice="verifyReadPermissions" pointcut="vo.getWhiteboards" />
 
       
       <introduction key="getCompleteConfirmMsg" class="vo" type="method" value="getCompleteConfirmMsg()"><![CDATA[
@@ -784,12 +792,16 @@
         $files->setProjectId($this->getProjectId());
       }
       ]]></aspect>
+      <aspect key="updateSearchIndexInsert" advice="updateSearchIndex" pointcut="dao.insert" when="after" />
+      <aspect key="updateSearchIndexUpdate" advice="updateSearchIndex" pointcut="dao.update" when="after" />
       <aspect key="verifyDeletePermissions" pointcut="dao.delete"><![CDATA[
       global $user;
       if ($record->isUserReadOnly()) {
         SRA_Error::logError('MyProjectFileDAO::delete: Error - Invalid attempt to delete ' . ($record->getMessageId() ? 'message' : 'whiteboard') . ' comment ' . $record->getPrimaryKey() . ' in project ' . $record->getProjectId() . ' was attempted by user ' . ($user ? $user->getUid() : '') . ' at IP ' . $_SERVER['REMOTE_ADDR'], __FILE__, __LINE__);
       }
       ]]></aspect>
+      <aspect key="verifyReadPermissionsComment" advice="verifyReadPermissions" pointcut="vo.getComment" />
+      <aspect key="verifyReadPermissionsCommentHtml" advice="verifyReadPermissions" pointcut="vo.getCommentHtml" />
       <aspect key="verifyWritePermissions" pointcut="vo.validate" when="after"><![CDATA[
       if (!$this->validateErrors && $this->recordExists && $this->isDirty()) {
         $resources =& $this->getEntityResources();
@@ -989,6 +1001,8 @@
         $this->_db->execute('UPDATE my_project_task SET change_restriction=' . $this->_db->convertInt(NULL) . ' WHERE change_restriction=' . $deleteRecordId . ' AND change_restriction_email=' . $this->_db->convertBoolean(TRUE));
       }
       ]]></aspect>
+      <aspect key="sendIntroEmailInsert" advice="sendIntroEmail" pointcut="dao.insert" />
+      <aspect key="sendIntroEmailUpdate" advice="sendIntroEmail" pointcut="dao.update" />
       <aspect key="verifyDeletePermissions" pointcut="dao.delete"><![CDATA[
       global $user;
       if (!MyProjectVO::verifyPermissions(MY_PROJECT_PERMISSIONS_ADMIN, $record->getProjectId())) {
@@ -1146,6 +1160,8 @@
         $record->_updateProjectId($oldProjectId);
       }
       ]]></aspect>
+      <aspect key="updateSearchIndexInsert" advice="updateSearchIndex" pointcut="dao.insert" when="after" />
+      <aspect key="updateSearchIndexUpdate" advice="updateSearchIndex" pointcut="dao.update" when="after" />
       <aspect key="verifyDeletePermissions" pointcut="dao.delete"><![CDATA[
       global $user;
       if (!MyProjectVO::verifyPermissions(MY_PROJECT_PERMISSIONS_FILES_WRITE, $record->getProjectId(), $record->getAttribute('changeRestriction_participantId'))) {
@@ -1294,6 +1310,8 @@
       <aspect key="updateCategory" pointcut="dao.update"><![CDATA[
       if ($record->isDirty('name') && $record->validate()) { $this->_db->execute('UPDATE my_project_file SET category=' . $this->_db->convertText($record->getName()) . ' WHERE project_id=' . $record->getProjectId() . ' AND category=' . $this->_db->convertText($record->getName(TRUE))); }
       ]]></aspect>
+      <aspect key="updateSearchIndexInsert" advice="updateSearchIndex" pointcut="dao.insert" when="after" />
+      <aspect key="updateSearchIndexUpdate" advice="updateSearchIndex" pointcut="dao.update" when="after" />
       <aspect key="verifyUniqueCategory" pointcut="vo.validate" when="after"><![CDATA[
       if (!$this->recordExists && !$this->validateErrors && $this->isDirty()) {
         $db =& SRA_Controller::getAppDb();
@@ -1502,6 +1520,8 @@
         $record->_updateProjectId($oldProjectId);
       }
       ]]></aspect>
+      <aspect key="updateSearchIndexInsert" advice="updateSearchIndex" pointcut="dao.insert" when="after" />
+      <aspect key="updateSearchIndexUpdate" advice="updateSearchIndex" pointcut="dao.update" when="after" />
       <aspect key="verifyDeletePermissions" pointcut="dao.delete"><![CDATA[
       global $user;
       if (!MyProjectVO::verifyPermissions(MY_PROJECT_PERMISSIONS_MESSAGES_WRITE, $record->getProjectId())) {
@@ -1637,6 +1657,8 @@
       <aspect key="updateCategory" pointcut="dao.update"><![CDATA[
       if ($record->isDirty('name') && $record->validate()) { $this->_db->execute('UPDATE my_project_message SET category=' . $this->_db->convertText($record->getName()) . ' WHERE project_id=' . $record->getProjectId() . ' AND category=' . $this->_db->convertText($record->getName(TRUE))); }
       ]]></aspect>
+      <aspect key="updateSearchIndexInsert" advice="updateSearchIndex" pointcut="dao.insert" when="after" />
+      <aspect key="updateSearchIndexUpdate" advice="updateSearchIndex" pointcut="dao.update" when="after" />
       <aspect key="verifyUniqueCategory" pointcut="vo.validate" when="after"><![CDATA[
       if (!$this->recordExists && !$this->validateErrors && $this->isDirty()) {
         $db =& SRA_Controller::getAppDb();
@@ -1689,6 +1711,8 @@
         $this->_db->execute('UPDATE my_project_whiteboard SET change_restriction=' . $this->_db->convertInt(NULL) . ' WHERE change_restriction=' . $deleteRecordId);
       }
       ]]></aspect>
+      <aspect key="sendIntroEmailInsert" advice="sendIntroEmail" pointcut="dao.insert" />
+      <aspect key="sendIntroEmailUpdate" advice="sendIntroEmail" pointcut="dao.update" />
       <aspect key="verifyDeletePermissions" pointcut="dao.delete"><![CDATA[
       global $user;
       if (!MyProjectVO::verifyPermissions(MY_PROJECT_PERMISSIONS_ADMIN, $record->getProjectId())) {
@@ -2032,6 +2056,8 @@
         $record->_updateProjectId($oldProjectId);
       }
       ]]></aspect>
+      <aspect key="updateSearchIndexInsert" advice="updateSearchIndex" pointcut="dao.insert" when="after" />
+      <aspect key="updateSearchIndexUpdate" advice="updateSearchIndex" pointcut="dao.update" when="after" />
       <aspect key="updateSuccessors" pointcut="dao.update" when="after"><![CDATA[
       if ($updated && isset($oldDirtyFlags['status'])) {
         $this->_db->execute('UPDATE my_project_task SET status=' . $this->_db->convertText($record->getStatus() == MY_PROJECT_TASK_STATUS_COMPLETED ? MY_PROJECT_TASK_STATUS_ACTIVE : MY_PROJECT_TASK_STATUS_WAIT) . ' WHERE predecessor=' . $record->getPrimaryKey() . ' AND status <> ' . $this->_db->convertText(MY_PROJECT_TASK_STATUS_CANCELLED));
@@ -3020,6 +3046,8 @@
         $record->_updateProjectId($oldProjectId);
       }
       ]]></aspect>
+      <aspect key="updateSearchIndexInsert" advice="updateSearchIndex" pointcut="dao.insert" when="after" />
+      <aspect key="updateSearchIndexUpdate" advice="updateSearchIndex" pointcut="dao.update" when="after" />
       <aspect key="verifyDeletePermissions" pointcut="dao.delete"><![CDATA[
       global $user;
       if (!MyProjectVO::verifyPermissions(MY_PROJECT_PERMISSIONS_WHITEBOARDS_WRITE, $record->getProjectId(), $record->getAttribute('changeRestriction_participantId'))) {

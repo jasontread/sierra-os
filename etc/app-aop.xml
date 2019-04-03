@@ -206,6 +206,7 @@
       ]]></advice>
       <advice key="updateSystemGroups"><![CDATA[ $record->updateSystemGroups(); ]]></advice>
       
+      <aspect key="addSharedWorkspaces" advice="sharedWorkspaces" pointcut="vo.addSharedWorkspaces" />
       <aspect key="deleteWorkspaceCache" pointcut="dao.update"><![CDATA[
       global $user;
       if ($record->isDirty() && $record->equals($user)) {
@@ -223,6 +224,7 @@
       // don't render password fields when external authentication is used
       if (($attribute == 'password' || $attribute == 'passwordConfirm') && $this->isExternalAuth() && SRA_Controller::getAppParams('useExternalAuth', 'sraos')) { return; }
       ]]></aspect>
+      <aspect key="removeSharedWorkspaces" advice="sharedWorkspaces" pointcut="vo.removeSharedWorkspaces" />
       
       <aspect key="validatePassword" pointcut="vo.validate"><![CDATA[
       // no password
@@ -259,6 +261,7 @@
         $this->validateErrors['workspaces'] = $rb->getString('error.minWorkspace');
       }
       ]]></aspect>
+      <aspect key="updateSystemGroupsInsert" advice="updateSystemGroups" pointcut="dao.insert" />
       <aspect key="setOwnership" pointcut="dao.insert" when="after"><![CDATA[
       if ($record->getPrimaryKey()) {
         if (count($groups =& $record->getGroups()) == 1) {

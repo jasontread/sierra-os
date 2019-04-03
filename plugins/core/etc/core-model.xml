@@ -421,6 +421,8 @@
       ]]></advice>
       
       <aspect key="addGlobalUser" pointcut="vo.CoreVfsNodeVO"><![CDATA[ global $user; ]]></aspect>
+      <aspect key="checkForDuplicateName1" advice="checkForDuplicateName" pointcut="vo.setParent" when="after" />
+      <aspect key="checkForDuplicateName2" advice="checkForDuplicateName" pointcut="vo.setName" when="after" />
       <aspect key="checkEntityCopyPermissions" pointcut="vo.copy"><![CDATA[
       // check if entity allows copying
       $entity =& $this->getEntity();
@@ -498,6 +500,8 @@
         }
       }
       ]]></aspect>
+      <aspect key="insertLoadDirtyProperties" advice="loadDirtyAttrsArr" pointcut="dao.insert" />
+      <aspect key="insertSetDirtyProperties" advice="setDirtyAttrs" pointcut="dao.insert" when="after" />
       <aspect key="setNewNodeDefaultValues" pointcut="vo.CoreVfsNodeVO"  when="after"><![CDATA[
       // if node does not exist, set owner, group and permissions to default 
       // values (global $user, $user->getPrimaryGroup() and $user->getUmask())
@@ -602,6 +606,8 @@
         return SRA_Error::logError($msg, __FILE__, __LINE__, SRA_ERROR_PROBLEM, SRA_Controller::isAppInDebug());
       }
       ]]></aspect>
+      <aspect key="updateLoadDirtyProperties" advice="loadDirtyAttrsArr" pointcut="dao.update" />
+      <aspect key="updateSetDirtyProperties" advice="setDirtyAttrs" pointcut="dao.update" when="after" />
       <aspect key="extraValidation" pointcut="vo.validate" when="after"><![CDATA[
       global $user;
       $coreResources =& SRA_ResourceBundle::getBundle('plugins/core/etc/l10n/core');
