@@ -126,7 +126,7 @@ class SRAOS_HelpTopic {
    * is a sub-topic
    * @access  public
 	 */
-	function SRAOS_HelpTopic($id, & $config, & $plugin, $parentId) {
+	function SRAOS_HelpTopic($id, & $config, & $plugin, $parentId=NULL) {
     if (!$id || !$plugin || !is_array($config) || (!isset($config['attributes']['content']) && !isset($config['help-topic']))) {
 			$msg = "SRAOS_HelpTopic::SRAOS_HelpTopic: Failed - insufficient data to instantiate help topic ${id}";
 			$this->err =& SRA_Error::logError($msg, __FILE__, __LINE__, SRA_ERROR_PROBLEM, SRAOS_PLUGIN_DEBUG);
