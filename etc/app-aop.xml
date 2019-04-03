@@ -223,7 +223,6 @@
       // don't render password fields when external authentication is used
       if (($attribute == 'password' || $attribute == 'passwordConfirm') && $this->isExternalAuth() && SRA_Controller::getAppParams('useExternalAuth', 'sraos')) { return; }
       ]]></aspect>
-      <aspect key="removeSharedWorkspaces" advice="sharedWorkspaces" pointcut="vo.removeSharedWorkspaces" />
       
       <aspect key="validatePassword" pointcut="vo.validate"><![CDATA[
       // no password
