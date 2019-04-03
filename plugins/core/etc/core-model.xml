@@ -498,8 +498,6 @@
         }
       }
       ]]></aspect>
-      <aspect key="insertLoadDirtyProperties" advice="loadDirtyAttrsArr" pointcut="dao.insert" />
-      <aspect key="insertSetDirtyProperties" advice="setDirtyAttrs" pointcut="dao.insert" when="after" />
       <aspect key="setNewNodeDefaultValues" pointcut="vo.CoreVfsNodeVO"  when="after"><![CDATA[
       // if node does not exist, set owner, group and permissions to default 
       // values (global $user, $user->getPrimaryGroup() and $user->getUmask())
