@@ -47,7 +47,7 @@ define('SRAOS_WORKSPACES_MAX_FORM_LAYERS', 10);
 /**
  * debug flag
  */
-define('SRAOS_DEBUG', FALSE);
+define('SRAOS_DEBUG', TRUE);
 // }}}
 
 // check for logout and destroy session is it has occurred
