@@ -67,7 +67,7 @@
   <script type="text/javascript">
   <!--
 {if !$smarty.const.SRAOS_DEBUG}
-{$File->renderMergedFiles($jsFiles, 1)}
+{$File->renderMergedFiles($jsFiles)}
 {/if}
   var plugins = new Array();
 {foreach from=$plugins item=plugin}
