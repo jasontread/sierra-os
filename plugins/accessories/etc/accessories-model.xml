@@ -237,7 +237,7 @@
       $nl = NULL;
       return count($memberGroups) ? $memberGroups : $nl;
       ]]></introduction>
-      <introduction key="getUserContact" class="vo" type="method" value="&amp;getUserContact($uid)"><![CDATA[
+      <introduction key="getUserContact" class="vo" type="method" value="&amp;getUserContact($uid=NULL)"><![CDATA[
       // returns the contact for the user specified by $uid. if $uid is not 
       // specified, return the contact for the user that owns this address book. 
       // this method will search contacts, groups and subscriptions
