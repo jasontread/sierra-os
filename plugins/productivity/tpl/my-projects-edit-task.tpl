@@ -30,7 +30,7 @@
         <td id="myProjectsTasksPreviewDuration"></td>
         <td class="myProjectsTasksPreviewPercentComplete">
           <span id="myProjectsTasksPreviewPercentCompleteLabel"></span>
-          <img id="myProjectsTasksPreviewPercentCompleteLeft" alt="" src="/images/pixel.gif" title="" /><img id="myProjectsTasksPreviewPercentCompleteRight" alt="" src="/images/pixel.gif" title="" />
+          <img id="myProjectsTasksPreviewPercentCompleteLeft" alt="" src="./images/pixel.gif" title="" /><img id="myProjectsTasksPreviewPercentCompleteRight" alt="" src="./images/pixel.gif" title="" />
         </td>
       </tr>
     </table>

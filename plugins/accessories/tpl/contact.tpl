@@ -16,7 +16,7 @@
   </tr>
 
 {if $user->displayContactField('otherNames') && $contact->getOtherNames()}
-  <tr><td class="contactTableSpacer" colspan="2"><img alt="" src="/images/pixel.gif" /></td></tr>
+  <tr><td class="contactTableSpacer" colspan="2"><img alt="" src="./images/pixel.gif" /></td></tr>
 {foreach from=$contact->getOtherNames() item=name}
   <tr>
     <td class="contactLeftCol contactTableCell" style="vertical-align: top">{$name->getLabel()}</td>
@@ -45,7 +45,7 @@
 {/if}
 
 {if $user->displayContactField('phones') && $contact->getPhones()}
-  <tr><td class="contactTableSpacer" colspan="2"><img alt="" src="/images/pixel.gif" /></td></tr>
+  <tr><td class="contactTableSpacer" colspan="2"><img alt="" src="./images/pixel.gif" /></td></tr>
 {foreach from=$contact->getPhones() item=phone}
   <tr>
     <td class="contactLeftCol contactTableCell">{$phone->getType(0, 1)}</td>
@@ -55,7 +55,7 @@
 {/if}
 
 {if $user->displayContactField('emails') && $contact->getEmails()}
-  <tr><td class="contactTableSpacer" colspan="2"><img alt="" src="/images/pixel.gif" /></td></tr>
+  <tr><td class="contactTableSpacer" colspan="2"><img alt="" src="./images/pixel.gif" /></td></tr>
 {foreach from=$contact->getEmails() item=email}
   <tr>
     <td class="contactLeftCol contactTableCell">{$email->getType(0, 1)}</td>
@@ -65,7 +65,7 @@
 {/if}
 
 {if $user->displayContactField('urls') && $contact->getUrls()}
-  <tr><td class="contactTableSpacer" colspan="2"><img alt="" src="/images/pixel.gif" /></td></tr>
+  <tr><td class="contactTableSpacer" colspan="2"><img alt="" src="./images/pixel.gif" /></td></tr>
 {foreach from=$contact->getUrls() item=url}
   <tr>
     <td class="contactLeftCol contactTableCell">{$url->getType(0, 1)}</td>
@@ -75,7 +75,7 @@
 {/if}
 
 {if $user->displayContactField('dates') && $contact->getDates()}
-  <tr><td class="contactTableSpacer" colspan="2"><img alt="" src="/images/pixel.gif" /></td></tr>
+  <tr><td class="contactTableSpacer" colspan="2"><img alt="" src="./images/pixel.gif" /></td></tr>
 {foreach from=$contact->getDates() item=cdate}
   <tr>
     <td class="contactLeftCol contactTableCell">{$cdate->getType(0, 1)}</td>
@@ -85,7 +85,7 @@
 {/if}
 
 {if $user->displayContactField('relations') && $contact->getRelations()}
-  <tr><td class="contactTableSpacer" colspan="2"><img alt="" src="/images/pixel.gif" /></td></tr>
+  <tr><td class="contactTableSpacer" colspan="2"><img alt="" src="./images/pixel.gif" /></td></tr>
 {foreach from=$contact->getAllRelations() item=relation}
   <tr>
     <td class="contactLeftCol contactTableCell">{$relation->getType(0, 1)}</td>
@@ -95,7 +95,7 @@
 {/if}
 
 {if $user->displayContactField('imIds') && $contact->getImIds()}
-  <tr><td class="contactTableSpacer" colspan="2"><img alt="" src="/images/pixel.gif" /></td></tr>
+  <tr><td class="contactTableSpacer" colspan="2"><img alt="" src="./images/pixel.gif" /></td></tr>
 {foreach from=$contact->getImIds() item=im}
   <tr>
     <td class="contactLeftCol contactTableCell">{$im->getType(0, 1)}</td>
@@ -105,7 +105,7 @@
 {/if}
 
 {if $user->displayContactField('addresses') && $contact->getAddresses()}
-  <tr><td class="contactTableSpacer" colspan="2"><img alt="" src="/images/pixel.gif" /></td></tr>
+  <tr><td class="contactTableSpacer" colspan="2"><img alt="" src="./images/pixel.gif" /></td></tr>
 {foreach from=$contact->getAddresses() item=address}
   <tr>
     <td class="contactLeftCol contactTableCell" style="vertical-align: top">{$address->getType(0, 1)}</td>
@@ -116,13 +116,13 @@
 
 {if !$cexcludeGroups && $user->displayContactField('groups')}
 {if $addressBook->getMemberGroups($contact->getContactId())}
-  <tr><td class="contactTableSpacer" colspan="2"><img alt="" src="/images/pixel.gif" /></td></tr>
+  <tr><td class="contactTableSpacer" colspan="2"><img alt="" src="./images/pixel.gif" /></td></tr>
   <tr>{$contact->renderAttribute('groups', 'output')}</tr>
 {/if}
 {/if}
 
 {if $nonBaseFields}
-  <tr><td class="contactTableSpacer" colspan="2"><img alt="" src="/images/pixel.gif" /></td></tr>
+  <tr><td class="contactTableSpacer" colspan="2"><img alt="" src="./images/pixel.gif" /></td></tr>
   <tbody>
 {foreach from=$nonBaseFields item=field}
     <tr>
@@ -133,13 +133,13 @@
   </tbody>
 {/if}
 
-  <tr><td class="contactTableSpacerNote" colspan="2"><img alt="" src="/images/pixel.gif" /></td></tr>
+  <tr><td class="contactTableSpacerNote" colspan="2"><img alt="" src="./images/pixel.gif" /></td></tr>
   <tr>
     <td class="contactLeftCol contactTableCell contactTableNoteCell" style="vertical-align: top">{$contact->getNoteLabel()|lower}</td>
     <td class="contactTableCell contactTableNoteCell">{if $contact->getNote()}{$contact->getNoteHtml()}{else}&nbsp;{/if}</td>
   </tr>
   
-  <tr><td class="contactTableSpacerUpdated" colspan="2"><img alt="" src="/images/pixel.gif" /></td></tr>
+  <tr><td class="contactTableSpacerUpdated" colspan="2"><img alt="" src="./images/pixel.gif" /></td></tr>
   <tr><td class="contactLeftCol contactTableCell" colspan="2">{$contact->getLastUpdatedLabel()}: {$contact->getLastUpdated(0, 1)}</td></tr>
 </table>
 

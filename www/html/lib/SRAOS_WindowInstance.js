@@ -1667,7 +1667,7 @@ SRAOS_WindowInstance = function(appInstance, pluginId, windowId, divId, focused,
     this.syncMsg(msg);
     if (steps && steps > 0 && steps <= 100) {
       this._syncWaitSteps = steps;
-      this.getElementById("WaitProgress").innerHTML = '<img id="' + this._divId + 'WaitProgressLeft" alt="' + msg + '" class="progressImgStatus" src="/images/pixel.gif" title="' + msg + '" /><img id="' + this._divId + 'WaitProgressRight" alt="' + msg + '" class="progressImg" src="/images/pixel.gif" title="' + msg + '" />';
+      this.getElementById("WaitProgress").innerHTML = '<img id="' + this._divId + 'WaitProgressLeft" alt="' + msg + '" class="progressImgStatus" src="./images/pixel.gif" title="' + msg + '" /><img id="' + this._divId + 'WaitProgressRight" alt="' + msg + '" class="progressImg" src="/images/pixel.gif" title="' + msg + '" />';
     }
     else {
       this.getElementById("WaitProgress").innerHTML = '<img alt="' + msg + '" src="' + OS.getThemeUri() + 'wait.gif" title="' + msg + '" />';
