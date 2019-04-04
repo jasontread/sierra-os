@@ -636,7 +636,7 @@
 }
 
 .coreWikiSandbox h1 {
-  background: url(../../plugins/core/icons/32/wiki.png) 0 50% no-repeat;
+  background: url(../../core/icons/32/wiki.png) 0 50% no-repeat;
   border-bottom: 1px solid #333;
   line-height: 32px;
   margin: 0;

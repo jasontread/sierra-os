@@ -5,7 +5,7 @@
 }
 
 .myContactsAddSubscriptionGroups div {
-  background: url(../../plugins/accessories/icons/16/contacts-subscription.png) 0 50% no-repeat;
+  background: url(../../accessories/icons/16/contacts-subscription.png) 0 50% no-repeat;
   height: 20px;
   line-height: 20px;
   padding-left: 18px;
@@ -49,7 +49,7 @@
 }
 
 .myContactCard {
-  background: url(../../plugins/accessories/icons/16/contact.png) 0 50% no-repeat;
+  background: url(../../accessories/icons/16/contact.png) 0 50% no-repeat;
   font-size: 11px;
   height: 18px;
   line-height: 18px;
@@ -88,7 +88,7 @@
 }
 
 .myContactsContacts div .myContactCard, .myContactsContacts div .myContactCardSelected {
-  background: url(../../plugins/accessories/icons/16/contact.png) 3px 50% no-repeat;
+  background: url(../../accessories/icons/16/contact.png) 3px 50% no-repeat;
   cursor: pointer;
   font-size: 11px;
   height: 22px;
@@ -214,7 +214,7 @@
 }
 
 .myContactsGroups div div {
-  background: url(../../plugins/accessories/icons/16/contacts.png) 3px 50% no-repeat;
+  background: url(../../accessories/icons/16/contacts.png) 3px 50% no-repeat;
   cursor: pointer;
   font-size: 11px;
   height: 22px;
@@ -233,7 +233,7 @@
 }
 
 .myContactsHelpLink {
-  background-image: url(../../plugins/accessories/images/help.png);
+  background-image: url(../../accessories/images/help.png);
   background-position: right 50%;
   background-repeat: no-repeat;
   cursor: pointer;
@@ -327,7 +327,7 @@
 }
 
 .myContactsTable .editModeSelector, .myContactsTable .editModeSelectorInline {
-  background: url(../../plugins/accessories/images/selector.png) right 50% no-repeat;
+  background: url(../../accessories/images/selector.png) right 50% no-repeat;
   display: block;
   padding: 0 8px 0 0;
 }
