@@ -45,6 +45,7 @@ $tpl->assignByRef('jsFiles', $jsFiles);
 
 // display workspace template
 if ($cachable) { ob_start(); }
+$tpl->assignByRef('workspace', $workspace);
 $tpl->display('workspace.tpl');
 
 if ($cachable) {
