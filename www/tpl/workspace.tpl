@@ -203,11 +203,11 @@
 {foreach from=$firstPlugin->getApplicationsArray($user->getApplications()) key=id item=application}
 {if $Template->isArray($application)}
   var subMenu = appMenu.addMenu(OS.addMenuItem("", "dockApplications_{$id}", "dockApplications", "{$id}", '{$workspace->myTheme->getBaseUri()}icons/16/folder.png', null));
-{foreach from=$application key=id item=application}
-  OS.addMenuItem("", "dockApplications_{$application->getId()}", subMenu, "{$application->getLabel()}", '{$application->getIconPath(16)}', "OS.launchApplication('{$application->_plugin->getId()}', '{$application->getId()}')");
+{foreach from=$application key=id item=app}
+  OS.addMenuItem("", "dockApplications_{$app->getId()}", subMenu, "{$app->getLabel()}", '{$app->getIconPath(16)}', "OS.launchApplication('{$app->_plugin->getId()}', '{$app->getId()}')");
 {/foreach}
 {else}
-  OS.addMenuItem("", "dockApplications_{$application->getId()}", "dockApplications", "{$application->getLabel()}", '{$application->getIconPath(16)}', "OS.launchApplication('{$application->_plugin->getId()}', '{$application->getId()}')");
+  OS.addMenuItem("", "dockApplications_{$app->getId()}", "dockApplications", "{$app->getLabel()}", '{$app->getIconPath(16)}', "OS.launchApplication('{$app->_plugin->getId()}', '{$app->getId()}')");
 {/if}
 {/foreach}
   
