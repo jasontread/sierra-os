@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE plugin PUBLIC "-//SIERRA//DTD SRAOS PLUGIN//EN" 
-  "http://sierra-os.googlecode.com/svn/trunk/etc/plugin.dtd">
+  "https://raw.githubusercontent.com/jasontread/sierra-os/master/etc/plugin.dtd">
 <plugin models="accessories-model.xml">
   <!--
   <application key="TextEditor" about="TextEditor.about" group="accessories" icon="text-editor.png" main-window="TextEditorWin" multi-instance="1">

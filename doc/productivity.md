@@ -5,7 +5,7 @@ The productivity plugin currently provides the MyProjects application and may be
 If you have not already done so, please install [wget](https://www.gnu.org/software/wget/). this can be as easy as `yum install wget`
 
 ## Email configuration
-In order to utilize the email based messaging provided by MyProjects, you define a POP account configuration in `/path/to/sierra-os/etc/app-config.xml`. The following is an example configuration for a gmail pop-enabled account: 
+In order to utilize the email based messaging provided by MyProjects, you define a POP account configuration in `/path/to/sraos/etc/app-config.xml`. The following is an example configuration for a gmail pop-enabled account: 
 
 ```
 <param id="email" type="my-projects" value="myprojects@mydomain.com" /> 
@@ -29,7 +29,7 @@ If you are running a firewall such as iptables, you must allow access for the po
   * insert: `-A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 7904:7994 -j ACCEPT`
   * `service iptables restart`
 
-You must also add a scheduled task to /path/to/sierra-os/etc/app-config.xml: 
+You must also add a scheduled task to /path/to/sraos/etc/app-config.xml: 
 
 ```
 <!-- update active drawboards (background image and user count) every minute --> 

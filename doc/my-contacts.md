@@ -6,7 +6,7 @@ MyContacts also provides CRM extensibility allowing developers to add tabs to in
 
 1. Add additional attributes to the Contact entity in your plugin entity model. For more information on entity models, review the accessories entity model in `plugins/accessories/etc/accessories-model.xml` and the [sierra-php](http://api.sierra-php.org) framework entity model dtd
 2. Create additional Contact entity `views` to display and/or edit that data
-3. Add `/path/to/sierra-os/etc/app-config.xml` params for each additional view you wish to include in MyContacts where the param attributes should be used in the following manner:
+3. Add `/path/to/sraos/etc/app-config.xml` params for each additional view you wish to include in MyContacts where the param attributes should be used in the following manner:
     * `type=my-contacts-view-[view id]`: each grouping of params with the same type are considered a single MyContacts view
     * `id/value` (type should be the same for each of these view options)
       * `id="edit" value="[1|0]"` whether this is a display-mode or edit mode view. edit mode views should only be used to edit Contact attributes when possible. These attributes must map in some way to the Contact entity. For more information on naming conventions, see the API for Contact::setAttributes. edit mode views will only be displayed when the contact is in edit mode and vise-versa for display-mode views. if this parameter is not specified for a view, it will assumed to be the display view
@@ -48,7 +48,7 @@ CustomerHelp=Help on working with customers
 Customer.tab=Customer Information
 ```
 
-the smarty template for the customer view tab. NOTE: the "output" and "input" views extend base views defined in `/path/to/sierra-os/etc/app-model.xml`: `myplugin/tpl/customer-view.tpl`
+the smarty template for the customer view tab. NOTE: the "output" and "input" views extend base views defined in `/path/to/sraos/etc/app-model.xml`: `myplugin/tpl/customer-view.tpl`
 
 ```
 {$entity->getCustomerIdLabel()}: {$entity->renderAttribute('customerId', 'output')}
@@ -83,4 +83,4 @@ the smarty template for the customer edit tab: `myplugin/tpl/customer-edit.tpl`
 </html>
 ```
 
-this is where we extend MyContacts using the views and attributes we have defined: `/path/to/sierra-os/etc/app-config.xml`
+this is where we extend MyContacts using the views and attributes we have defined: `/path/to/sraos/etc/app-config.xml`

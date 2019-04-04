@@ -415,7 +415,7 @@
       }
       ]]></advice>
       <advice key="checkForDuplicateName"><![CDATA[
-      if ($this->isDirty('parent') && $this->_name && $this->_parent->getChildNode($this->_name)) {
+      if ($this->isDirty('parent') && $this->_name && $this->_parent && $this->_parent->getChildNode($this->_name)) {
         $this->_setIncrementedName();
       }
       ]]></advice>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE plugin PUBLIC "-//SIERRA//DTD SRAOS PLUGIN//EN" 
-  "http://sierra-os.googlecode.com/svn/trunk/etc/plugin.dtd">
+  "https://raw.githubusercontent.com/jasontread/sierra-os/master/etc/plugin.dtd">
 <plugin models="productivity-model.xml">
   <application key="MyProjects" about="MyProjects.about" help-topic="MyProjectsHelp" icon="my-projects.png" main-window="MyProjectsWin" preferences="MyProjectsPreferences">
     <window key="MyProjectsWin" default-height="350" default-maximize="1" default-width="750" manager="MyProjects" scroll="0" tpl="my-projects.tpl">

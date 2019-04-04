@@ -3,7 +3,8 @@ Prior to installing sierra-os, you MUST install the [sierra-php](https://github.
 
 1. `cd /path/to/sierra-php/app/`
 2. `git clone https://github.com/jasontread/sierra-os.git`
-3. `php sierra-os/bin/install.php`
+3. `mv sierra-os sraos`
+4. `php sraos/bin/install.php`
 4. proceed to "Setup instructions" below
 
 ## Setup Instructions
@@ -29,17 +30,17 @@ The following configuration settings are recommend for MySQL:
   
 Create MySQL database instance (if you have not already done so):
 
-  * ` mysql < /path/to/sierra-php/app/sierra-os/etc/mysql-create-database`
+  * ` mysql < /path/to/sierra-php/app/sraos/etc/mysql-create-database`
   
 #### Add Database Instance to App Configuration
 
-1. Open `/path/to/sierra-php/app/sierra-os/etc/app-config.xml`
+1. Open `/path/to/sierra-php/app/sraos/etc/app-config.xml`
 2. Locate the `db key="sraos"` element and replace the corresponding attributes as necessary (`key` is the name of the database)
 
 NOTES
 
 1. The default `host` is `localhost` so you can remove that attribute if that is your db host.
-2. If you used the `/path/to/sierra-php/app/sierra-os/etc/mysql-create-database` script in the previous section, you should not need to modify any of the database configuration settings
+2. If you used the `/path/to/sierra-php/app/sraos/etc/mysql-create-database` script in the previous section, you should not need to modify any of the database configuration settings
 
 ### Initialize App
 
@@ -54,18 +55,18 @@ NOTES
  3. Provide your desired Apache configuration settings for sierra-os
  4. Restart Apache
  
- NOTE: The alias for `model/sra-ws-gateway.php` MUST be `ws` AND the alias for `model/sra-file-renderer.php` MUST be `files` AND the Apache rewrite rule for your files alias MUST be enabled. If you use different aliases, you must update the `ws-gateway-uri`, `ws-gateway-rewrite`, `file-script-uri` and `file-script-rewrite` attributes in `/path/to/sierra-php/app/sierra-os/etc/app-model.xml`
+ NOTE: The alias for `model/sra-ws-gateway.php` MUST be `ws` AND the alias for `model/sra-file-renderer.php` MUST be `files` AND the Apache rewrite rule for your files alias MUST be enabled. If you use different aliases, you must update the `ws-gateway-uri`, `ws-gateway-rewrite`, `file-script-uri` and `file-script-rewrite` attributes in `/path/to/sierra-php/app/sraos/etc/app-model.xml`
  
 ### Update Application Name
  
- 1. Open `/path/to/sierra-php/app/sierra-os/etc/l10n/custom.properties`
+ 1. Open `/path/to/sierra-php/app/sraos/etc/l10n/custom.properties`
  2. Add 2 entries:
      * `[appid]=[the name of your application]`
      * `[appid.short]=[the abbreviation your application]`
      
 ### Login and Reset Default Password
 
-1. Go to: http://[url/to/sierra-os]
+1. Go to: http://[url/to/sraos]
 2. The initial username/password is: `root/root`
 3. Click on the user menu (the blue icon in the upper left corner)
     * Settings => Click Account Settings

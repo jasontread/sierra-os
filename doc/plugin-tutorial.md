@@ -7,7 +7,7 @@ sierra-os utilizes an extensible plugin architecture whereby additional applicat
 The first step to creating a plugin is to create the necessary directories and files: 
 
 ```
-cd /path/to/sierra-os/plugins 
+cd /path/to/sraos/plugins 
 mkdir testplugin 
 cd testplugin 
 touch plugin.xml 
@@ -38,7 +38,7 @@ mkdir -p www/lib
 
 ```
 <?xml version="1.0" encoding="ISO-8859-1"?> 
-<!DOCTYPE plugin PUBLIC "-//SIERRA//DTD SRAOS PLUGIN//EN" "http://sierra-os.googlecode.com/svn/trunk/etc/plugin.dtd"> 
+<!DOCTYPE plugin PUBLIC "-//SIERRA//DTD SRAOS PLUGIN//EN" "https://raw.githubusercontent.com/jasontread/sierra-os/master/etc/plugin.dtd"> 
 <plugin> 
   <application key="HelloWorld" about="HelloWorld.about" icon="info.png" main-window="HelloWorldWin"> 
     <window key="HelloWorldWin" default-height="300" default-maximize="0" default-width="400" tpl="hello-world.tpl"> 
@@ -75,6 +75,6 @@ The last step of this tutorial is to create the smarty template that will be use
 Now reload sierra-os in your browser window. if all was successful, you should see "My Test App" in your applications menu. Clicking on that should load your application.
 
 ## Conclusion
-Once you are done with this tutorial you can delete your plugin from sierra-os simply by recursively deleting its directory: `rm -rf /path/to/sierra-os/plugins/testplugin`
+Once you are done with this tutorial you can delete your plugin from sierra-os simply by recursively deleting its directory: `rm -rf /path/to/sraos/plugins/testplugin`
 
 This tutorial has not addressed some of the more powerful and complex capabilities provided by sierra-os including entity models, adding entities to the sierra-os federated search, ajax and dynamic application behavior and much more. If you are interested in utilizing these features, please review the plugin.dtd documentation and look through the files and code provided by the AccessoriesPlugin and the ProductivityPlugin.

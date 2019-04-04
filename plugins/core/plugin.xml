@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE plugin PUBLIC "-//SIERRA//DTD SRAOS PLUGIN 1.0//EN" 
-  "http://sierra-os.googlecode.com/svn/trunk/etc/plugin_1_0.dtd">
+  "https://raw.githubusercontent.com/jasontread/sierra-os/master/etc/plugin.dtd">
 <plugin models="core-model.xml">
   <application key="HelpManual" about="HelpManual.about" help-topic="HelpManualHelp" hidden="1" icon="help-manual.png" main-window="HelpManualWin" multi-instance="1">
     <window key="HelpManualWin" default-center="1" default-height="300" default-maximize="0" default-width="500" manager="Core_HelpManager" scroll="0" tpl="help-manual.tpl">
