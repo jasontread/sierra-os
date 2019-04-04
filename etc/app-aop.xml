@@ -370,7 +370,7 @@
       }
       return "";
       ]]></introduction>
-      <introduction key="getApplications" class="vo" type="method" value="&amp; getApplications($hideTerminal)"><![CDATA[
+      <introduction key="getApplications" class="vo" type="method" value="&amp; getApplications($hideTerminal=FALSE)"><![CDATA[
       global $user;
       if (!$this->recordExists && $user) {
         return $user->getApplications();
